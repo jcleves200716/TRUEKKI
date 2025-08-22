@@ -1,0 +1,89 @@
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Parte izquierda con collage */
+    .left {
+        width: 100%;
+        background: url("../img/fondo-log-reg.png") no-repeat  center;
+        background-size: contain;  /* o cover */
+        background-color: #f0f0f0; /* color de fondo */    }
+
+    /* Parte derecha con login */
+    .right {
+      width: 40%;
+      background: #bcd9f1; /* azul claro */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-box {
+      width: 300px;
+      text-align: center;
+    }
+
+    .login-box img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #000;
+    }
+
+    .input-box {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .input-box label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #999;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background: #003366;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .login-btn:hover {
+      background: #002244;
+    }
+
+    .register-text {
+      font-size: 12px;
+      margin-top: 15px;
+      color: #333;
+    }
+
+    .register-text a {
+      text-decoration: none;
+      color: #003366;
+      font-weight: bold;
+    }
