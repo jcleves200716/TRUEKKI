@@ -1,35 +1,341 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-  <link rel="stylesheet" href="../css/login.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
-  <div class="left"></div>
-
-  <div class="right">
-    <div class="login-box">
-      <img src="../img/icono-user.png" alt="Avatar" >
-         <form id="loginForm">
-            <div class="input-group">
-                <label for="username">USERNAME</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            
-            <div class="input-group">
-                <label for="password">PASSWORD</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            
-            <button type="submit" class="login-btn">LOGIN</button>
-        </form>
-
-      <p class="register-text">No tienes cuenta? <a href="registro.html">Registrate</a></p>
-      
+    <div class="left-panel">
+        <img src="../img/fondo-log-reg.png" alt="Imagen descriptiva">
     </div>
-  </div>
-    <script src="../js/login.js"></script>  
+
+    <div class="right-panel">
+        <div class="login-container">
+          <img src="../img/icono-user.png" alt="Avatar" width="100" height="100" class="avatar">
+            <h1 class="login-title">LOGIN</h1>
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+                </div>
+                
+                <button type="submit" class="login-btn">ACCEDER</button>
+            </form>
+
+            <div class="links">
+                <a id="forgotPasswordLink">¿Olvidaste tu contraseña?</a>
+                <a href="registro.html">Crear cuenta</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de recuperación de contraseña -->
+    <div class="modal" id="passwordRecoveryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Recuperar Contraseña</h3>
+                <p>Sigue los pasos para restablecer tu contraseña</p>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                
+                <!-- Paso 1: Solicitud -->
+                <div class="step active" id="step1">
+                    <div class="input-group">
+                        <label for="emailOrPhone">Correo electrónico o teléfono</label>
+                        <input type="text" id="emailOrPhone" class="form-control" placeholder="Ingresa tu correo o número de teléfono">
+                    </div>
+                    <button class="modal-btn" onclick="requestRecovery()">Continuar</button>
+                    <p class="info-text">Si existe una cuenta asociada, recibirás un enlace o código de verificación.</p>
+                </div>
+                
+                <!-- Paso 2: Verificación -->
+                <div class="step" id="step2">
+                    <div class="alert alert-success">Se ha enviado un código de verificación a tu correo/teléfono.</div>
+                    <div class="input-group">
+                        <label for="verificationCode">Código de verificación</label>
+                        <input type="text" id="verificationCode" class="form-control" placeholder="Ingresa el código de 6 dígitos">
+                    </div>
+                    <div class="timer" id="timer">El código expira en: <span id="time">15:00</span></div>
+                    <button class="modal-btn" onclick="verifyCode()">Verificar código</button>
+                    <div class="back-link">
+                        <a onclick="backToStep(1)">Volver atrás</a>
+                    </div>
+                </div>
+                
+                <!-- Paso 3: Nueva contraseña -->
+                <div class="step" id="step3">
+                    <div class="alert alert-success">Código verificado correctamente. Ahora establece una nueva contraseña.</div>
+                    
+                    <div class="password-rules">
+                        <strong>La contraseña debe cumplir con:</strong>
+                        <ul>
+                            <li>Mínimo 8 caracteres</li>
+                            <li>Al menos 1 letra mayúscula</li>
+                            <li>Al menos 1 número</li>
+                            <li>Al menos 1 carácter especial (!@#$% etc.)</li>
+                            <li>No puede ser igual a tus 2 últimas contraseñas</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="newPassword">Nueva contraseña</label>
+                        <input type="password" id="newPassword" class="form-control" placeholder="Ingresa tu nueva contraseña">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="confirmPassword">Confirmar contraseña</label>
+                        <input type="password" id="confirmPassword" class="form-control" placeholder="Confirma tu nueva contraseña">
+                    </div>
+                    
+                    <button class="modal-btn" onclick="setNewPassword()">Establecer nueva contraseña</button>
+                    
+                    <div class="back-link">
+                        <a onclick="backToStep(2)">Volver atrás</a>
+                    </div>
+                </div>
+                
+                <!-- Paso 4: Confirmación -->
+                <div class="step" id="step4">
+                    <div class="alert alert-success">
+                        <h3>¡Contraseña restablecida con éxito!</h3>
+                        <p>Tu contraseña ha sido actualizada correctamente. Todos tus tokens de sesión anteriores han sido invalidados por seguridad.</p>
+                    </div>
+                    
+                    <button class="modal-btn" onclick="closeModal()">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentStep = 1;
+        let recoveryToken = '';
+        let timerInterval;
+        let timeLeft = 15 * 60; // 15 minutos en segundos
+        
+        // Mostrar modal al hacer clic en "¿Olvidaste tu contraseña?"
+        document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('passwordRecoveryModal').style.display = 'flex';
+            resetRecoveryProcess();
+        });
+        
+        // Cerrar modal
+        function closeModal() {
+            document.getElementById('passwordRecoveryModal').style.display = 'none';
+            resetRecoveryProcess();
+        }
+        
+        // Cerrar modal al hacer clic fuera del contenido
+        window.addEventListener('click', function(e) {
+            if (e.target === document.getElementById('passwordRecoveryModal')) {
+                closeModal();
+            }
+        });
+        
+        // Reiniciar proceso de recuperación
+        function resetRecoveryProcess() {
+            currentStep = 1;
+            updateProgress();
+            goToStep(1);
+            clearInterval(timerInterval);
+            document.getElementById('emailOrPhone').value = '';
+            document.getElementById('verificationCode').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('timer').classList.remove('expiring');
+        }
+        
+        // Actualizar barra de progreso
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            const percentage = (currentStep / 4) * 100;
+            progress.style.width = `${percentage}%`;
+        }
+        
+        // Cambiar entre pasos
+        function goToStep(step) {
+            document.querySelectorAll('.step').forEach(s => {
+                s.classList.remove('active');
+            });
+            
+            document.getElementById(`step${step}`).classList.add('active');
+            currentStep = step;
+            updateProgress();
+        }
+        
+        // Volver a un paso anterior
+        function backToStep(step) {
+            goToStep(step);
+        }
+        
+        // Solicitar recuperación
+        function requestRecovery() {
+            const emailOrPhone = document.getElementById('emailOrPhone').value;
+            
+            if (!emailOrPhone) {
+                alert('Por favor, ingresa tu correo electrónico o número de teléfono.');
+                return;
+            }
+            
+            // Simular envío de código (en un caso real, se conectaría con el backend)
+            recoveryToken = generateToken();
+            
+            // Iniciar temporizador
+            startTimer();
+            
+            // Avanzar al siguiente paso
+            goToStep(2);
+        }
+        
+        // Generar token aleatorio (simulación)
+        function generateToken() {
+            return Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
+        
+        // Iniciar temporizador
+        function startTimer() {
+            timeLeft = 15 * 60; // 15 minutos
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+        
+        // Actualizar temporizador
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            document.getElementById('time').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Cambiar color cuando quedan menos de 2 minutos
+            if (timeLeft < 120) {
+                document.getElementById('timer').classList.add('expiring');
+            } else {
+                document.getElementById('timer').classList.remove('expiring');
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                alert('El código de verificación ha expirado. Por favor, solicita uno nuevo.');
+                backToStep(1);
+            }
+            
+            timeLeft--;
+        }
+        
+        // Verificar código
+        function verifyCode() {
+            const code = document.getElementById('verificationCode').value;
+            
+            if (!code) {
+                alert('Por favor, ingresa el código de verificación.');
+                return;
+            }
+            
+            // En un caso real, se verificaría con el backend
+            // Aquí simulamos una verificación exitosa
+            if (code.length === 6) {
+                clearInterval(timerInterval);
+                goToStep(3);
+            } else {
+                alert('El código de verificación es incorrecto. Por favor, inténtalo de nuevo.');
+            }
+        }
+        
+        // Establecer nueva contraseña
+        function setNewPassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!newPassword || !confirmPassword) {
+                alert('Por favor, completa ambos campos de contraseña.');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('Las contraseñas no coinciden. Por favor, verifica e inténtalo de nuevo.');
+                return;
+            }
+            
+            // Validar fortaleza de la contraseña
+            if (!validatePassword(newPassword)) {
+                alert('La contraseña no cumple con los requisitos de seguridad. Por favor, verifica las reglas e inténtalo de nuevo.');
+                return;
+            }
+            
+            // En un caso real, se enviaría al backend para su validación y almacenamiento
+            // Simulamos el proceso exitoso
+            
+            // Invalidar tokens anteriores (simulado)
+            invalidatePreviousTokens();
+            
+            // Avanzar a confirmación
+            goToStep(4);
+        }
+        
+        // Validar contraseña
+        function validatePassword(password) {
+            // Mínimo 8 caracteres
+            if (password.length < 8) return false;
+            
+            // Al menos 1 mayúscula
+            if (!/[A-Z]/.test(password)) return false;
+            
+            // Al menos 1 número
+            if (!/\d/.test(password)) return false;
+            
+            // Al menos 1 carácter especial
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return false;
+            
+            // En un caso real, se verificaría contra el historial de contraseñas
+            // Simulamos que no es igual a las 2 últimas contraseñas
+            if (password === 'OldPassword123!' || password === 'PreviousPassword456@') {
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Invalidar tokens anteriores (simulación)
+        function invalidatePreviousTokens() {
+            console.log('Todos los tokens de sesión anteriores han sido invalidados.');
+        }
+        
+        // Prevenir envío del formulario de login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simulación de login
+            if (username && password) {
+                alert('¡Login exitoso! Redirigiendo...');
+                // Aquí iría la lógica de redirección
+            } else {
+                alert('Por favor, completa todos los campos.');
+            }
+        });
+        
+        // Inicializar
+        updateProgress();
+    </script>
 </body>
 </html>
