@@ -210,6 +210,10 @@
                 // Simulación de login
                 simulateLogin('standard', { email, password });
             }
+            setTimeout(() => {
+                // Redirección a la página inicial después de login exitoso
+                window.location.href = 'inicio.html';
+            }, 1500);
         });
         
         // Simular login
@@ -219,8 +223,8 @@
             
             // Simular retraso de red
             setTimeout(() => {
-                alert('¡Login exitoso! Redirigiendo al dashboard...');
-                // window.location.href = 'dashboard.html';
+                // Redirección a la página inicial después de login exitoso
+                window.location.href = 'inicio.html';
             }, 1000);
         }
         
@@ -234,8 +238,8 @@
             
             // Simular retraso de net y autenticación exitosa
             setTimeout(() => {
-                alert(`¡Autenticación con ${provider} exitosa!`);
-                // window.location.href = 'dashboard.html';
+                // Redirección a la página inicial después de login exitoso
+                window.location.href = 'inicio.html';
             }, 1500);
         }
         
