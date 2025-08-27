@@ -1,4 +1,15 @@
- * {
+        :root {
+            --primary-color: #003B73;
+            --secondary-color: #BFD7ED;
+            --accent-color: #007bff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -11,45 +22,74 @@
         }
         
         .left-panel {
-            background: #003B73;
-            display: flex;
-            justify-content: center;
+            flex: 1;
+            background-image: url('../img/fondo-log-reg.png');
+            flex-direction: column;
+            justify-content: absolute;
             align-items: center;
+            padding: 23%;
+
         }
-        
-        .left-panel img {
-            max-width: 200%;
-            max-height: 100vh;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
+
         
         .right-panel {
-            flex: 1;
+            flex:2;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
+            align-items: center;    
             background: #BFD7ED;
+            overflow-y: auto;
         }
         
-        .avatar {
-            display: block;
-            margin: 0 auto 20px auto;
-            border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        .login-container {
+            width: 100%;
+            max-width: 80%;
+            padding: 10%;
         }
         
         .login-title {
             text-align: center;
             margin-bottom: 30px;
-            color: #003B73;
+            color: var(--primary-color);
             font-size: 2rem;
             font-weight: bold;
         }
         
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
         .input-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             position: relative;
         }
         
@@ -57,34 +97,34 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            color: #003B73;
+            color: var(--primary-color);
         }
         
         .input-group input {
             width: 100%;
             padding: 15px 15px 15px 45px;
-            border: 2px solid #BFD7ED;
+            border: 2px solid var(--secondary-color);
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s;
         }
         
         .input-group input:focus {
-            border-color: #003B73;
+            border-color: var(--primary-color);
             outline: none;
         }
         
         .input-icon {
             position: absolute;
-            left: 15px;
-            top: 25px;
-            color: #003B73;
+            left: 6%;
+            top: 40%;
+            color: var(--primary-color);
         }
         
         .login-btn {
             width: 100%;
             padding: 15px;
-            background: #003B73;
+            background: var(--primary-color);
             color: white;
             border: none;
             border-radius: 8px;
@@ -92,10 +132,54 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s;
+            margin-top: 10px;
         }
         
         .login-btn:hover {
             background: #002952;
+        }
+        
+        .social-login {
+            margin: 20px 0;
+        }
+        
+        .social-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .social-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .google-btn {
+            background: #DB4437;
+            color: white;
+        }
+        
+        .facebook-btn {
+            background: #4267B2;
+            color: white;
+        }
+        
+        .apple-btn {
+            background: #000;
+            color: white;
+        }
+        
+        .social-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
         
         .links {
@@ -104,7 +188,7 @@
         }
         
         .links a {
-            color: #003B73;
+            color: var(--primary-color);
             text-decoration: none;
             font-size: 14px;
             margin: 0 10px;
@@ -113,6 +197,20 @@
         
         .links a:hover {
             text-decoration: underline;
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .security-notice {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 20px;
+            text-align: center;
         }
         
         /* Modal de recuperación de contraseña */
@@ -196,11 +294,6 @@
         .step.active {
             display: block;
             animation: fadeIn 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .info-text {
@@ -295,15 +388,22 @@
             
             .left-panel {
                 padding: 30px 20px;
-                min-height: 300px;
+                min-height: auto;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .slogan {
+                font-size: 1.2rem;
+            }
+            
+            .security-features {
+                width: 100%;
             }
             
             .login-container {
                 padding: 30px 20px;
-            }
-            
-            .modal-content {
-                width: 95%;
-                margin: 0 10px;
             }
         }
