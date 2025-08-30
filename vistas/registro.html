@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Registro</title>
-  <link rel="stylesheet" href="../css/resgistro.css">
+    <link rel="stylesheet" href="../css/resgistro.css">
 </head>
 <body>
   <!-- Panel izquierdo -->
@@ -11,77 +11,205 @@
 
   <!-- Panel derecho -->
   <div class="right-panel">
-    <div class="avatar">👤</div>
-    <div class="register-title">REGISTRO</div>
+      <div class="avatar">👤</div>
+      <div class="register-title">REGISTRO</div>
 
-    <!-- FORMULARIO -->
-        <form action="http://127.0.0.1:5000/registro" method="POST" class="register-container" id="registroForm">
-    <div class="input-group">
-        <i>👤</i>
-        <input type="text" name="nombre" placeholder="Nombre completo" required>
-    </div>
-
-    <div class="input-group">
-        <i>📧</i>
-        <input type="email" name="email" placeholder="Email" required>
-    </div>
-
-    <div class="input-group">
-        <i>🔒</i>
-        <input type="password" id="password" name="password" placeholder="Contraseña" required>
-        <span class="toggle-password" data-target="password">
-        <img src="../img/ojo-cerrado.png" class="ojo" alt="Ver contraseña">
-        </span>
-    </div>
-
-    <div class="input-group">
-        <i>🔒</i>
-        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmar contraseña" required>
-        <span class="toggle-password" data-target="confirmPassword">
-        <img src="../img/ojo-cerrado.png" class="ojo" alt="Ver contraseña">
-        </span>
-    </div>
-
-    <div class="input-group">
-        <i>📞</i>
-        <input type="text" name="telefono" placeholder="Número de contacto">
-    </div>
-
-    <div class="input-group">
-        <i>🏠</i>
-        <input type="text" name="direccion" placeholder="Dirección">
-    </div>
-
-    <div class="button-group">
-        <button type="submit" class="btn">REGISTRARSE</button>
-        <button class="btn1">
-            <a href="login.html">¿Ya tienes cuenta?</a>
-        </button>
+      <!-- FORMULARIO -->
+      <form id="registroForm">
+        <div class="input-group">
+          <i>👤</i>
+          <input type="text" name="nombre" placeholder="Nombre completo" required>
         </div>
-    </form>
 
+        <div class="input-group">
+          <i>📧</i>
+          <input type="email" name="email" placeholder="Email" required>
+        </div>
+
+        <div class="input-group">
+          <i>🔒</i>
+          <input type="password" id="password" name="password" placeholder="Contraseña" required>
+          <span class="toggle-password" data-target="password">
+            <img src="../img/ojo-cerrado.png" class="ojo" alt="Ver contraseña">
+          </span>
+        </div>
+
+        <div class="input-group">
+          <i>🔒</i>
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmar contraseña" required>
+          <span class="toggle-password" data-target="confirmPassword">
+            <img src="../img/ojo-cerrado.png" class="ojo" alt="Ver contraseña">
+          </span>
+        </div>
+        <div class="error-message" id="passwordError">Las contraseñas no coinciden</div>
+
+        <div class="password-requirements">
+          <h4>La contraseña debe contener:</h4>
+          <div class="requirement" id="req-length">
+            <span>• Mínimo 8 caracteres</span>
+          </div>
+          <div class="requirement" id="req-uppercase">
+            <span>• Al menos una letra mayúscula</span>
+          </div>
+          <div class="requirement" id="req-number">
+            <span>• Al menos un número</span>
+          </div>
+          <div class="requirement" id="req-special">
+            <span>• Al menos un carácter especial (@$!%*?&)</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <i>📞</i>
+          <input type="text" name="telefono" placeholder="Número de contacto">
+        </div>
+
+        <div class="input-group">
+          <i>🏠</i>
+          <input type="text" name="direccion" placeholder="Dirección">
+        </div>
+
+        <div class="button-group">
+          <button type="submit" class="btn" id="submitBtn">REGISTRARSE</button>
+          <button type="button" class="btn1">
+            <a href="login.html">¿Ya tienes cuenta?</a>
+          </button>
+        </div>
+        
+        <div class="spinner" id="spinner"></div>
+        <div class="error-message" id="formError"></div>
+        <div class="success-message" id="successMessage">¡Registro exitoso! Redirigiendo al login...</div>
+      </form>
+    
   </div>
 
-  <!-- SCRIPT para mostrar/ocultar contraseña -->
-<script>
-document.querySelectorAll(".toggle-password").forEach(toggle => {
-  toggle.addEventListener("click", function () {
-    const inputId = this.getAttribute("data-target");
-    const input = document.getElementById(inputId);
-    const img = this.querySelector("img");
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Función para mostrar/ocultar contraseña
+      document.querySelectorAll(".toggle-password").forEach(toggle => {
+        toggle.addEventListener("click", function () {
+          const inputId = this.getAttribute("data-target");
+          const input = document.getElementById(inputId);
+          const img = this.querySelector("img");
 
-    if (input.type === "password") {
-      input.type = "text";
-      img.src = "../img/ojo-abierto.png"; // ojo abierto
-    } else {
-      input.type = "password";
-      img.src ="../img/ojo-cerrado.png"; // ojo cerrado
-    }
-  });
-});
-</script>
+          if (input.type === "password") {
+            input.type = "text";
+            // Cambiar a icono de ojo abierto (SVG en base64)
+            img.src ="../img/ojo-abierto.png";
+          } else {
+            input.type = "password";
+            // Cambiar a icono de ojo cerrado (SVG en base64)
+            img.src = "../img/ojo-cerrado.png";
+          }
+        });
+      });
 
+      // Elementos DOM
+      const password = document.getElementById('password');
+      const confirmPassword = document.getElementById('confirmPassword');
+      const passwordError = document.getElementById('passwordError');
+      const formError = document.getElementById('formError');
+      const successMessage = document.getElementById('successMessage');
+      const spinner = document.getElementById('spinner');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      // Elementos de requisitos
+      const reqLength = document.getElementById('req-length');
+      const reqUppercase = document.getElementById('req-uppercase');
+      const reqNumber = document.getElementById('req-number');
+      const reqSpecial = document.getElementById('req-special');
 
+      // Validar fortaleza de la contraseña
+      function validatePasswordStrength(pwd) {
+        // Longitud mínima de 8 caracteres
+        const hasMinLength = pwd.length >= 8;
+        
+        // Al menos una letra mayúscula
+        const hasUppercase = /[A-Z]/.test(pwd);
+        
+        // Al menos un número
+        const hasNumber = /[0-9]/.test(pwd);
+        
+        // Al menos un carácter especial
+        const hasSpecial = /[@$!%*?&]/.test(pwd);
+        
+        return {
+          valid: hasMinLength && hasUppercase && hasNumber && hasSpecial,
+          hasMinLength,
+          hasUppercase,
+          hasNumber,
+          hasSpecial
+        };
+      }
+
+      // Actualizar la visualización de requisitos
+      function updateRequirementsUI(strength) {
+        // Actualizar cada requisito
+        reqLength.className = strength.hasMinLength ? 'requirement valid' : 'requirement invalid';
+        reqUppercase.className = strength.hasUppercase ? 'requirement valid' : 'requirement invalid';
+        reqNumber.className = strength.hasNumber ? 'requirement valid' : 'requirement invalid';
+        reqSpecial.className = strength.hasSpecial ? 'requirement valid' : 'requirement invalid';
+      }
+
+      // Validar que las contraseñas coincidan
+      function validatePassword() {
+        const pwdValue = password.value;
+        const confirmValue = confirmPassword.value;
+        
+        // Validar fortaleza
+        const strength = validatePasswordStrength(pwdValue);
+        updateRequirementsUI(strength);
+        
+        // Validar coincidencia
+        if (pwdValue !== confirmValue && confirmValue !== '') {
+          passwordError.style.display = 'block';
+          return false;
+        } else {
+          passwordError.style.display = 'none';
+          return strength.valid;
+        }
+      }
+
+      // Event listeners para validación en tiempo real
+      password.addEventListener('input', function() {
+        const strength = validatePasswordStrength(this.value);
+        updateRequirementsUI(strength);
+        validatePassword();
+      });
+
+      confirmPassword.addEventListener('input', validatePassword);
+
+      // Manejo del envío del formulario
+      document.getElementById('registroForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Validar contraseñas
+        if (!validatePassword()) {
+          formError.textContent = 'Por favor, corrige los errores en la contraseña.';
+          formError.style.display = 'block';
+          return;
+        }
+        
+        // Ocultar mensajes anteriores
+        formError.style.display = 'none';
+        successMessage.style.display = 'none';
+        
+        // Mostrar spinner y deshabilitar botón
+        spinner.style.display = 'block';
+        submitBtn.disabled = true;
+        
+        // Simular envío al servidor (en un caso real, aquí harías una petición fetch)
+        setTimeout(() => {
+          spinner.style.display = 'none';
+          successMessage.style.display = 'block';
+          
+          // Redirigir después de 2 segundos
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+        }, 1500);
+      });
+    });
+  </script>
 </body>
 </html>
-

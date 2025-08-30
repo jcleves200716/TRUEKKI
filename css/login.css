@@ -22,24 +22,20 @@
         }
         
         .left-panel {
-            flex: 1;
-            background-image: url('../img/fondo-log-reg.png');
-            flex-direction: column;
-            justify-content: absolute;
-            align-items: center;
-            padding: 23%;
-
-        }
+  flex: 4%;
+  background: url("../img/fondo-log-reg.png") 20% center;
+  background-size: cover;
+}
 
         
-        .right-panel {
-            flex:2;
-            display: flex;
-            justify-content: center;
-            align-items: center;    
-            background: #BFD7ED;
-            overflow-y: auto;
-        }
+       .right-panel {
+  flex: 0.5;
+  background: #cde3f6; /* celeste claro */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+} 
         
         .login-container {
             width: 100%;
