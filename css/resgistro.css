@@ -1,0 +1,134 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  font-family: Arial, sans-serif;
+}
+
+/* Panel izquierdo */
+.left-panel {
+  flex: 4%;
+  background: url("../img/fondo-log-reg.png") 20% center;
+  background-size: cover;
+}
+
+/* Panel derecho */
+.right-panel {
+  flex: 0.5;
+  background: #cde3f6; /* celeste claro */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Avatar */
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #e6ebf0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+  color: #4a4a4a;
+  margin-bottom: 20px;
+  transform: none; /* asegura que no esté volteado */
+}
+
+
+.avatar {
+  transform: scaleX(-1);
+}
+
+
+
+/* Título */
+.register-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #003B73;
+  margin-bottom: 20px;
+}
+
+/* Contenedor del formulario */
+.register-container {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Inputs */
+.input-group {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.input-group i {
+  margin-right: 10px;
+  color: #003B73;
+}
+
+.input-group input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+}
+
+/* Botones */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  background: #003B73;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn1 {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  background: white;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #0256a3;
+}
+
+.toggle-password {
+  cursor: pointer;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password img.ojo {
+  width: 20px;
+  height: 20px;
+}
+
+

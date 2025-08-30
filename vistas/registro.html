@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro</title>
+  <link rel="stylesheet" href="../css/resgistro.css">
+</head>
+<body>
+  <!-- Panel izquierdo -->
+  <div class="left-panel"></div>
+
+  <!-- Panel derecho -->
+  <div class="right-panel">
+    <div class="avatar">👤</div>
+    <div class="register-title">REGISTRO</div>
+
+    <!-- FORMULARIO -->
+        <form action="http://127.0.0.1:5000/registro" method="POST" class="register-container" id="registroForm">
+    <div class="input-group">
+        <i>👤</i>
+        <input type="text" name="nombre" placeholder="Nombre completo" required>
+    </div>
+
+    <div class="input-group">
+        <i>📧</i>
+        <input type="email" name="email" placeholder="Email" required>
+    </div>
+
+    <div class="input-group">
+        <i>🔒</i>
+        <input type="password" id="password" name="password" placeholder="Contraseña" required>
+        <span class="toggle-password" data-target="password">
+        <img src="../img/ojo-cerrado.png" class="ojo" alt="Ver contraseña">
+        </span>
+    </div>
+
+    <div class="input-group">
+        <i>🔒</i>
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmar contraseña" required>
+        <span class="toggle-password" data-target="confirmPassword">
+        <img src="../img/ojo-cerrado.png" class="ojo" alt="Ver contraseña">
+        </span>
+    </div>
+
+    <div class="input-group">
+        <i>📞</i>
+        <input type="text" name="telefono" placeholder="Número de contacto">
+    </div>
+
+    <div class="input-group">
+        <i>🏠</i>
+        <input type="text" name="direccion" placeholder="Dirección">
+    </div>
+
+    <div class="button-group">
+        <button type="submit" class="btn">REGISTRARSE</button>
+        <button class="btn1">
+            <a href="login.html">¿Ya tienes cuenta?</a>
+        </button>
+        </div>
+    </form>
+
+  </div>
+
+  <!-- SCRIPT para mostrar/ocultar contraseña -->
+<script>
+document.querySelectorAll(".toggle-password").forEach(toggle => {
+  toggle.addEventListener("click", function () {
+    const inputId = this.getAttribute("data-target");
+    const input = document.getElementById(inputId);
+    const img = this.querySelector("img");
+
+    if (input.type === "password") {
+      input.type = "text";
+      img.src = "../img/ojo-abierto.png"; // ojo abierto
+    } else {
+      input.type = "password";
+      img.src ="../img/ojo-cerrado.png"; // ojo cerrado
+    }
+  });
+});
+</script>
+
+
+</body>
+</html>
+
