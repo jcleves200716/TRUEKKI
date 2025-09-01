@@ -1,0 +1,24 @@
+{
+  "name": "proyecto---truekkin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcleves200716/TRUEKKI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jcleves200716/TRUEKKI/issues"
+  },
+  "homepage": "https://github.com/jcleves200716/TRUEKKI#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
