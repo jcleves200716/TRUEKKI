@@ -85,131 +85,151 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Función para mostrar/ocultar contraseña
-      document.querySelectorAll(".toggle-password").forEach(toggle => {
-        toggle.addEventListener("click", function () {
-          const inputId = this.getAttribute("data-target");
-          const input = document.getElementById(inputId);
-          const img = this.querySelector("img");
+        // Función para mostrar/ocultar contraseña
+        document.querySelectorAll(".toggle-password").forEach(toggle => {
+            toggle.addEventListener("click", function () {
+                const inputId = this.getAttribute("data-target");
+                const input = document.getElementById(inputId);
+                const img = this.querySelector("img");
 
-          if (input.type === "password") {
-            input.type = "text";
-            // Cambiar a icono de ojo abierto (SVG en base64)
-            img.src ="../img/ojo-abierto.png";
-          } else {
-            input.type = "password";
-            // Cambiar a icono de ojo cerrado (SVG en base64)
-            img.src = "../img/ojo-cerrado.png";
-          }
+                if (input.type === "password") {
+                    input.type = "text";
+                    img.src = "../img/ojo-abierto.png";
+                } else {
+                    input.type = "password";
+                    img.src = "../img/ojo-cerrado.png";
+                }
+            });
         });
-      });
 
-      // Elementos DOM
-      const password = document.getElementById('password');
-      const confirmPassword = document.getElementById('confirmPassword');
-      const passwordError = document.getElementById('passwordError');
-      const formError = document.getElementById('formError');
-      const successMessage = document.getElementById('successMessage');
-      const spinner = document.getElementById('spinner');
-      const submitBtn = document.getElementById('submitBtn');
-      
-      // Elementos de requisitos
-      const reqLength = document.getElementById('req-length');
-      const reqUppercase = document.getElementById('req-uppercase');
-      const reqNumber = document.getElementById('req-number');
-      const reqSpecial = document.getElementById('req-special');
+        // Elementos DOM
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const passwordError = document.getElementById('passwordError');
+        const formError = document.getElementById('formError');
+        const successMessage = document.getElementById('successMessage');
+        const spinner = document.getElementById('spinner');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Elementos de requisitos
+        const reqLength = document.getElementById('req-length');
+        const reqUppercase = document.getElementById('req-uppercase');
+        const reqNumber = document.getElementById('req-number');
+        const reqSpecial = document.getElementById('req-special');
 
-      // Validar fortaleza de la contraseña
-      function validatePasswordStrength(pwd) {
-        // Longitud mínima de 8 caracteres
-        const hasMinLength = pwd.length >= 8;
-        
-        // Al menos una letra mayúscula
-        const hasUppercase = /[A-Z]/.test(pwd);
-        
-        // Al menos un número
-        const hasNumber = /[0-9]/.test(pwd);
-        
-        // Al menos un carácter especial
-        const hasSpecial = /[@$!%*?&]/.test(pwd);
-        
-        return {
-          valid: hasMinLength && hasUppercase && hasNumber && hasSpecial,
-          hasMinLength,
-          hasUppercase,
-          hasNumber,
-          hasSpecial
-        };
-      }
-
-      // Actualizar la visualización de requisitos
-      function updateRequirementsUI(strength) {
-        // Actualizar cada requisito
-        reqLength.className = strength.hasMinLength ? 'requirement valid' : 'requirement invalid';
-        reqUppercase.className = strength.hasUppercase ? 'requirement valid' : 'requirement invalid';
-        reqNumber.className = strength.hasNumber ? 'requirement valid' : 'requirement invalid';
-        reqSpecial.className = strength.hasSpecial ? 'requirement valid' : 'requirement invalid';
-      }
-
-      // Validar que las contraseñas coincidan
-      function validatePassword() {
-        const pwdValue = password.value;
-        const confirmValue = confirmPassword.value;
-        
-        // Validar fortaleza
-        const strength = validatePasswordStrength(pwdValue);
-        updateRequirementsUI(strength);
-        
-        // Validar coincidencia
-        if (pwdValue !== confirmValue && confirmValue !== '') {
-          passwordError.style.display = 'block';
-          return false;
-        } else {
-          passwordError.style.display = 'none';
-          return strength.valid;
+        // Validar fortaleza de la contraseña
+        function validatePasswordStrength(pwd) {
+            const hasMinLength = pwd.length >= 8;
+            const hasUppercase = /[A-Z]/.test(pwd);
+            const hasNumber = /[0-9]/.test(pwd);
+            const hasSpecial = /[@$!%*?&]/.test(pwd);
+            
+            return {
+                valid: hasMinLength && hasUppercase && hasNumber && hasSpecial,
+                hasMinLength,
+                hasUppercase,
+                hasNumber,
+                hasSpecial
+            };
         }
-      }
 
-      // Event listeners para validación en tiempo real
-      password.addEventListener('input', function() {
-        const strength = validatePasswordStrength(this.value);
-        updateRequirementsUI(strength);
-        validatePassword();
-      });
-
-      confirmPassword.addEventListener('input', validatePassword);
-
-      // Manejo del envío del formulario
-      document.getElementById('registroForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        // Validar contraseñas
-        if (!validatePassword()) {
-          formError.textContent = 'Por favor, corrige los errores en la contraseña.';
-          formError.style.display = 'block';
-          return;
+        // Actualizar la visualización de requisitos
+        function updateRequirementsUI(strength) {
+            reqLength.className = strength.hasMinLength ? 'requirement valid' : 'requirement invalid';
+            reqUppercase.className = strength.hasUppercase ? 'requirement valid' : 'requirement invalid';
+            reqNumber.className = strength.hasNumber ? 'requirement valid' : 'requirement invalid';
+            reqSpecial.className = strength.hasSpecial ? 'requirement valid' : 'requirement invalid';
         }
-        
-        // Ocultar mensajes anteriores
-        formError.style.display = 'none';
-        successMessage.style.display = 'none';
-        
-        // Mostrar spinner y deshabilitar botón
-        spinner.style.display = 'block';
-        submitBtn.disabled = true;
-        
-        // Simular envío al servidor (en un caso real, aquí harías una petición fetch)
-        setTimeout(() => {
-          spinner.style.display = 'none';
-          successMessage.style.display = 'block';
-          
-          // Redirigir después de 2 segundos
-          setTimeout(() => {
-            window.location.href = 'login.html';
-          }, 2000);
-        }, 1500);
-      });
+
+        // Validar que las contraseñas coincidan
+        function validatePassword() {
+            const pwdValue = password.value;
+            const confirmValue = confirmPassword.value;
+            
+            const strength = validatePasswordStrength(pwdValue);
+            updateRequirementsUI(strength);
+            
+            if (pwdValue !== confirmValue && confirmValue !== '') {
+                passwordError.style.display = 'block';
+                return false;
+            } else {
+                passwordError.style.display = 'none';
+                return strength.valid;
+            }
+        }
+
+        // Event listeners para validación en tiempo real
+        password.addEventListener('input', function() {
+            const strength = validatePasswordStrength(this.value);
+            updateRequirementsUI(strength);
+            validatePassword();
+        });
+
+        confirmPassword.addEventListener('input', validatePassword);
+
+        // ✅ MANEJO DEL ENVÍO DEL FORMULARIO CORREGIDO
+        document.getElementById('registroForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validatePassword()) {
+                formError.textContent = 'Por favor, corrige los errores en la contraseña.';
+                formError.style.display = 'block';
+                return;
+            }
+            
+            formError.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            spinner.style.display = 'block';
+            submitBtn.disabled = true;
+            
+            // Recoger datos del formulario
+            const formData = {
+                nombre: document.querySelector('input[name="nombre"]').value,
+                email: document.querySelector('input[name="email"]').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                telefono: document.querySelector('input[name="telefono"]').value,
+                direccion: document.querySelector('input[name="direccion"]').value
+            };
+            
+            try {
+                console.log("Enviando datos al servidor...", formData);
+                
+                // Enviar datos al servidor
+                const response = await fetch('http://localhost:5000/registro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                console.log("Respuesta del servidor:", data);
+                
+                if (data.success) {
+                    successMessage.textContent = data.message;
+                    successMessage.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    formError.textContent = data.message;
+                    formError.style.display = 'block';
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                formError.textContent = 'Error de conexión con el servidor';
+                formError.style.display = 'block';
+                submitBtn.disabled = false;
+            } finally {
+                spinner.style.display = 'none';
+            }
+        });
     });
-  </script>
+</script>
 </body>
 </html>
