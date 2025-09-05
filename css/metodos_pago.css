@@ -1,0 +1,397 @@
+
+        :root {
+            --primary-color: #366795;
+            --secondary-color: #2196F3;
+            --accent-color: #FF9800;
+            --dark-color: #333;
+            --light-color: #f9f9f9;
+            --gray-color: #e0e0e0;
+            --danger-color: #f44336;
+            --success-color: #366795;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+         header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      background-color: #000;
+      color: white;
+    }
+
+    header h1 {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    /* Barra de búsqueda */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #f5eaf7;
+      border-radius: 25px;
+      padding: 5px 15px;
+      width: 50%;
+    }
+
+    .search-bar input {
+      border: none;
+      outline: none;
+      background: none;
+      width: 100%;
+      font-size: 16px;
+      padding: 5px;
+    }
+
+    .search-bar button {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #444;
+    }
+
+    /* Íconos derechos */
+    .icons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 22px;
+      cursor: pointer;
+      right: 55%;
+    }
+
+    /* Botón hamburguesa */
+    .menu-btn {
+      font-size: 26px;
+      cursor: pointer;
+      padding: 15px;
+      background: #000000;
+      color: white;
+      position: fixed;
+      top: 0;
+      right: 0; /* ahora está en el lado derecho */
+      z-index: 1001;
+    }
+
+    /* Sidebar (derecha) */
+    .sidebar {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      top: 0;
+      right: 0; /* aparece desde la derecha */
+      background: #111;
+      overflow-x: hidden;
+      transition: 0.3s;
+      padding-top: 60px;
+      z-index: 1000;
+    }
+
+    .sidebar a {
+      padding: 15px 25px;
+      text-decoration: none;
+      font-size: 18px;
+      color: #fff;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background: #000000;
+    }
+
+    .sidebar .close-btn {
+      position: absolute;
+      top: 10px;
+      left: 20px; /* ahora el botón queda en la parte izquierda del menú */
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* Overlay */
+     
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .progress-step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            background: white;
+            padding: 0 10px;
+        }
+        
+        .progress-step .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gray-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+        }
+        
+        .progress-step.active .step-number {
+            background: var(--primary-color);
+        }
+        
+        .progress-step.completed .step-number {
+            background: var(--success-color);
+        }
+        
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gray-color);
+            z-index: 1;
+        }
+        
+        .payment-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .payment-methods, .order-summary {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 25px;
+        }
+        
+        .payment-methods {
+            flex: 2;
+        }
+        
+        .order-summary {
+            flex: 1;
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--gray-color);
+            padding-bottom: 10px;
+        }
+        
+        .payment-option {
+            border: 2px solid var(--gray-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-option:hover {
+            border-color: var(--secondary-color);
+        }
+        
+        .payment-option.selected {
+            border-color: var(--primary-color);
+            background-color: #BFD7ED;
+        }
+        
+        .payment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light-color);
+            border-radius: 8px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .payment-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .payment-details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--gray-color);
+        }
+        
+        .payment-option.selected .payment-details {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .card-inputs {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .order-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-color);
+        }
+        
+        .order-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        
+        .order-details {
+            flex: 1;
+        }
+        
+        .order-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .order-price {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-color);
+        }
+        
+        .summary-total {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--gray-color);
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #BFD7ED;
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--dark-color);
+            border: 1px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .security-notice {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .security-icon {
+            margin-right: 10px;
+            color: var(--success-color);
+            font-size: 24px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #777;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .payment-container {
+                flex-direction: column;
+            }
+            
+            .card-inputs {
+                grid-template-columns: 1fr;
+            }
+        }

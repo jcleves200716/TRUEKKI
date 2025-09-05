@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medios de Pago - Truekki</title>
+    <link rel="stylesheet" href="../css/metodos_pago.css">
+</head>
+<body>
+    
+ <div class="menu-btn" onclick="openMenu()">☰</div>
+
+
+  <div class="sidebar" id="sidebar">
+    <span class="close-btn" onclick="closeMenu()">✖</span>
+    <a href="#">Explorar</a>
+    <a href="#">Publicar</a>
+    
+    <a href="#">Notificaciones</a>
+    <a href="#">chats</a>
+    <a href="#"> Historial</a>
+    <a href="#">Perfil</a>
+    <a href="#">Ayuda</a>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+  <!-- Barra superior -->
+<header>
+    <h1>TRUEKKI</h1>
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar...">
+      <button>+</button>
+    </div>
+    <div class="icons">
+      <span>♡</span>
+      <span>💬</span>
+      
+    </div>
+    </header>
+
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-step completed">
+                <div class="step-number">1</div>
+                <div class="step-title">Carrito</div>
+            </div>
+            <div class="progress-step completed">
+                <div class="step-number">2</div>
+                <div class="step-title">Envío</div>
+            </div>
+            <div class="progress-step active">
+                <div class="step-number">3</div>
+                <div class="step-title">Pago</div>
+            </div>
+            <div class="progress-step">
+                <div class="step-number">4</div>
+                <div class="step-title">Confirmación</div>
+            </div>
+        </div>
+
+        <div class="payment-container">
+            <div class="payment-methods">
+                <h2>Método de pago</h2>
+                
+                <div class="payment-option" data-method="nequi">
+                    <div class="payment-header">
+                        <div class="payment-icon">N</div>
+                        <div class="payment-title">Nequi</div>
+                    </div>
+                    <div class="payment-details">
+                        <p>Paga fácilmente con tu billetera Nequi. Transferencia instantánea.</p>
+                        <div class="form-group">
+                            <label for="nequi-phone">Número de teléfono</label>
+                            <input type="tel" id="nequi-phone" placeholder="310 123 4567">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-option" data-method="daviplata">
+                    <div class="payment-header">
+                        <div class="payment-icon">D</div>
+                        <div class="payment-title">Daviplata</div>
+                    </div>
+                    <div class="payment-details">
+                        <p>Usa tu cuenta Daviplata para pagar de forma rápida y segura.</p>
+                        <div class="form-group">
+                            <label for="daviplata-phone">Número de teléfono</label>
+                            <input type="tel" id="daviplata-phone" placeholder="310 123 4567">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-option" data-method="credit-card">
+                    <div class="payment-header">
+                        <div class="payment-icon">💳</div>
+                        <div class="payment-title">Tarjeta de crédito/débito</div>
+                    </div>
+                    <div class="payment-details">
+                        <p>Paga con tu tarjeta Visa, Mastercard o American Express.</p>
+                        <div class="form-group">
+                            <label for="card-number">Número de tarjeta</label>
+                            <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                        </div>
+                        <div class="card-inputs">
+                            <div class="form-group">
+                                <label for="card-name">Nombre en la tarjeta</label>
+                                <input type="text" id="card-name" placeholder="Juan Pérez">
+                            </div>
+                            <div class="form-group">
+                                <label for="card-expiry">Expiración</label>
+                                <input type="text" id="card-expiry" placeholder="MM/AA">
+                            </div>
+                            <div class="form-group">
+                                <label for="card-cvv">CVV</label>
+                                <input type="text" id="card-cvv" placeholder="123">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-option" data-method="pse">
+                    <div class="payment-header">
+                        <div class="payment-icon">PSE</div>
+                        <div class="payment-title">PSE (Pagos Seguros en Línea)</div>
+                    </div>
+                    <div class="payment-details">
+                        <p>Paga directamente desde tu cuenta bancaria.</p>
+                        <div class="form-group">
+                            <label for="bank-select">Selecciona tu banco</label>
+                            <select id="bank-select">
+                                <option value="">-- Selecciona un banco --</option>
+                                <option value="bancolombia">Bancolombia</option>
+                                <option value="davivienda">Davivienda</option>
+                                <option value="bbva">BBVA</option>
+                                <option value="bogota">Banco de Bogotá</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-option" data-method="cash">
+                    <div class="payment-header">
+                        <div class="payment-icon">💰</div>
+                        <div class="payment-title">Contraentrega</div>
+                    </div>
+                    <div class="payment-details">
+                        <p>Paga en efectivo cuando recibas tu producto. Solo disponible en algunas ciudades.</p>
+                        <p><strong>Nota:</strong> Se aplicará un cargo adicional de $5.000 por servicio de cobranza.</p>
+                    </div>
+                </div>
+                
+                <div class="security-notice">
+                    <div class="security-icon">🔒</div>
+                    <div>
+                        <strong>Transacción segura</strong>
+                        <p>Tus datos están protegidos con encriptación de 256 bits. Truekki no almacena información de tu tarjeta de crédito.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-summary">
+                <h2>Resumen de pedido</h2>
+                
+                <div class="order-item">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiNlMGUwZTAiLz48dGV4dCB4PSI1MCIgeT0iNTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzU1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+UG9ydGF0aWw8L3RleHQ+PC9zdmc+" alt="Portátil Gaimno Asus TUF">
+                    <div class="order-details">
+                        <div class="order-title">Portátil Gaimno Asus TUF</div>
+                        <div class="order-specs">Ryzen 7, 16GB RAM, SSD 512GB</div>
+                        <div class="order-price">$2.899.900</div>
+                    </div>
+                </div>
+                
+                <div class="summary-row">
+                    <div>Subtotal</div>
+                    <div>$2.899.900</div>
+                </div>
+                <div class="summary-row">
+                    <div>Envío</div>
+                    <div>$15.000</div>
+                </div>
+                <div class="summary-row">
+                    <div>Impuestos</div>
+                    <div>$0</div>
+                </div>
+                <div class="summary-row">
+                    <div>Descuento</div>
+                    <div>-$50.000</div>
+                </div>
+                
+                <div class="summary-total">
+                    <div>Total</div>
+                    <div>$2.864.900</div>
+                </div>
+                
+                <button class="btn" id="continue-btn">Continuar</button>
+                <button class="btn btn-secondary">Volver al carrito</button>
+                
+            
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 Truekki - Todos los derechos reservados</p>
+            <p>Procesamiento seguro de pagos | Términos y condiciones | Política de privacidad</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            const continueBtn = document.getElementById('continue-btn');
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+
+    function openMenu() {
+      sidebar.style.width = "250px"; // abre desde la derecha
+      overlay.style.display = "block";
+    }
+
+    function closeMenu() {
+      sidebar.style.width = "0";
+      overlay.style.display = "none";
+    }
+            
+            // Seleccionar método de pago
+            paymentOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Deseleccionar todos
+                    paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Seleccionar este
+                    this.classList.add('selected');
+                    
+                    // Habilitar botón de continuar
+                    continueBtn.disabled = false;
+                });
+            });
+            
+            // Simular proceso de pago
+            continueBtn.addEventListener('click', function() {
+                const selectedMethod = document.querySelector('.payment-option.selected');
+                
+                if (!selectedMethod) {
+                    alert('Por favor selecciona un método de pago');
+                    return;
+                }
+                
+                // Simular procesamiento
+                this.textContent = 'Procesando...';
+                this.disabled = true;
+                
+                // Simular retraso en el pago
+                setTimeout(() => {
+                    alert('¡Pago procesado con éxito! Serás redirigido a la confirmación.');
+                    // Aquí normalmente redirigiríamos a la página de confirmación
+                }, 2000);
+            });
+            
+            // Seleccionar el primer método por defecto (simulación)
+            paymentOptions[0].classList.add('selected');
+        });
+    </script>
+</body>
+</html>
