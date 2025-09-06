@@ -1,0 +1,85 @@
+:root {
+  --verde: #4CAF50;
+  --azul: #007BFF;
+  --rojo: #e74c3c;
+  --gris: #f9f9f9;
+  --fuente: 'Segoe UI', sans-serif;
+}
+
+body {
+  font-family: var(--fuente);
+  background: url("../img/fondo-log-reg.png") no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 2rem;
+}
+
+.formulario-publicacion {
+  max-width: 700px;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.92); /* semitransparente */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  backdrop-filter: blur(2px);
+}
+
+h2, h3 {
+  color: var(--azul);
+  margin-bottom: 1rem;
+}
+
+form label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.contacto-opciones {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.btn-publicar {
+  margin-top: 2rem;
+  background: var(--verde);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.validacion-info,
+.restricciones {
+  margin-top: 2rem;
+  background: #fff;
+  padding: 1rem;
+  border-left: 4px solid var(--verde);
+  border-radius: 6px;
+}
+
+.restricciones {
+  border-left-color: var(--rojo);
+}
+
+ul {
+  padding-left: 1.2rem;
+}

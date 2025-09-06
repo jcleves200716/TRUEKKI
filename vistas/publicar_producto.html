@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PUBLICAR PRODUCTO- TRUEKKIN</title>
+  <link rel="stylesheet" href="../css/publicar.css" />
+</head>
+<body>
+  <section class="formulario-publicacion">
+    <h2>📦PUBLICAR PRODUCTO</h2>
+
+    <form id="form-publicacion">
+      <label for="titulo">Título del Producto:</label>
+      <input type="text" id="titulo" placeholder="Ej: iPhone 13 Pro Max 256GB como nuevo" required />
+
+      <label for="categoria">Categoría:</label>
+      <select id="categoria" required>
+        <option value="">Selecciona una categoría</option>
+        <option value="ropa">Ropa</option>
+        <option value="tecnologia">Tecnología</option>
+        <option value="hogar">Hogar</option>
+      </select>
+
+      <label for="estado">Estado del Producto:</label>
+      <select id="estado" required>
+        <option value="">Selecciona el estado</option>
+        <option value="nuevo">Nuevo</option>
+        <option value="usado">Usado</option>
+      </select>
+
+      <label for="descripcion">Descripción:</label>
+      <textarea id="descripcion" minlength="50" placeholder="Describe el producto, características, estado, motivo de venta..." required></textarea>
+
+      <label for="foto">Fotografías del Producto:</label>
+      <input type="file" id="foto" accept=".jpg,.png" required />
+      <small>Formatos JPG, PNG · Máx 5MB</small>
+
+      <label for="precio">Precio:</label>
+      <input type="text" id="precio" placeholder="$50000" required />
+
+      <label for="ciudad">Ciudad:</label>
+      <input type="text" id="ciudad" required />
+
+      <label for="barrio">Barrio:</label>
+      <input type="text" id="barrio" required />
+
+      <label>Método de Contacto Preferido:</label>
+      <div class="contacto-opciones">
+        <label><input type="radio" name="contacto" value="whatsapp" required /> WhatsApp</label>
+        <label><input type="radio" name="contacto" value="mensaje" /> Mensaje</label>
+      </div>
+
+      <button type="submit" class="btn-publicar">Publicar Producto</button>
+    </form>
+
+    <section class="validacion-info">
+      <h3>🔍 Validación de Publicación</h3>
+      <p>Cada publicación creada en TRUEKKIN deberá pasar por un proceso de validación automática y manual antes de mostrarse públicamente.</p>
+      <ul>
+        <li>✅ Categoría válida (ropa, tecnología, hogar)</li>
+        <li>✅ Estado del producto (nuevo o usado)</li>
+        <li>✅ Al menos una fotografía</li>
+        <li>✅ Descripción mínima de 50 caracteres</li>
+        <li>🚫 Sin palabras prohibidas ni productos restringidos</li>
+        <li>✅ Ubicación completa: ciudad y barrio</li>
+      </ul>
+      <p>Este proceso garantiza la calidad, seguridad y legalidad de las publicaciones en la plataforma.</p>
+    </section>
+
+    <section class="restricciones">
+      <h3>⚠️ Controles y Restricciones</h3>
+      <ul>
+        <li>❌ Publicaciones sin foto o con imágenes falsas serán rechazadas automáticamente</li>
+        <li>🚫 Filtro de palabras clave prohibidas</li>
+        <li>👁️ Revisión manual por el administrador en casos sospechosos</li>
+        <li>📩 Notificación al usuario con correcciones si se rechaza</li>
+      </ul>
+    </section>
+  </section>
+
+  <script src="../js/publicar.js"></script>
+</body>
+</html>

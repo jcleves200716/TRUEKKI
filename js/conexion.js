@@ -21,8 +21,7 @@ let conexion = mysql.createConnection({
     host: 'localhost',
     database: 'truekki',
     user: 'root',
-    password: '',
-    port: 3306
+    password: ''
 }); 
 
 conexion.connect(function(error){
@@ -36,7 +35,6 @@ conexion.connect(function(error){
 // ✅ SERVE ARCHIVOS ESTÁTICOS (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, '../')));
 
-// ✅ RUTAS CORREGIDAS
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../index.html'));
 });
