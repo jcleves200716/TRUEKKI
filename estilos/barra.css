@@ -115,7 +115,6 @@
       z-index: 999;
     }
 
-
     /* Contenedor de productos */
     .products {
       display: grid;
@@ -130,6 +129,14 @@
       text-align: center;
       padding: 10px;
       color: white;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
 
     .card img {
@@ -146,6 +153,8 @@
       justify-content: center;
       gap: 10px;
       font-size: 18px;
+      z-index: 2;
+      position: relative;
     }
 
     .card p {
@@ -163,3 +172,14 @@
       color: white;
       cursor: pointer;
     }
+
+    /* Enlace que cubre toda la tarjeta */
+    .card-link {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+  

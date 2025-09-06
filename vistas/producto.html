@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>TRUEKKI</title>
+    <link rel="stylesheet" href="../css/producto.css">
+</head>
+<body>
+  <!-- Encabezado -->
+  <header>
+    <h1>TRUEKKI</h1>
+    <input type="text" class="search-bar" placeholder="🔍">
+    <div class="header-icons">
+      <span>♡</span>
+      <span>👤</span>
+      <span>☰</span>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <div class="container">
+    <!-- Galería lateral -->
+    <div class="gallery">
+      <img src="https://m.media-amazon.com/images/I/71gTJNxmBAL._AC_SL1500_.jpg" alt="miniatura">
+      <img src="https://m.media-amazon.com/images/I/81OWho29ifL._AC_SL1500_.jpg" alt="miniatura">
+      <img src="https://m.media-amazon.com/images/I/81mCL57SQsL._AC_SL1500_.jpg" alt="miniatura">
+      <img src="https://m.media-amazon.com/images/I/81qlWx19nYL._AC_SL1500_.jpg" alt="miniatura">
+    </div>
+
+    <!-- Imagen principal -->
+    <div class="main-image">
+      <img src="https://m.media-amazon.com/images/I/71zuMSjwDfL._AC_SL1500_.jpg" alt="Producto principal">
+    </div>
+
+    <!-- Detalles -->
+    <div class="details">
+      <h2>PORTÁTIL GAMING ASUS TUF R5 7535H RAM 24GB SSD 512GB</h2>
+      <p>
+        El TUF Gaming es un portátil diseñado para servirte la victoria en bandeja. La nueva GPU GeForce RTX™ 2050 
+        ofrece una gran fluidez gráfica en la pantalla de 144Hz y 100% sRGB, mientras que la potente CPU AMD Ryzen™ 
+        5 se encuentra respaldada por un nuevo sistema de refrigeración que amplía el rendimiento de la CPU y 
+        mantiene un perfil acústico silencioso.
+      </p>
+
+
+      <div class="price">
+        <b>Precio:</b> $2.899.900
+      </div>
+      <p><b>Ubicación:</b> Bogotá D.C, Suba Lombardia</p>
+
+      <div class="tags">
+        <span class="tag">Electrónicos</span>
+        <span class="tag">Portátil</span>
+        <span class="tag">Gamer</span>
+      </div>
+      <div class="botones">
+        <button class="venta">VENTA</button>
+        <button class="trueque">TRUEQUE</button>
+        <button class="venta-trueque">VENTA/TRUEQUE</button>
+      </div>
+
+      <div class="btns">
+        <button>❤️ Lista deseos</button>
+        <button>📤 Compartir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje al vendedor -->
+  <div class="message-box">
+    <div>
+      <span>ENVIAR MENSAJE AL VENDEDOR</span>
+      <input type="text" class="message-input" value="Hola, ¿sigue estando disponible?">
+    </div>
+    <button class="send-btn">ENVIAR MENSAJE</button>
+  </div>
+
+  <div class="comentarios-container">
+    <h2>Comentarios</h2>
+
+    <div id="comentarios-lista"></div>
+
+    <div class="form-comentario">
+      <textarea id="comentario-input" rows="2" placeholder="Escribe un comentario..."></textarea>
+      <button onclick="agregarComentario()">Comentar</button>
+    </div>
+  </div>
+
+  <script>
+    function agregarComentario() {
+      const input = document.getElementById("comentario-input");
+      const texto = input.value.trim();
+
+      if (texto !== "") {
+        const lista = document.getElementById("comentarios-lista");
+
+        const comentario = document.createElement("div");
+        comentario.classList.add("comentario");
+
+        // Imagen de perfil
+        const img = document.createElement("img");
+        img.src = "https://i.pinimg.com/736x/d2/50/af/d250af5bf078a388b23d9916b575dc48.jpg"; // Foto de perfil random
+
+        // Texto comentario
+        const textoDiv = document.createElement("div");
+        textoDiv.classList.add("comentario-texto");
+
+        const nombre = document.createElement("h4");
+        nombre.textContent = "Usuario Anónimo";
+
+        const parrafo = document.createElement("p");
+        parrafo.textContent = texto;
+
+        textoDiv.appendChild(nombre);
+        textoDiv.appendChild(parrafo);
+
+        comentario.appendChild(img);
+        comentario.appendChild(textoDiv);
+
+        lista.appendChild(comentario);
+
+        input.value = "";
+      }
+    }
+  </script>
+</body>
+</html>
+

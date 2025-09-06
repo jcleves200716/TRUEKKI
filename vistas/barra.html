@@ -5,22 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TRUEKKI</title>
   <link rel="stylesheet" href="../estilos/barra.css">
-
 </head>
 <body>
 
     <div class="menu-btn" onclick="openMenu()">☰</div>
 
-
   <div class="sidebar" id="sidebar">
     <span class="close-btn" onclick="closeMenu()">✖</span>
     <a href="#">Explorar</a>
-    <a href="#">Publicar</a>
+    <a href="producto.html">Publicar</a>
     
     <a href="#">Notificaciones</a>
     <a href="#">chats</a>
     <a href="#"> Historial</a>
-    <a href="#">Perfil</a>
+    <a href="perfil_vendedor.html">Perfil</a>
     <a href="#">Ayuda</a>
   </div>
 
@@ -36,7 +34,6 @@
     <div class="icons">
       <span>♡</span>
       <span>💬</span>
-      
     </div>
   </header>
 
@@ -44,6 +41,7 @@
   <section class="products">
     <!-- Producto 1 -->
     <div class="card">
+      <a class="card-link" href="#"></a>
       <img src="https://i.pinimg.com/736x/8e/8d/19/8e8d19acba343386d4cc1f917bf80995.jpg" alt="Jeans">
       <div class="actions">
         <span class="heart">❤</span>
@@ -54,6 +52,7 @@
 
     <!-- Producto 2 -->
     <div class="card">
+      <a class="card-link" href="detalle_producto.html?product=2"></a>
       <img src="https://static.wixstatic.com/media/e3c921_72852877781f47609ed2099aeb792674~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg" alt="Corset">
       <div class="actions">
         <span class="heart">❤</span>
@@ -64,6 +63,7 @@
 
     <!-- Producto 3 -->
     <div class="card">
+      <a class="card-link" href="producto.html"></a>
       <img src="https://th.bing.com/th/id/OIP.vewfenftbHKrLMt4yaq72wHaHa?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Portatil Gamer">
       <div class="actions">
         <span class="heart">❤</span>
@@ -74,6 +74,7 @@
 
     <!-- Producto 4 -->
     <div class="card">
+      <a class="card-link" href="detalle_producto.html?product=4"></a>
       <img src="https://tse3.mm.bing.net/th/id/OIP.X81k0hwApMg-aeIyPZJ3FwHaLH?rs=1&pid=ImgDetMain&o=7&rm=3">
       <div class="actions">
         <span class="heart">❤</span>
@@ -84,6 +85,7 @@
 
     <!-- Producto 5 -->
     <div class="card">
+      <a class="card-link" href="detalle_producto.html?product=5"></a>
       <img src="https://i.pinimg.com/originals/88/56/01/88560178cefcd0c2b80f74a19d25da05.jpg" alt="Chaqueta">
       <div class="actions">
         <span class="heart">❤</span>
@@ -94,6 +96,7 @@
 
     <!-- Producto 6 -->
     <div class="card">
+      <a class="card-link" href="detalle_producto.html?product=6"></a>
       <img src="https://tse4.mm.bing.net/th/id/OIP.msT8ljzpLJCeHj-pm5nGFAHaFQ?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Libro Antiguo">
       <div class="actions">
         <span class="heart">❤</span>
@@ -104,6 +107,7 @@
 
     <!-- Producto 7 -->
     <div class="card">
+      <a class="card-link" href="detalle_producto.html?product=7"></a>
       <img src="https://tse2.mm.bing.net/th/id/OIP.HS2gyEs62-AxaCYyjz0DzgHaFj?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Juego de sábanas">
       <div class="actions">
         <span class="heart">❤</span>
@@ -114,8 +118,8 @@
 
     <!-- Producto 8 -->
     <div class="card">
+      <a class="card-link" href="detalle_producto.html?product=8"></a>
       <img src="https://th.bing.com/th/id/R.64d9b5d3dadef11e599dc455dbea3278?rik=b5ofwMvNbhVQEA&riu=http%3a%2f%2fblog.higarnovias.com%2fwp-content%2fuploads%2f2017%2f07%2fvestido-de-novia-6-682x1024.jpg&ehk=FaUCJSvcicRFhJB6LEMiUkGFv%2f%2foX8oWfF%2bq0fk2M1w%3d&risl=&pid=ImgRaw&r=0" alt="Vestido">
-      <img src="" alt="Vestido">
       <div class="actions">
         <span class="heart">❤</span>
         <span class="cart">💬</span>
@@ -125,6 +129,7 @@
 
     <!-- Producto 9 -->
     <div class="card">
+      <a class="card-link" href="detalle_producto.html?product=9"></a>
       <img src="https://tse3.mm.bing.net/th/id/OIP.AJvBxVsx065D0XWGSnhO2AAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Corset">
       <div class="actions">
         <span class="heart">❤</span>
@@ -132,8 +137,10 @@
       </div>
       <p>libro El hijo del ajedrecista</p>
     </div>
+    
     <!-- Producto 10-->
     <div class="card">
+      <a class="card-link" href="detalle_producto.html?product=10"></a>
       <img src="https://tse3.mm.bing.net/th/id/OIP.T-jbfRCPv9yvoRF313J98AHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Corset">
       <div class="actions">
         <span class="heart">❤</span>
@@ -156,6 +163,16 @@
       sidebar.style.width = "0";
       overlay.style.display = "none";
     }
+
+    // Prevenir que los clicks en los iconos de corazón y carrito activen el enlace
+    document.querySelectorAll('.heart, .cart').forEach(icon => {
+      icon.addEventListener('click', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        // Aquí puedes agregar la lógica para favoritos o carrito
+        alert('Funcionalidad de ' + (this.classList.contains('heart') ? 'favoritos' : 'carrito') + ' activada');
+      });
+    });
   </script>
 
 </body>
