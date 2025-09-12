@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRUEKKI - Detalle de Pedido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/detalle-pedido.CSS">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">TRUEKKI</div>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar...">
+            </div>
+            <div class="user-actions">
+                <a href="#">Iniciar sesión</a>
+                <a href="#">Registrarse</a>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Productos</a></li>
+                <li><a href="#">Categorías</a></li>
+                <li><a href="#">Ofertas</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        
+        <div class="order-detail-container">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Detalle de Pedido</h1>
+                    <div class="order-number">Orden #TK123456789</div>
+                </div>
+                <div class="order-status status-completed">Completado</div>
+            </div>
+            
+            <div class="order-timeline">
+                <h3 class="timeline-title">Estado del Pedido</h3>
+                <div class="timeline-steps">
+                    <div class="timeline-step step-completed">
+                        <div class="step-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="step-info">
+                            <div class="step-label">Pedido Realizado</div>
+                            <div class="step-date">12 Oct, 10:30 AM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step step-completed">
+                        <div class="step-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="step-info">
+                            <div class="step-label">Confirmado</div>
+                            <div class="step-date">12 Oct, 11:45 AM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step step-completed">
+                        <div class="step-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="step-info">
+                            <div class="step-label">En Camino</div>
+                            <div class="step-date">13 Oct, 09:15 AM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-step step-completed">
+                        <div class="step-icon">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <div class="step-info">
+                            <div class="step-label">Entregado</div>
+                            <div class="step-date">14 Oct, 03:20 PM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-content">
+                <div class="order-info">
+                    <h3 class="section-title">Información del Producto</h3>
+                    
+                    <div class="product-detail">
+                        <div class="product-image">ASUS ROG STRIX</div>
+                        <div class="product-info">
+                            <h4 class="product-name">ASUS ROG STRIX G15</h4>
+                            <div class="product-specs">32GB RAM, 1TB SSD, NVIDIA RTX 3070</div>
+                            <div class="product-specs">Color: Negro | Modelo: 2023</div>
+                            <div class="product-price">$1.200.000</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="info-card-title">Método de Entrega</div>
+                            <div class="info-card-content">
+                                <p><i class="fas fa-truck"></i> Envío Estándar</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Cra 15 #88-25, Bogotá</p>
+                                <p><i class="fas fa-phone"></i> +57 300 123 4567</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-card">
+                            <div class="info-card-title">Información de Pago</div>
+                            <div class="info-card-content">
+                                <p><i class="fas fa-credit-card"></i> Tarjeta Crédito</p>
+                                <p><i class="fas fa-shield-alt"></i> Terminada en ****4567</p>
+                                <p><i class="fas fa-calendar-check"></i> Pagado el 12 Oct, 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="order-summary">
+                    <h3 class="section-title">Resumen del Pedido</h3>
+                    
+                    <div class="summary-item">
+                        <span>Subtotal</span>
+                        <span>$1.200.000</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span>Envío</span>
+                        <span>$25.000</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span>Impuestos</span>
+                        <span>$120.000</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span>Descuento</span>
+                        <span style="color: var(--success-color);">-$50.000</span>
+                    </div>
+                    
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>$1.295.000</span>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-print"></i> Imprimir Factura
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-headset"></i> Soporte
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="related-products">
+            <h2 class="related-title">Productos relacionados</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-card-image">HP GAMING</div>
+                    <div class="product-card-info">
+                        <div class="product-card-title">HP Gaming 16GB RAM, 512GB SSD</div>
+                        <div class="product-card-price">$950.000</div>
+                        <div class="product-card-actions">
+                            <button class="btn btn-outline">Ver detalles</button>
+                            <button class="btn btn-primary">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-card-image">OMEN</div>
+                    <div class="product-card-info">
+                        <div class="product-card-title">OMEN 32GB RAM, 2TB SSD</div>
+                        <div class="product-card-price">$1.500.000</div>
+                        <div class="product-card-actions">
+                            <button class="btn btn-outline">Ver detalles</button>
+                            <button class="btn btn-primary">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-card-image">ASUS TUF</div>
+                    <div class="product-card-info">
+                        <div class="product-card-title">ASUS TUF 16GB RAM, 1TB SSD</div>
+                        <div class="product-card-price">$1.100.000</div>
+                        <div class="product-card-actions">
+                            <button class="btn btn-outline">Ver detalles</button>
+                            <button class="btn btn-primary">Comprar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TRUEKKI</h3>
+                    <p>Plataforma de intercambios y ventas de productos únicos.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Enlaces rápidos</h3>
+                    <ul>
+                        <li><a href="#">Acerca de nosotros</a></li>
+                        <li><a href="#">Términos y condiciones</a></li>
+                        <li><a href="#">Política de privacidad</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Categorías populares</h3>
+                    <ul>
+                        <li><a href="#">Tecnología</a></li>
+                        <li><a href="#">Libros</a></li>
+                        <li><a href="#">Ropa</a></li>
+                        <li><a href="#">Hogar</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2023 TRUEKKI - Todos los derechos reservados
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Funcionalidad para la vista de detalle de pedido
+        document.addEventListener('DOMContentLoaded', function() {
+            // Botones de acción
+            const printBtn = document.querySelector('.btn-primary');
+            const supportBtn = document.querySelector('.btn-outline');
+            
+            printBtn.addEventListener('click', function() {
+                alert('¡Función de impresión activada! En una aplicación real, esto generaría un PDF de la factura.');
+            });
+            
+            supportBtn.addEventListener('click', function() {
+                alert('Redirigiendo al soporte técnico...');
+            });
+            
+            // Botones de productos relacionados
+            const viewDetailsButtons = document.querySelectorAll('.product-card-actions .btn-outline');
+            const buyButtons = document.querySelectorAll('.product-card-actions .btn-primary');
+            
+            viewDetailsButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productName = this.closest('.product-card-info').querySelector('.product-card-title').textContent;
+                    alert(`Ver detalles de: ${productName}`);
+                });
+            });
+            
+            buyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productName = this.closest('.product-card-info').querySelector('.product-card-title').textContent;
+                    alert(`Agregado al carrito: ${productName}`);
+                });
+            });
+            
+            // Simular cambio de estado (solo para demostración)
+            const statusElement = document.querySelector('.order-status');
+            const timelineSteps = document.querySelectorAll('.timeline-step');
+            
+            // Esta función sería llamada desde el backend en una aplicación real
+            function simulateStatusChange() {
+                // Solo para demostración - cambiar estado cada 5 segundos
+                setInterval(() => {
+                    if (statusElement.classList.contains('status-completed')) {
+                        statusElement.classList.remove('status-completed');
+                        statusElement.classList.add('status-pending');
+                        statusElement.textContent = 'Pendiente';
+                    } else if (statusElement.classList.contains('status-pending')) {
+                        statusElement.classList.remove('status-pending');
+                        statusElement.classList.add('status-cancelled');
+                        statusElement.textContent = 'Cancelado';
+                    } else {
+                        statusElement.classList.remove('status-cancelled');
+                        statusElement.classList.add('status-completed');
+                        statusElement.textContent = 'Completado';
+                    }
+                }, 5000);
+            }
+            
+            // Descomenta la línea siguiente para ver la simulación de cambio de estado
+            // simulateStatusChange();
+        });
+    </script>
+</body>
+</html>

@@ -23,7 +23,7 @@ let conexion = mysql.createConnection({
     user: 'root',
     password: ''
 }); 
-
+// RECUERDA ACTIVAR LA CONEXIÓN EN XAMPP CON node js/conexion.js
 conexion.connect(function(error){
     if(error){
         console.error("Error de conexión:", error);
