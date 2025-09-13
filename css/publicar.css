@@ -83,3 +83,22 @@ textarea {
 ul {
   padding-left: 1.2rem;
 }
+
+.btn-subastar{  
+  margin-top: 2rem;
+  background: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+
+
+}
+
+.subastar {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}   
