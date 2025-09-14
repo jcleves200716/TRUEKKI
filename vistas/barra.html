@@ -19,6 +19,7 @@
     <a href="perfil.html">Perfil</a>
     <a href="#">Ayuda</a>
     <a href="subastas.html">subasta</a>
+    <button onclick="logout()" class="cerra-sesion">Cerrar Sesión</button>
   </div>
 
   <!-- Overlay -->
@@ -150,6 +151,27 @@
   </section>
   
   <script>
+
+    function logout() {
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('isLoggedIn');
+    window.location.href = 'login.html';
+}
+        document.addEventListener('DOMContentLoaded', function() {
+        // Verificar autenticación al cargar la página
+        if (!checkAuth()) {
+            return;
+        }
+        
+        // Cargar información del usuario
+        const usuario = getCurrentUser();
+        console.log('Usuario logueado:', usuario);
+        
+        // Aquí puedes usar el ID del usuario para sus operaciones
+        const userId = usuario.id;
+        console.log('ID del usuario:', userId);
+    });
+    // Función para verificar si el usuario está autenticado
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
 

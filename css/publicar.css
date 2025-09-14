@@ -1,104 +1,231 @@
-:root {
-  --verde: #4CAF50;
-  --azul: #007BFF;
-  --rojo: #e74c3c;
-  --gris: #f9f9f9;
-  --fuente: 'Segoe UI', sans-serif;
-}
+    :root {
+      --verde: #4CAF50;
+      --azul: #007BFF;
+      --azul-oscuro: #0056b3;
+      --rojo: #e74c3c;
+      --gris: #f9f9f9;
+      --gris-oscuro: #e0e0e0;
+      --fuente: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --sombra: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --borde-radius: 8px;
+    }
 
-body {
-  font-family: var(--fuente);
-  background: url("../img/fondo-log-reg.png") no-repeat center center fixed;
-  background-size: cover;
-  margin: 0;
-  padding: 2rem;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-.formulario-publicacion {
-  max-width: 700px;
-  margin: auto;
-  background: rgba(255, 255, 255, 0.92); /* semitransparente */
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
-  backdrop-filter: blur(2px);
-}
+    body {
+      font-family: var(--fuente);
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      margin: 0;
+      padding: 2rem;
+      min-height: 100vh;
+    }
 
-h2, h3 {
-  color: var(--azul);
-  margin-bottom: 1rem;
-}
+    .contenedor-principal {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-form label {
-  display: block;
-  margin-top: 1rem;
-  font-weight: bold;
-}
+    .cabecera {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
 
-form input,
-form select,
-form textarea {
-  width: 100%;
-  padding: 0.6rem;
-  margin-top: 0.3rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+    .cabecera h1 {
+      color: var(--azul-oscuro);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
 
-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
+    .cabecera p {
+      color: #666;
+      font-size: 1.1rem;
+    }
 
-.contacto-opciones {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
+    .contenedor-formulario {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
 
-.btn-publicar {
-  margin-top: 2rem;
-  background: var(--verde);
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 4px;
-}
+    @media (max-width: 900px) {
+      .contenedor-formulario {
+        grid-template-columns: 1fr;
+      }
+    }
 
-.validacion-info,
-.restricciones {
-  margin-top: 2rem;
-  background: #fff;
+    .formulario-publicacion {
+      background: white;
+      padding: 2rem;
+      border-radius: var(--borde-radius);
+      box-shadow: var(--sombra);
+    }
+
+    .formulario-publicacion h2 {
+      color: var(--azul-oscuro);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--gris-oscuro);
+    }
+
+    form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #444;
+    }
+
+    form input,
+    form select,
+    form textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: var(--fuente);
+      transition: all 0.3s ease;
+    }
+
+    form input:focus,
+    form select:focus,
+    form textarea:focus {
+      outline: none;
+      border-color: var(--azul);
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    }
+
+    form input.valido,
+    form select.valido,
+    form textarea.valido {
+      border-color: var(--verde);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .contacto-opciones {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .contacto-opciones label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: normal;
+      cursor: pointer;
+    }
+
+    .contacto-opciones input[type="radio"] {
+      width: auto;
+      margin-right: 0.5rem;
+    }
+
+    .btn-publicar {
+      margin-top: 2rem;
+      background: var(--azul);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      width: 100%;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .btn-publicar:hover {
+      background: var(--azul-oscuro);
+    }
+
+    .paneles-informacion {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .validacion-info,
+    .restricciones {
+      background: white;
+      padding: 1.5rem;
+      border-radius: var(--borde-radius);
+      box-shadow: var(--sombra);
+    }
+
+    .validacion-info {
+      border-top: 4px solid var(--verde);
+    }
+
+    .restricciones {
+      border-top: 4px solid var(--rojo);
+    }
+
+    .validacion-info h3,
+    .restricciones h3 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .validacion-info ul,
+    .restricciones ul {
+      padding-left: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .validacion-info li,
+    .restricciones li {
+      margin-bottom: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .validacion-info li.valido {
+      color: var(--verde);
+      font-weight: bold;
+    }
+
+    small {
+      display: block;
+      margin-top: 0.3rem;
+      color: #777;
+      font-size: 0.85rem;
+    }
+
+    .subastar {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn-subastar {
+      margin-top: 2rem;
+      background: var(--azul);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+.mensaje-exito {
+  background-color: #d4edda;
+  color: #155724;
   padding: 1rem;
-  border-left: 4px solid var(--verde);
-  border-radius: 6px;
-}
-
-.restricciones {
-  border-left-color: var(--rojo);
-}
-
-ul {
-  padding-left: 1.2rem;
-}
-
-.btn-subastar{  
-  margin-top: 2rem;
-  background: var(--azul);
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
   border-radius: 4px;
-
-
+  margin-top: 1rem;
+  display: none;
 }
 
-.subastar {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}   
+.input-hidden {
+  display: none;
+}

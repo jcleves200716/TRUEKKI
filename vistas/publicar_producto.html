@@ -3,83 +3,285 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PUBLICAR PRODUCTO- TRUEKKIN</title>
-  <link rel="stylesheet" href="../css/publicar.css" />
+  <title>PUBLICAR PRODUCTO - TRUEKKI</title>
+  <link rel="stylesheet" href="../css/publicar.css">
 </head>
 <body>
-  <section class="formulario-publicacion">
-    <h2>📦PUBLICAR PRODUCTO</h2>
+  <div class="contenedor-principal">
+    <header class="cabecera">
+      <h1>TRUEKKI</h1>
+      <p>Publica tus productos de forma rápida y segura</p>
+    </header>
 
-    <form id="form-publicacion">
-      <label for="titulo">Título del Producto:</label>
-      <input type="text" id="titulo" placeholder="Ej: iPhone 13 Pro Max 256GB como nuevo" required />
+    <div class="contenedor-formulario">
+      <section class="formulario-publicacion">
+        <h2>📦 PUBLICAR PRODUCTO</h2>
 
-      <label for="categoria">Categoría:</label>
-      <select id="categoria" required>
-        <option value="">Selecciona una categoría</option>
-        <option value="ropa">Ropa</option>
-        <option value="tecnologia">Tecnología</option>
-        <option value="hogar">Hogar</option>
-      </select>
+        <form id="form-publicacion">
+          <!-- Campo oculto para el ID del usuario -->
+          <input type="hidden" id="id_usuario" name="id_usuario">
+          
+          <label for="titulo">Título del Producto:</label>
+          <input type="text" id="titulo" name="titulo" placeholder="Ej: iPhone 13 Pro Max 256GB como nuevo" required />
 
-      <label for="estado">Estado del Producto:</label>
-      <select id="estado" required>
-        <option value="">Selecciona el estado</option>
-        <option value="nuevo">Nuevo</option>
-        <option value="usado">Usado</option>
-      </select>
+          <label for="categoria">Categoría:</label>
+          <select id="categoria" name="categoria" required>
+            <option value="">Selecciona una categoría</option>
+            <option value="ropa">Ropa</option>
+            <option value="tecnologia">Tecnología</option>
+            <option value="hogar">Hogar</option>
+          </select>
 
-      <label for="descripcion">Descripción:</label>
-      <textarea id="descripcion" minlength="50" placeholder="Describe el producto, características, estado, motivo de venta..." required></textarea>
+          <label for="estado">Estado del Producto:</label>
+          <select id="estado" name="estado" required>
+            <option value="">Selecciona el estado</option>
+            <option value="nuevo">Nuevo</option>
+            <option value="usado">Usado</option>
+          </select>
 
-      <label for="foto">Fotografías del Producto:</label>
-      <input type="file" id="foto" accept=".jpg,.png" required />
-      <small>Formatos JPG, PNG · Máx 5MB</small>
+          <label for="descripcion">Descripción:</label>
+          <textarea id="descripcion" name="descripcion" minlength="50" placeholder="Describe el producto, características, estado, motivo de venta..." required></textarea>
 
-      <label for="precio">Precio:</label>
-      <input type="text" id="precio" placeholder="$50000" required />
+          <label for="foto">Fotografías del Producto:</label>
+          <input type="file" id="foto" name="foto" accept=".jpg,.png" required />
+          <small>Formatos JPG, PNG · Máx 5MB</small>
 
-      <label for="ciudad">Ciudad:</label>
-      <input type="text" id="ciudad" required />
+          <label for="precio">Precio:</label>
+          <input type="number" id="precio" name="precio" placeholder="50000" required />
 
-      <label for="barrio">Barrio:</label>
-      <input type="text" id="barrio" required />
+          <label for="ciudad">Ciudad:</label>
+          <input type="text" id="ciudad" name="ciudad" required />
 
-      <label>Método de Contacto Preferido:</label>
-      <div class="contacto-opciones">
-        <label><input type="radio" name="contacto" value="whatsapp" required /> WhatsApp</label>
-        <label><input type="radio" name="contacto" value="mensaje" /> Mensaje</label>
+          <label for="barrio">Barrio:</label>
+          <input type="text" id="barrio" name="barrio" required />
+
+          <label>Método de Contacto Preferido:</label>
+          <div class="contacto-opciones">
+            <label><input type="radio" name="contacto" value="whatsapp" required /> WhatsApp</label>
+            <label><input type="radio" name="contacto" value="mensaje" /> Mensaje</label>
+          </div>
+
+          <button type="submit" class="btn-publicar">Publicar Producto</button>
+          
+          <div id="mensaje-exito" class="mensaje-exito">
+            ¡Producto publicado con éxito! <a href="productos.html">Ver todos los productos</a>
+          </div>
+        </form>
+      </section>
+
+      <div class="paneles-informacion">
+        <section class="validacion-info">
+          <h3>🔍 Validación de Publicación</h3>
+          <p>Cada publicación creada en TRUEKKI deberá pasar por un proceso de validación automática y manual antes de mostrarse públicamente.</p>
+          <ul>
+            <li id="val-categoria">✅ Categoría válida (ropa, tecnología, hogar)</li>
+            <li id="val-estado">✅ Estado del producto (nuevo o usado)</li>
+            <li id="val-foto">✅ Al menos una fotografía</li>
+            <li id="val-descripcion">✅ Descripción mínima de 50 caracteres</li>
+            <li id="val-palabras">🚫 Sin palabras prohibidas ni productos restringidos</li>
+            <li id="val-ubicacion">✅ Ubicación completa: ciudad y barrio</li>
+          </ul>
+          <p>Este proceso garantiza la calidad, seguridad y legalidad de las publicaciones en la plataforma.</p>
+        </section>
+
+        <section class="restricciones">
+          <h3>⚠️ Controles y Restricciones</h3>
+          <ul>
+            <li>❌ Publicaciones sin foto o con imágenes falsas serán rechazadas automáticamente</li>
+            <li>🚫 Filtro de palabras clave prohibidas</li>
+            <li>👁️ Revisión manual por el administrador en casos sospechosos</li>
+            <li>📩 Notificación al usuario con correcciones si se rechaza</li>
+          </ul>
+        </section>
       </div>
+    </div>
+  </div>
 
-      <button type="submit" class="btn-publicar">Publicar Producto</button>
-    
-    </form>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Obtener el usuario logueado del localStorage
+      const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+      const idUsuario = usuario.id;
+      
+      // Verificar si el usuario está logueado
+      if (!idUsuario) {
+        alert('Debes iniciar sesión para publicar un producto');
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Establecer el ID de usuario en el campo oculto
+      document.getElementById('id_usuario').value = idUsuario;
+      
+      // El resto de tu código de validación y envío del formulario...
+      const form = document.getElementById('form-publicacion');
+      const mensajeExito = document.getElementById('mensaje-exito');
+      const elementosValidacion = {
+        categoria: document.getElementById('val-categoria'),
+        estado: document.getElementById('val-estado'),
+        foto: document.getElementById('val-foto'),
+        descripcion: document.getElementById('val-descripcion'),
+        palabras: document.getElementById('val-palabras'),
+        ubicacion: document.getElementById('val-ubicacion')
+      };
 
-    <section class="validacion-info">
-      <h3>🔍 Validación de Publicación</h3>
-      <p>Cada publicación creada en TRUEKKIN deberá pasar por un proceso de validación automática y manual antes de mostrarse públicamente.</p>
-      <ul>
-        <li>✅ Categoría válida (ropa, tecnología, hogar)</li>
-        <li>✅ Estado del producto (nuevo o usado)</li>
-        <li>✅ Al menos una fotografía</li>
-        <li>✅ Descripción mínima de 50 caracteres</li>
-        <li>🚫 Sin palabras prohibidas ni productos restringidos</li>
-        <li>✅ Ubicación completa: ciudad y barrio</li>
-      </ul>
-      <p>Este proceso garantiza la calidad, seguridad y legalidad de las publicaciones en la plataforma.</p>
-    </section>
+      const camposFormulario = {
+        categoria: document.getElementById('categoria'),
+        estado: document.getElementById('estado'),
+        foto: document.getElementById('foto'),
+        descripcion: document.getElementById('descripcion'),
+        ciudad: document.getElementById('ciudad'),
+        barrio: document.getElementById('barrio'),
+        titulo: document.getElementById('titulo'),
+        precio: document.getElementById('precio')
+      };
 
-    <section class="restricciones">
-      <h3>⚠️ Controles y Restricciones</h3>
-      <ul>
-        <li>❌ Publicaciones sin foto o con imágenes falsas serán rechazadas automáticamente</li>
-        <li>🚫 Filtro de palabras clave prohibidas</li>
-        <li>👁️ Revisión manual por el administrador en casos sospechosos</li>
-        <li>📩 Notificación al usuario con correcciones si se rechaza</li>
-      </ul>
-    </section>
-  </section>
+      // Palabras prohibidas
+      const palabrasProhibidas = ['estafa', 'fraude', 'gratis', 'regalo', 'oferta', 'gana', 'dinero', 'fácil', 'rápido'];
 
-  <script src="../js/publicar.js"></script>
+      function contienePalabrasProhibidas(texto) {
+        return palabrasProhibidas.some(palabra => 
+          texto.toLowerCase().includes(palabra.toLowerCase())
+        );
+      }
+
+      function actualizarValidacion() {
+        if (camposFormulario.categoria.value) {
+          elementosValidacion.categoria.classList.add('valido');
+          camposFormulario.categoria.classList.add('valido');
+        } else {
+          elementosValidacion.categoria.classList.remove('valido');
+          camposFormulario.categoria.classList.remove('valido');
+        }
+
+        // Validar estado
+        if (camposFormulario.estado.value) {
+          elementosValidacion.estado.classList.add('valido');
+          camposFormulario.estado.classList.add('valido');
+        } else {
+          elementosValidacion.estado.classList.remove('valido');
+          camposFormulario.estado.classList.remove('valido');
+        }
+
+        // Validar foto
+        if (camposFormulario.foto.value) {
+          elementosValidacion.foto.classList.add('valido');
+        } else {
+          elementosValidacion.foto.classList.remove('valido');
+        }
+
+        // Validar descripción
+        if (camposFormulario.descripcion.value.length >= 50) {
+          elementosValidacion.descripcion.classList.add('valido');
+          camposFormulario.descripcion.classList.add('valido');
+        } else {
+          elementosValidacion.descripcion.classList.remove('valido');
+          camposFormulario.descripcion.classList.remove('valido');
+        }
+
+        // Validar palabras prohibidas
+        const textoCompleto = [
+          camposFormulario.titulo.value, 
+          camposFormulario.descripcion.value
+        ].join(' ');
+        
+        if (!contienePalabrasProhibidas(textoCompleto)) {
+          elementosValidacion.palabras.classList.add('valido');
+        } else {
+          elementosValidacion.palabras.classList.remove('valido');
+        }
+
+        // Validar ubicación
+        if (camposFormulario.ciudad.value && camposFormulario.barrio.value) {
+          elementosValidacion.ubicacion.classList.add('valido');
+          camposFormulario.ciudad.classList.add('valido');
+          camposFormulario.barrio.classList.add('valido');
+        } else {
+          elementosValidacion.ubicacion.classList.remove('valido');
+          camposFormulario.ciudad.classList.remove('valido');
+          camposFormulario.barrio.classList.remove('valido');
+        }
+      }
+
+      // Añadir event listeners a todos los campos
+      Object.values(camposFormulario).forEach(campo => {
+        if (campo) {
+          campo.addEventListener('input', actualizarValidacion);
+          campo.addEventListener('change', actualizarValidacion);
+        }
+      });
+
+      // Validar el formulario al enviar
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        actualizarValidacion();
+        
+        const todosValidos = Object.values(elementosValidacion)
+          .every(elemento => elemento.classList.contains('valido'));
+        
+        if (todosValidos) {
+          const contacto = document.querySelector('input[name="contacto"]:checked').value;
+          const idUsuario = document.getElementById('id_usuario').value;
+          
+          const producto = {
+            titulo: camposFormulario.titulo.value,
+            categoria: camposFormulario.categoria.value,
+            estado: camposFormulario.estado.value,
+            descripcion: camposFormulario.descripcion.value,
+            precio: camposFormulario.precio.value,
+            ciudad: camposFormulario.ciudad.value,
+            barrio: camposFormulario.barrio.value,
+            contacto: contacto,
+            id_usuario: idUsuario,
+            foto: camposFormulario.foto.files[0]
+          };
+          
+          try {
+            const response = await fetch('http://localhost:5000/publicar-producto', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(producto)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+              if (producto.foto) {
+                const formData = new FormData();
+                formData.append('foto', producto.foto);
+                
+                const imageResponse = await fetch(`http://localhost:5000/subir-imagen-producto/${result.id}`, {
+                  method: 'POST',
+                  body: formData
+                });
+                
+                const imageResult = await imageResponse.json();
+                
+                if (!imageResult.success) {
+                  console.error("Error subiendo imagen:", imageResult.message);
+                }
+              }
+              
+              mensajeExito.style.display = 'block';
+              form.reset();
+              mensajeExito.scrollIntoView({ behavior: 'smooth' });
+            } else {
+              alert('Error: ' + result.message);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert('Error al publicar el producto');
+          }
+        } else {
+          alert('Por favor, complete todos los campos correctamente.');
+        }
+      });
+      
+      // Validación inicial
+      actualizarValidacion();
+    });
+  </script>
 </body>
 </html>
