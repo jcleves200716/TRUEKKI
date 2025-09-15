@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRUEKKI - Historial</title>
+    <title>TRUEKKI - Mi Perfil</title>
     <link rel="stylesheet" href="../css/perfil.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
         <div class="container header-content">
-            <div class="logo" onclick="showSection('home')">TRUEKKI</div>
-            <div class="search-bar">
-                <input type="text" placeholder="Buscar...">
+            <div class="logo" onclick="window.location.href='barra.html'">TRUEKKI</div>
+            <div class="search-bar">    
+                <input type="text" placeholder="Buscar productos...">
             </div>
             <div class="user-actions">
                 <a href="#" onclick="showSection('profile')">Mi cuenta</a>
-                <a href="#">Salir</a>
+                <a href="#" onclick="logout()">Salir</a>
             </div>
         </div>
     </header>
@@ -24,11 +24,11 @@
     <nav>
         <div class="container">
             <ul class="nav-links">
-                <li><a onclick="showSection('home')">Inicio</a></li>
-                <li><a onclick="showSection('products')">Productos</a></li>
-                <li><a>Categorías</a></li>
-                <li><a>Ofertas</a></li>
-                <li><a>Contacto</a></li>
+                <li><a onclick="window.location.href='index.html'">Inicio</a></li>
+                <li><a onclick="window.location.href='productos.html'">Productos</a></li>
+                <li><a href="#">Categorías</a></li>
+                <li><a href="#">Ofertas</a></li>
+                <li><a href="#">Contacto</a></li>
             </ul>
         </div>
     </nav>
@@ -36,157 +36,53 @@
     <div class="container main-content">
         <aside class="sidebar">
             <div class="user-profile">
-                <div class="user-avatar">JP</div>
-                <div class="user-name">Juan Pérez</div>
-                <div class="user-bio">Vendedor de computadores</div>
+                <div class="user-avatar" id="user-avatar">US</div>
+                <div class="user-name" id="user-name">Cargando...</div>
+                <div class="user-bio" id="user-bio">Usuario de TRUEKKI</div>
             </div>
             
             <ul class="sidebar-menu">
-                <li><a onclick="showSection('profile')">Mi perfil</a></li>
+                <li><a onclick="showSection('profile')" class="active">Mi perfil</a></li>
                 <li><a onclick="showSection('my-products')">Mis productos</a></li>
                 <li><a onclick="showSection('favorites')">Favoritos</a></li>
-                <li><a onclick="showSection('history')" class="active">Historial</a></li>
+                <li><a onclick="showSection('history')">Historial</a></li>
                 <li><a onclick="showSection('messages')">Mensajes</a></li>
-                <li><a>Configuración</a></li>
+                <li><a href="#">Configuración</a></li>
             </ul>
         </aside>
         
-        <!-- Sección de Historial -->
-        <section id="history-section" class="content-section active">
-            <h1 class="page-title">Historial de intercambios y ventas</h1>
-            
-            <div class="history-filters">
-                <div class="filter-group">
-                    <label for="filter-type">Filtrar por:</label>
-                    <select id="filter-type">
-                        <option value="all">Todos</option>
-                        <option value="sales">Ventas</option>
-                        <option value="exchanges">Intercambios</option>
-                    </select>
-                    
-                    <label for="filter-status">Estado:</label>
-                    <select id="filter-status">
-                        <option value="all">Todos</option>
-                        <option value="completed">Completados</option>
-                        <option value="pending">Pendientes</option>
-                        <option value="cancelled">Cancelados</option>
-                    </select>
-                </div>
-                
-                <div class="search-history">
-                    <input type="text" placeholder="Buscar en historial...">
-                </div>
-            </div>
-            
-            <div class="history-items">
-                <div class="history-item">
-                    <div class="item-image">Imagen producto</div>
-                    <div class="item-details">
-                        <h3 class="item-title">ASUS ROG STRIX 32GB RAM, 1TB SSD</h3>
-                        <div class="item-info">
-                            <div class="item-date">12 Oct 2023</div>
-                            <div class="item-type">Venta</div>
-                            <div class="item-price">$1,200.000</div>
-                        </div>
-                        <span class="item-status status-completed">Completado</span>
-                        <div class="item-actions">
-                            <button class="btn btn-primary">Ver detalles</button>
-                            <button class="btn btn-outline" onclick="startChatWith('María González')">Contactar comprador</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="history-item">
-                    <div class="item-image">Imagen producto</div>
-                    <div class="item-details">
-                        <h3 class="item-title">HP GAMING 16GB RAM, 512GB SSD</h3>
-                        <div class="item-info">
-                            <div class="item-date">05 Oct 2023</div>
-                            <div class="item-type">Intercambio</div>
-                            <div class="item-price">Intercambiado por: Libro Original 100 Años</div>
-                        </div>
-                        <span class="item-status status-completed">Completado</span>
-                        <div class="item-actions">
-                            <button class="btn btn-primary">Ver detalles</button>
-                            <button class="btn btn-outline" onclick="startChatWith('Ana Martínez')">Contactar</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="history-item">
-                    <div class="item-image">Imagen producto</div>
-                    <div class="item-details">
-                        <h3 class="item-title">OMEN 32GB RAM, 2TB SSD</h3>
-                        <div class="item-info">
-                            <div class="item-date">28 Sep 2023</div>
-                            <div class="item-type">Venta</div>
-                            <div class="item-price">$1,500.000</div>
-                        </div>
-                        <span class="item-status status-pending">Pendiente de pago</span>
-                        <div class="item-actions">
-                            <button class="btn btn-primary">Ver detalles</button>
-                            <button class="btn btn-outline" onclick="startChatWith('Carlos Rodríguez')">Contactar comprador</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="history-item">
-                    <div class="item-image">Imagen producto</div>
-                    <div class="item-details">
-                        <h3 class="item-title">Chaquetas de cuero vintage</h3>
-                        <div class="item-info">
-                            <div class="item-date">20 Sep 2023</div>
-                            <div class="item-type">Intercambio</div>
-                            <div class="item-price">Intercambiado por: Pantalón rota campana</div>
-                        </div>
-                        <span class="item-status status-cancelled">Cancelado</span>
-                        <div class="item-actions">
-                            <button class="btn btn-primary">Ver detalles</button>
-                            <button class="btn btn-outline">Volver a publicar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="pagination">
-                <div class="pagination-item active">1</div>
-                <div class="pagination-item">2</div>
-                <div class="pagination-item">3</div>
-                <div class="pagination-item">></div>
-            </div>
-        </section>
-        
         <!-- Sección de Perfil -->
-        <section id="profile-section" class="content-section">
+        <section id="profile-section" class="content-section active">
             <h1 class="page-title">Mi Perfil</h1>
             
             <div class="profile-form">
                 <div class="form-group">
                     <label for="name">Nombre completo</label>
-                    <input type="text" id="name" value="Juan Pérez">
+                    <input type="text" id="name" placeholder="Cargando...">
                 </div>
                 
                 <div class="form-group">
                     <label for="email">Correo electrónico</label>
-                    <input type="email" id="email" value="juan.perez@example.com">
+                    <input type="email" id="email" placeholder="Cargando..." disabled>
                 </div>
                 
                 <div class="form-group">
                     <label for="phone">Teléfono</label>
-                    <input type="tel" id="phone" value="+57 300 123 4567">
+                    <input type="tel" id="phone" placeholder="Cargando...">
                 </div>
                 
                 <div class="form-group">
                     <label for="bio">Biografía</label>
-                    <textarea id="bio">Vendedor de computadores con más de 5 años de experiencia en el sector tecnológico. Me especializo en equipos de escritorio y portátiles de alto rendimiento, ofreciendo asesoría personalizada a estudiantes, profesionales y gamers. Reconocido por mi trato amable y conocimiento técnico.</textarea>
+                    <textarea id="bio" placeholder="Cuéntanos algo sobre ti..."></textarea>
                 </div>
                 
                 <div class="form-group">
                     <label for="location">Ubicación</label>
-                    <input type="text" id="location" value="Bogotá, Colombia">
+                    <input type="text" id="location" placeholder="Cargando...">
                 </div>
                 
-                <button class="btn btn-primary">Guardar cambios</button>
+                <button class="btn btn-primary" onclick="updateProfile()">Guardar cambios</button>
+                <div id="profile-message" class="message-hidden"></div>
             </div>
         </section>
         
@@ -194,58 +90,12 @@
         <section id="my-products-section" class="content-section">
             <h1 class="page-title">Mis Productos</h1>
             
-            <div class="products-grid">
-                <div class="product-card">
-                    <div class="product-image">ASUS ROG STRIX</div>
-                    <div class="product-info">
-                        <div class="product-title">ASUS ROG STRIX 32GB RAM, 1TB SSD</div>
-                        <div class="product-price">$1,200.000</div>
-                        <div class="product-actions">
-                            <button class="btn btn-outline">Editar</button>
-                            <button class="btn btn-primary">Ver</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="product-card">
-                    <div class="product-image">HP GAMING</div>
-                    <div class="product-info">
-                        <div class="product-title">HP GAMING 16GB RAM, 512GB SSD</div>
-                        <div class="product-price">$950.000</div>
-                        <div class="product-actions">
-                            <button class="btn btn-outline">Editar</button>
-                            <button class="btn btn-primary">Ver</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="product-card">
-                    <div class="product-image">OMEN</div>
-                    <div class="product-info">
-                        <div class="product-title">OMEN 32GB RAM, 2TB SSD</div>
-                        <div class="product-price">$1,500.000</div>
-                        <div class="product-actions">
-                            <button class="btn btn-outline">Editar</button>
-                            <button class="btn btn-primary">Ver</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="product-card">
-                    <div class="product-image">Chaquetas</div>
-                    <div class="product-info">
-                        <div class="product-title">Chaquetas de cuero vintage</div>
-                        <div class="product-price">Intercambio</div>
-                        <div class="product-actions">
-                            <button class="btn btn-outline">Editar</button>
-                            <button class="btn btn-primary">Ver</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="products-grid" id="products-grid">
+                <div class="loading-state">Cargando productos...</div>
             </div>
             
             <div style="margin-top: 20px; text-align: center;">
-                <button class="btn btn-primary">Agregar nuevo producto</button>
+                <button class="btn btn-primary" onclick="window.location.href='publicar_producto.html'">Agregar nuevo producto</button>
             </div>
         </section>
         
@@ -254,56 +104,23 @@
             <h1 class="page-title">Mis Favoritos</h1>
             
             <div class="favorites-grid">
-                <div class="favorite-card">
-                    <div class="favorite-remove">×</div>
-                    <div class="product-image">Libro</div>
-                    <div class="product-info">
-                        <div class="product-title">Libro Original 100 Años de Soledad</div>
-                        <div class="product-price">Intercambio</div>
-                        <div class="product-actions">
-                            <button class="btn btn-outline" onclick="startChatWith('Ana Martínez')">Contactar</button>
-                            <button class="btn btn-primary">Ver</button>
-                        </div>
-                    </div>
+                <div class="empty-state">
+                    <i class="fas fa-heart"></i>
+                    <h3>No tienes productos favoritos</h3>
+                    <p>Cuando agregues productos a favoritos, aparecerán aquí</p>
                 </div>
-                
-                <div class="favorite-card">
-                    <div class="favorite-remove">×</div>
-                    <div class="product-image">Pantalón</div>
-                    <div class="product-info">
-                        <div class="product-title">Pantalón Rota Campana</div>
-                        <div class="product-price">$120.000</div>
-                        <div class="product-actions">
-                            <button class="btn btn-outline">Contactar</button>
-                            <button class="btn btn-primary">Ver</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="favorite-card">
-                    <div class="favorite-remove">×</div>
-                    <div class="product-image">Vestido</div>
-                    <div class="product-info">
-                        <div class="product-title">Vestido de Novia</div>
-                        <div class="product-price">$350.000</div>
-                        <div class="product-actions">
-                            <button class="btn btn-outline">Contactar</button>
-                            <button class="btn btn-primary">Ver</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="favorite-card">
-                    <div class="favorite-remove">×</div>
-                    <div class="product-image">Libro</div>
-                    <div class="product-info">
-                        <div class="product-title">Libro El Miedo del Arquero al Penal</div>
-                        <div class="product-price">$45.000</div>
-                        <div class="product-actions">
-                            <button class="btn btn-outline">Contactar</button>
-                            <button class="btn btn-primary">Ver</button>
-                        </div>
-                    </div>
+            </div>
+        </section>
+        
+        <!-- Sección de Historial -->
+        <section id="history-section" class="content-section">
+            <h1 class="page-title">Historial de intercambios y ventas</h1>
+            
+            <div class="history-items">
+                <div class="empty-state">
+                    <i class="fas fa-history"></i>
+                    <h3>No hay historial disponible</h3>
+                    <p>Tu historial de intercambios y ventas aparecerá aquí</p>
                 </div>
             </div>
         </section>
@@ -313,67 +130,10 @@
             <h1 class="page-title">Mensajes</h1>
             
             <div class="messages-container">
-                <div class="conversations-list">
-                    <div class="conversation-item active" data-user="María González">
-                        <div class="conversation-user">María González</div>
-                        <div class="conversation-preview">Hola, me interesa el ASUS ROG STRIX...</div>
-                        <div class="conversation-time">Hoy, 10:23 AM</div>
-                    </div>
-                    
-                    <div class="conversation-item" data-user="Carlos Rodríguez">
-                        <div class="conversation-user">Carlos Rodríguez</div>
-                        <div class="conversation-preview">¿Aún disponible el HP GAMING?</div>
-                        <div class="conversation-time">Ayer, 15:46</div>
-                    </div>
-                    
-                    <div class="conversation-item" data-user="Ana Martínez">
-                        <div class="conversation-user">Ana Martínez</div>
-                        <div class="conversation-preview">Te intercambio el libro por la chaqueta...</div>
-                        <div class="conversation-time">12 Oct, 09:31</div>
-                    </div>
-                    
-                    <div class="conversation-item" data-user="Soporte TRUEKKI">
-                        <div class="conversation-user">Soporte TRUEKKI</div>
-                        <div class="conversation-preview">Tu producto ha sido aprobado...</div>
-                        <div class="conversation-time">10 Oct, 14:15</div>
-                    </div>
-                </div>
-                
-                <div class="message-view">
-                    <div class="message-header">
-                        <span id="current-chat-user">María González</span>
-                        <span class="message-info">Compradora - ASUS ROG STRIX</span>
-                    </div>
-                    
-                    <div class="messages-list" id="messages-list">
-                        <div class="message received">
-                            <div class="message-content">
-                                Hola, me interesa el ASUS ROG STRIX que tienes publicado. ¿Todavía está disponible?
-                            </div>
-                            <div class="message-time">10:15 AM</div>
-                        </div>
-                        
-                        <div class="message sent">
-                            <div class="message-content">
-                                Sí, todavía está disponible. ¿Te gustaría probarlo?
-                            </div>
-                            <div class="message-time">10:18 AM</div>
-                        </div>
-                        
-                        <div class="message received">
-                            <div class="message-content">
-                                ¡Sí! ¿Podríamos vernos este fin de semana?
-                            </div>
-                            <div class="message-time">10:23 AM</div>
-                        </div>
-                    </div>
-                    
-                    <div class="message-input">
-                        <input type="text" id="message-input" placeholder="Escribe un mensaje...">
-                        <button onclick="sendMessage()">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
+                <div class="empty-state">
+                    <i class="fas fa-comments"></i>
+                    <h3>No tienes mensajes</h3>
+                    <p>Cuando recibas mensajes de otros usuarios, aparecerán aquí</p>
                 </div>
             </div>
         </section>
@@ -414,216 +174,244 @@
         </div>
     </footer>
 
+    <!-- Script de autenticación -->
+    <script src="../js/auth.js"></script>
+    
     <script>
-        // Datos de conversaciones predefinidas
-        const conversations = {
-            "María González": [
-                { sender: "them", text: "Hola, me interesa el ASUS ROG STRIX que tienes publicado. ¿Todavía está disponible?", time: "10:15 AM" },
-                { sender: "me", text: "Sí, todavía está disponible. ¿Te gustaría probarlo?", time: "10:18 AM" },
-                { sender: "them", text: "¡Sí! ¿Podríamos vernos este fin de semana?", time: "10:23 AM" }
-            ],
-            "Carlos Rodríguez": [
-                { sender: "them", text: "¿Aún disponible el HP GAMING?", time: "Ayer, 15:46" },
-                { sender: "me", text: "Sí, todavía está disponible. ¿Te interesa?", time: "Ayer, 16:30" }
-            ],
-            "Ana Martínez": [
-                { sender: "them", text: "Te intercambio el libro por la chaqueta de cuero que publicaste", time: "12 Oct, 09:31" },
-                { sender: "me", text: "Hola Ana, ¿de qué libro se trata?", time: "12 Oct, 10:15" },
-                { sender: "them", text: "Tengo el libro original de 100 Años de Soledad, primera edición", time: "12 Oct, 11:20" }
-            ],
-            "Soporte TRUEKKI": [
-                { sender: "them", text: "Tu producto ha sido aprobado y ya está visible en el marketplace", time: "10 Oct, 14:15" },
-                { sender: "me", text: "Gracias por la información!", time: "10 Oct, 14:30" }
-            ]
-        };
+        // Variables globales
+        let currentUser = null;
+        let userProducts = [];
+
+        // Cargar datos del usuario al iniciar
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Verificar autenticación
+            if (!checkAuth()) {
+                return;
+            }
+            
+            // Obtener usuario del localStorage
+            currentUser = getCurrentUser();
+            
+            // Cargar información del usuario
+            await loadUserData();
+            
+            // Cargar productos del usuario
+            await loadUserProducts();
+        });
+
+        // Cargar datos del usuario desde la API
+        async function loadUserData() {
+            try {
+                showLoading('profile-section');
+                
+                const response = await fetch(`http://localhost:5000/usuario/${currentUser.id}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const usuario = result.usuario;
+                    
+                    // Actualizar UI con datos del usuario
+                    document.getElementById('user-avatar').textContent = getInitials(usuario.nombre);
+                    document.getElementById('user-name').textContent = usuario.nombre;
+                    document.getElementById('user-bio').textContent = usuario.bio || 'Usuario de TRUEKKI';
+                    
+                    // Llenar formulario de perfil
+                    document.getElementById('name').value = usuario.nombre;
+                    document.getElementById('email').value = usuario.email;
+                    document.getElementById('phone').value = usuario.numero_telefono || '';
+                    document.getElementById('bio').value = usuario.bio || '';
+                    document.getElementById('location').value = usuario.direccion || '';
+                    
+                    hideLoading('profile-section');
+                } else {
+                    showError('Error al cargar datos del usuario');
+                    hideLoading('profile-section');
+                }
+            } catch (error) {
+                console.error('Error cargando datos del usuario:', error);
+                showError('Error de conexión al cargar datos');
+                hideLoading('profile-section');
+            }
+        }
+
+        // Cargar productos del usuario
+        async function loadUserProducts() {
+            try {
+                showLoading('my-products-section');
+                
+                const response = await fetch(`http://localhost:5000/productos-usuario/${currentUser.id}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    userProducts = result.productos;
+                    renderUserProducts();
+                    hideLoading('my-products-section');
+                } else {
+                    showError('Error al cargar productos');
+                    hideLoading('my-products-section');
+                }
+            } catch (error) {
+                console.error('Error cargando productos del usuario:', error);
+                showError('Error de conexión al cargar productos');
+                hideLoading('my-products-section');
+            }
+        }
+
+        // Renderizar productos del usuario
+        function renderUserProducts() {
+            const productsGrid = document.getElementById('products-grid');
+            
+            if (userProducts.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No tienes productos publicados</h3>
+                        <p>Comienza a publicar productos para verlos aquí</p>
+                        <button class="btn btn-primary" onclick="window.location.href='publicar_producto.html'">Publicar primer producto</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            productsGrid.innerHTML = userProducts.map(product => `
+                <div class="product-card">
+                    <div class="product-image">
+                        ${product.foto ? 
+                            `<img src="http://localhost:5000/imagen-producto/${product.id_producto}" alt="${product.titulo}" onerror="this.style.display='none'; this.parentElement.innerHTML='${product.titulo.substring(0, 2).toUpperCase()}'">` : 
+                            product.titulo.substring(0, 2).toUpperCase()
+                        }
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">${product.titulo}</div>
+                        <div class="product-price">${product.precio ? `$${parseInt(product.precio).toLocaleString()}` : 'Intercambio'}</div>
+                        <div class="product-stats">${product.intercambios_realizados || 0} intercambios</div>
+                        <div class="product-actions">
+                            <button class="btn btn-outline" onclick="editProduct(${product.id_producto})">Editar</button>
+                            <button class="btn btn-primary" onclick="viewProduct(${product.id_producto})">Ver</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Obtener iniciales del nombre
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
+        }
+
+        // Actualizar perfil del usuario
+        async function updateProfile() {
+            const nombre = document.getElementById('name').value;
+            const telefono = document.getElementById('phone').value;
+            const bio = document.getElementById('bio').value;
+            const ubicacion = document.getElementById('location').value;
+            
+            // Validación básica
+            if (!nombre.trim()) {
+                showMessage('El nombre es obligatorio', 'error');
+                return;
+            }
+            
+            try {
+                showMessage('Guardando cambios...', 'loading');
+                
+                const response = await fetch(`http://localhost:5000/usuario/${currentUser.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nombre: nombre,
+                        numero_telefono: telefono,
+                        direccion: ubicacion,
+                        bio: bio
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Perfil actualizado correctamente', 'success');
+                    
+                    // Actualizar UI
+                    document.getElementById('user-name').textContent = nombre;
+                    document.getElementById('user-bio').textContent = bio || 'Usuario de TRUEKKI';
+                    document.getElementById('user-avatar').textContent = getInitials(nombre);
+                    
+                    // Actualizar usuario en localStorage
+                    const updatedUser = {...currentUser, nombre: nombre};
+                    localStorage.setItem('usuario', JSON.stringify(updatedUser));
+                } else {
+                    showMessage('Error: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando perfil:', error);
+                showMessage('Error de conexión al actualizar perfil', 'error');
+            }
+        }
 
         // Función para cambiar entre secciones
         function showSection(sectionId) {
-            // Ocultar todas las secciones
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Mostrar la sección seleccionada
             document.getElementById(sectionId + '-section').classList.add('active');
             
-            // Actualizar el menú activo
             document.querySelectorAll('.sidebar-menu a').forEach(link => {
                 link.classList.remove('active');
             });
             
-            // Marcar como activo el enlace correspondiente
             const activeLink = document.querySelector(`.sidebar-menu a[onclick="showSection('${sectionId}')"]`);
             if (activeLink) {
                 activeLink.classList.add('active');
             }
-        }
-        
-        // Inicializar eventos para los elementos de conversación
-        document.querySelectorAll('.conversation-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.conversation-item').forEach(i => {
-                    i.classList.remove('active');
-                });
-                this.classList.add('active');
-                
-                const userName = this.getAttribute('data-user');
-                loadConversation(userName);
-            });
-        });
-        
-        // Cargar una conversación específica
-        function loadConversation(userName) {
-            document.getElementById('current-chat-user').textContent = userName;
             
-            const messagesList = document.getElementById('messages-list');
-            messagesList.innerHTML = '';
-            
-            if (conversations[userName]) {
-                conversations[userName].forEach(msg => {
-                    const messageEl = document.createElement('div');
-                    messageEl.className = `message ${msg.sender === 'me' ? 'sent' : 'received'}`;
-                    
-                    messageEl.innerHTML = `
-                        <div class="message-content">${msg.text}</div>
-                        <div class="message-time">${msg.time}</div>
-                    `;
-                    
-                    messagesList.appendChild(messageEl);
-                });
+            // Cargar productos si se muestra la sección de mis productos
+            if (sectionId === 'my-products') {
+                loadUserProducts();
             }
-            
-            // Scroll to bottom of messages
-            messagesList.scrollTop = messagesList.scrollHeight;
         }
-        
-        // Enviar un mensaje
-        function sendMessage() {
-            const input = document.getElementById('message-input');
-            const messageText = input.value.trim();
+
+        // Ver producto
+        function viewProduct(productId) {
+            window.location.href = `producto.html?id=${productId}`;
+        }
+
+        // Editar producto
+        function editProduct(productId) {
+            window.location.href = `editar_producto.html?id=${productId}`;
+        }
+
+        // Mostrar mensaje
+        function showMessage(text, type) {
+            const messageElement = document.getElementById('profile-message');
+            messageElement.textContent = text;
+            messageElement.className = `message-${type}`;
             
-            if (messageText) {
-                const currentUser = document.getElementById('current-chat-user').textContent;
-                const now = new Date();
-                const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                
-                // Add message to UI
-                const messagesList = document.getElementById('messages-list');
-                const messageEl = document.createElement('div');
-                messageEl.className = 'message sent';
-                
-                messageEl.innerHTML = `
-                    <div class="message-content">${messageText}</div>
-                    <div class="message-time">${time}</div>
-                `;
-                
-                messagesList.appendChild(messageEl);
-                
-                // Add to conversations data
-                if (!conversations[currentUser]) {
-                    conversations[currentUser] = [];
-                }
-                
-                conversations[currentUser].push({
-                    sender: 'me',
-                    text: messageText,
-                    time: time
-                });
-                
-                // Clear input
-                input.value = '';
-                
-                // Scroll to bottom
-                messagesList.scrollTop = messagesList.scrollHeight;
-                
-                // Simulate response after a delay
+            if (type !== 'loading') {
                 setTimeout(() => {
-                    simulateResponse(currentUser);
-                }, 1000 + Math.random() * 2000);
+                    messageElement.className = 'message-hidden';
+                }, 3000);
             }
         }
-        
-        // Simular una respuesta del otro usuario
-        function simulateResponse(userName) {
-            const responses = [
-                "¡Gracias por la información!",
-                "Me interesa, ¿podemos acordar un lugar?",
-                "¿Podrías enviarme más fotos?",
-                "Perfecto, ¿cuál es tu disponibilidad?",
-                "¿Aceptas intercambios?",
-                "¿El precio es negociable?"
-            ];
-            
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            const now = new Date();
-            const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            // Add message to UI
-            const messagesList = document.getElementById('messages-list');
-            const messageEl = document.createElement('div');
-            messageEl.className = 'message received';
-            
-            messageEl.innerHTML = `
-                <div class="message-content">${randomResponse}</div>
-                <div class="message-time">${time}</div>
-            `;
-            
-            messagesList.appendChild(messageEl);
-            
-            // Add to conversations data
-            conversations[userName].push({
-                sender: 'them',
-                text: randomResponse,
-                time: time
-            });
-            
-            // Update conversation preview
-            const conversationItems = document.querySelectorAll('.conversation-item');
-            conversationItems.forEach(item => {
-                if (item.getAttribute('data-user') === userName) {
-                    item.querySelector('.conversation-preview').textContent = randomResponse;
-                    item.querySelector('.conversation-time').textContent = 'Ahora';
-                }
-            });
-            
-            // Scroll to bottom
-            messagesList.scrollTop = messagesList.scrollHeight;
+
+        // Mostrar estado de carga
+        function showLoading(section) {
+            const sectionElement = document.getElementById(section);
+            sectionElement.classList.add('loading');
         }
-        
-        // Iniciar chat con un usuario específico
-        function startChatWith(userName) {
-            showSection('messages');
-            
-            // Seleccionar la conversación
-            document.querySelectorAll('.conversation-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('data-user') === userName) {
-                    item.classList.add('active');
-                }
-            });
-            
-            loadConversation(userName);
+
+        // Ocultar estado de carga
+        function hideLoading(section) {
+            const sectionElement = document.getElementById(section);
+            sectionElement.classList.remove('loading');
         }
-        
-        // Permitir enviar mensaje con la tecla Enter
-        document.getElementById('message-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-        
-        // Inicializar eventos para los botones de eliminar favoritos
-        document.querySelectorAll('.favorite-remove').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation();
-                this.parentElement.remove();
-            });
-        });
-        
-        // Cargar la primera conversación al iniciar
-        window.onload = function() {
-            loadConversation('María González');
-        };
+
+        // Mostrar error
+        function showError(message) {
+            alert(message);
+        }
     </script>
 </body>
 </html>

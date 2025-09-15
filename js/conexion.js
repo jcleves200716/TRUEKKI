@@ -101,6 +101,62 @@ app.post('/registro', async (req, res) => {
     }
 });
 
+// ✅ Ruta para login de usuario
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    // Validaciones básicas
+    if (!email || !password) {
+        return res.status(400).json({ success: false, message: 'Email y contraseña son obligatorios' });
+    }
+
+    try {
+        // Buscar usuario por email
+        const query = 'SELECT * FROM usuario WHERE email = ?';
+        conexion.query(query, [email], async (error, results) => {
+            if (error) {
+                console.error("Error buscando usuario:", error);
+                return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+            }
+
+            if (results.length === 0) {
+                return res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
+            }
+
+            const usuario = results[0];
+
+            // Verificar contraseña
+            const passwordMatch = await bcrypt.compare(password, usuario.contraseña);
+            
+            if (!passwordMatch) {
+                return res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
+            }
+
+            // Verificar si el usuario está activo
+            if (usuario.estado !== 'activo') {
+                return res.status(401).json({ 
+                    success: false, 
+                    message: 'Tu cuenta está ' + (usuario.estado === 'bloqueado' ? 'bloqueada' : 'inactiva') 
+                });
+            }
+
+            // Login exitoso
+            res.status(200).json({ 
+                success: true, 
+                message: 'Login exitoso',
+                usuario: {
+                    id: usuario.id_usuario,
+                    nombre: usuario.nombre,
+                    email: usuario.email
+                }
+            });
+        });
+    } catch (error) {
+        console.error("Error en el proceso de login:", error);
+        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+});
+
 // ✅ NUEVAS RUTAS PARA PRODUCTOS
 
 // Obtener todos los productos
@@ -206,61 +262,92 @@ app.get('/productos-usuario/:idUsuario', (req, res) => {
     });
 });
 
-// ✅ Ruta para login de usuario
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
 
-    // Validaciones básicas
-    if (!email || !password) {
-        return res.status(400).json({ success: false, message: 'Email y contraseña son obligatorios' });
-    }
 
-    try {
-        // Buscar usuario por email
-        const query = 'SELECT * FROM usuario WHERE email = ?';
-        conexion.query(query, [email], async (error, results) => {
-            if (error) {
-                console.error("Error buscando usuario:", error);
-                return res.status(500).json({ success: false, message: 'Error interno del servidor' });
-            }
-
-            if (results.length === 0) {
-                return res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
-            }
-
-            const usuario = results[0];
-
-            // Verificar contraseña
-            const passwordMatch = await bcrypt.compare(password, usuario.contraseña);
-            
-            if (!passwordMatch) {
-                return res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
-            }
-
-            // Verificar si el usuario está activo
-            if (usuario.estado !== 'activo') {
-                return res.status(401).json({ 
-                    success: false, 
-                    message: 'Tu cuenta está ' + (usuario.estado === 'bloqueado' ? 'bloqueada' : 'inactiva') 
-                });
-            }
-
-            // Login exitoso
-            res.status(200).json({ 
-                success: true, 
-                message: 'Login exitoso',
-                usuario: {
-                    id: usuario.id_usuario,
-                    nombre: usuario.nombre,
-                    email: usuario.email
-                }
-            });
-        });
-    } catch (error) {
-        console.error("Error en el proceso de login:", error);
-        res.status(500).json({ success: false, message: 'Error interno del servidor' });
-    }
+// ✅ Ruta para obtener información del usuario por ID
+app.get('/usuario/:id', (req, res) => {
+    const userId = req.params.id;
+    
+    const query = 'SELECT id_usuario, nombre, email, numero_telefono, direccion, fecha_registro, verificado, estado FROM usuario WHERE id_usuario = ?';
+    
+    conexion.query(query, [userId], (error, results) => {
+        if (error) {
+            console.error("Error obteniendo usuario:", error);
+            return res.status(500).json({ success: false, message: 'Error al obtener información del usuario' });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+        
+        res.status(200).json({ success: true, usuario: results[0] });
+    });
 });
+
+// ✅ Ruta para actualizar información del usuario
+app.put('/usuario/:id', (req, res) => {
+    const userId = req.params.id;
+    const { nombre, numero_telefono, direccion, bio } = req.body;
+    
+    const query = 'UPDATE usuario SET nombre = ?, numero_telefono = ?, direccion = ?, bio = ? WHERE id_usuario = ?';
+    
+    conexion.query(query, [nombre, numero_telefono, direccion, bio, userId], (error, results) => {
+        if (error) {
+            console.error("Error actualizando usuario:", error);
+            return res.status(500).json({ success: false, message: 'Error al actualizar información del usuario' });
+        }
+        
+        res.status(200).json({ success: true, message: 'Información actualizada correctamente' });
+    });
+});
+
+// ✅ Ruta para obtener productos de un usuario específico
+app.get('/productos-usuario/:idUsuario', (req, res) => {
+    const idUsuario = req.params.idUsuario;
+    
+    const query = `
+        SELECT p.*, 
+               (SELECT COUNT(*) FROM intercambio i WHERE i.id_producto1 = p.id_producto OR i.id_producto2 = p.id_producto) as intercambios_realizados
+        FROM productos p 
+        WHERE p.id_usuario = ? 
+        ORDER BY p.fecha_publicacion DESC
+    `;
+    
+    conexion.query(query, [idUsuario], (error, results) => {
+        if (error) {
+            console.error("Error obteniendo productos del usuario:", error);
+            return res.status(500).json({ success: false, message: 'Error al obtener productos' });
+        }
+        
+        res.status(200).json({ success: true, productos: results });
+    });
+});
+
+
+// Verificar si el usuario está logueado
+function checkAuth() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    
+    if (!isLoggedIn || !usuario.id) {
+        window.location.href = 'login.html';
+        return false;
+    }
+    
+    return true;
+}
+
+// Obtener información del usuario logueado
+function getCurrentUser() {
+    return JSON.parse(localStorage.getItem('usuario') || '{}');
+}
+
+// Cerrar sesión
+function logout() {
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('isLoggedIn');
+    window.location.href = 'login.html';
+}
 
 // Iniciar servidor
 app.listen(port, () => {
