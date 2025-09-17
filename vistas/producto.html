@@ -2,127 +2,448 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>TRUEKKI</title>
-    <link rel="stylesheet" href="../css/producto.css">
+  <title>TRUEKKI - Detalle de Producto</title>
+  <link rel="stylesheet" href="../css/producto.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <!-- Encabezado -->
   <header>
-    <h1>TRUEKKI</h1>
-    <input type="text" class="search-bar" placeholder="🔍">
+    <h1 onclick="window.location.href='barra.html'">TRUEKKI</h1>
+    <input type="text" class="search-bar" placeholder="🔍 Buscar productos...">
     <div class="header-icons">
-      <span>♡</span>
-      <span>👤</span>
-      <span>☰</span>
+      <span onclick="window.location.href='favoritos.html'">♡</span>
+      <span onclick="window.location.href='perfil.html'">👤</span>
+      <span onclick="openMenu()">☰</span>
     </div>
   </header>
 
   <!-- Contenido principal -->
-  <div class="container">
-    <!-- Galería lateral -->
-    <div class="gallery">
-      <img src="https://m.media-amazon.com/images/I/71gTJNxmBAL._AC_SL1500_.jpg" alt="miniatura">
-      <img src="https://m.media-amazon.com/images/I/81OWho29ifL._AC_SL1500_.jpg" alt="miniatura">
-      <img src="https://m.media-amazon.com/images/I/81mCL57SQsL._AC_SL1500_.jpg" alt="miniatura">
-      <img src="https://m.media-amazon.com/images/I/81qlWx19nYL._AC_SL1500_.jpg" alt="miniatura">
+  <div class="container" id="product-container">
+    <div class="loading-state">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Cargando producto...</p>
+    </div>
+  </div>
+
+  <!-- Contenedor para centrar los elementos inferiores -->
+  <div class="bottom-container">
+    <!-- Mensaje al vendedor -->
+    <div class="message-box">
+      <div class="message-header">
+        <span>ENVIAR MENSAJE AL VENDEDOR</span>
+        <input type="text" class="message-input" value="Hola, ¿sigue estando disponible?">
+      </div>
+      <button class="send-btn">ENVIAR MENSAJE</button>
     </div>
 
-    <!-- Imagen principal -->
-    <div class="main-image">
-      <img src="https://m.media-amazon.com/images/I/71zuMSjwDfL._AC_SL1500_.jpg" alt="Producto principal">
+    <!-- Perfil del vendedor -->
+    <div class="perfil">
+      <p><b>LUIS FERNANDO RAMÍREZ.</b></p>
+      <p>APASIONADO DEL MUNDO GAMER Y DE LA TECNOLOGÍA DE ALTO RENDIMIENTO. 
+         CON MÁS DE 8 AÑOS DE EXPERIENCIA EN LA VENTA Y ENSAMBLE DE COMPUTADORES GAMER, 
+         SE HA GANADO UN LUGAR DE CONFIANZA DENTRO DE LA COMUNIDAD TECNOLÓGICA.</p>
+      <button>VISITAR PERFIL</button>
     </div>
 
-    <!-- Detalles -->
-    <div class="details">
-      <h2>PORTÁTIL GAMING ASUS TUF R5 7535H RAM 24GB SSD 512GB</h2>
-      <p>
-        El TUF Gaming es un portátil diseñado para servirte la victoria en bandeja. La nueva GPU GeForce RTX™ 2050 
-        ofrece una gran fluidez gráfica en la pantalla de 144Hz y 100% sRGB, mientras que la potente CPU AMD Ryzen™ 
-        5 se encuentra respaldada por un nuevo sistema de refrigeración que amplía el rendimiento de la CPU y 
-        mantiene un perfil acústico silencioso.
-      </p>
+    <p class="last-update">
+      ULTIMA ACTUALIZACION <span>22/08/25</span>
+    </p>
 
-
-      <div class="price">
-        <b>Precio:</b> $2.899.900
-      </div>
-      <p><b>Ubicación:</b> Bogotá D.C, Suba Lombardia</p>
-
-      <div class="tags">
-        <span class="tag">Electrónicos</span>
-        <span class="tag">Portátil</span>
-        <span class="tag">Gamer</span>
-      </div>
-      <div class="botones">
-        <button class="venta">VENTA</button>
-        <button class="trueque">TRUEQUE</button>
-        <button class="venta-trueque">VENTA/TRUEQUE</button>
+    <!-- Estadísticas -->
+    <div class="contenedor">
+      <!-- Calificación -->
+      <div class="bloque" style="width:180px;">
+        <div id="estrellas">
+          <span class="estrellas" data-valor="1">&#9733;</span>
+          <span class="estrellas" data-valor="2">&#9733;</span>
+          <span class="estrellas" data-valor="3">&#9733;</span>
+          <span class="estrellas" data-valor="4">&#9733;</span>
+          <span class="estrellas" data-valor="5">&#9733;</span>
+        </div>
+        <p>CALIFICACION</p>
       </div>
 
-      <div class="btns">
-        <button>❤️ Lista deseos</button>
-        <button>📤 Compartir</button>
+      <!-- Gráfica -->
+      <div class="bloque" style="width:300px;">
+        <canvas id="grafica"></canvas>
+      </div>
+
+      <!-- Intercambios -->
+      <div class="bloque" style="width:200px;">
+        <p>TOTAL INTERCAMBIOS</p>
+        <p class="intercambios">35/100</p>
+        <p>ETIQUETAS DE RECONOCIMIENTO</p>
+        <p>🏆 ⚙ 💻</p>
+      </div>
+    </div>
+
+    <!-- Comentarios -->
+    <div class="comentarios-container">
+      <h2>Comentarios</h2> 
+      <div id="comentarios-lista"></div>
+      <div class="form-comentario">
+        <textarea id="comentario-input" rows="2" placeholder="Escribe un comentario..."></textarea>
+        <button onclick="agregarComentario()">Comentar</button>
       </div>
     </div>
   </div>
 
-  <!-- Mensaje al vendedor -->
-  <div class="message-box">
-    <div>
-      <span>ENVIAR MENSAJE AL VENDEDOR</span>
-      <input type="text" class="message-input" value="Hola, ¿sigue estando disponible?">
-    </div>
-    <button class="send-btn">ENVIAR MENSAJE</button>
-  </div>
-
-  <div class="comentarios-container">
-    <h2>Comentarios</h2>
-
-    <div id="comentarios-lista"></div>
-
-    <div class="form-comentario">
-      <textarea id="comentario-input" rows="2" placeholder="Escribe un comentario..."></textarea>
-      <button onclick="agregarComentario()">Comentar</button>
-    </div>
-  </div>
-
+  <!-- Resto del script se mantiene igual -->
+  <script src="../js/auth.js"></script>
   <script>
-    function agregarComentario() {
-      const input = document.getElementById("comentario-input");
-      const texto = input.value.trim();
+    
+    let currentProduct = null;
+    let currentSeller = null;
 
-      if (texto !== "") {
-        const lista = document.getElementById("comentarios-lista");
+    // Cargar datos al iniciar
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Verificar autenticación
+      if (!checkAuth()) {
+        return;
+      }
+      
+      // Obtener ID del producto de la URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+      
+      if (!productId) {
+        showError('No se ha especificado un producto');
+        return;
+      }
+      
+      // Cargar información del producto
+      await loadProductData(productId);
+    });
 
-        const comentario = document.createElement("div");
-        comentario.classList.add("comentario");
-
-        // Imagen de perfil
-        const img = document.createElement("img");
-        img.src = "https://i.pinimg.com/736x/d2/50/af/d250af5bf078a388b23d9916b575dc48.jpg"; // Foto de perfil random
-
-        // Texto comentario
-        const textoDiv = document.createElement("div");
-        textoDiv.classList.add("comentario-texto");
-
-        const nombre = document.createElement("h4");
-        nombre.textContent = "Usuario Anónimo";
-
-        const parrafo = document.createElement("p");
-        parrafo.textContent = texto;
-
-        textoDiv.appendChild(nombre);
-        textoDiv.appendChild(parrafo);
-
-        comentario.appendChild(img);
-        comentario.appendChild(textoDiv);
-
-        lista.appendChild(comentario);
-
-        input.value = "";
+    // Cargar datos del producto desde la API
+    async function loadProductData(productId) {
+      try {
+        console.log('Cargando producto ID:', productId);
+        
+        const response = await fetch(`http://localhost:5000/producto/${productId}`);
+        
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Respuesta del servidor:', result);
+        
+        if (result.success) {
+          currentProduct = result.producto;
+          currentSeller = result.vendedor;
+          renderProduct(currentProduct, currentSeller);
+        } else {
+          showError('Error: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error cargando producto:', error);
+        showError('Error de conexión. Verifica que el servidor esté ejecutándose.');
       }
     }
+
+    // Renderizar producto
+    function renderProduct(product, seller) {
+      const container = document.getElementById('product-container');
+      
+      container.innerHTML = `
+        <!-- Galería lateral -->
+        <div class="gallery">
+          ${product.foto ? 
+            `<img src="http://localhost:5000/imagen-producto/${product.id_producto}" 
+                 alt="${product.titulo}" 
+                 onerror="handleImageError(this)">` : 
+            '<div class="no-image">Imagen no disponible</div>'
+          }
+        </div>
+
+        <!-- Imagen principal -->
+        <div class="main-image">
+          ${product.foto ? 
+            `<img src="http://localhost:5000/imagen-producto/${product.id_producto}" 
+                 alt="${product.titulo}"
+                 onerror="handleImageError(this)">` : 
+            '<div class="no-image">Imagen no disponible</div>'
+          }
+        </div>
+
+        <!-- Detalles -->
+        <div class="details">
+          <h2>${product.titulo}</h2>
+          <p>${product.descripcion}</p>
+
+          <div class="price">
+            <b>Precio:</b> ${product.precio ? `$${parseInt(product.precio).toLocaleString()}` : 'Negociable'}
+          </div>
+          
+          <p><b>Ubicación:</b> ${product.ciudad}, ${product.barrio}</p>
+          
+          <p><b>Vendedor:</b> ${seller.nombre}</p>
+
+          <div class="tags">
+            <span class="tag">${product.categoria}</span>
+            <span class="tag">${product.estado}</span>
+            <span class="tag">${product.contacto === 'whatsapp' ? 'WhatsApp' : 'Mensaje'}</span>
+          </div>
+          
+          <div class="tags">
+           <span class="tag2">venta</span>
+           <span class="tag2">trueque</span>
+           <span class="tag2">venta/trueque</span>
+          </div>
+
+          <div class="btns">
+            <button onclick="addToWishlist(${product.id_producto})">
+              <i class="fas fa-heart"></i> Lista deseos
+            </button>
+            <button onclick="shareProduct()">
+              <i class="fas fa-share"></i> Compartir
+            </button>
+          </div>
+        </div>
+
+        
+      `;
+    }
+
+    // Manejar error de imagen
+    function handleImageError(img) {
+      img.style.display = 'none';
+      img.parentElement.innerHTML = '<div class="no-image">Imagen no disponible</div>';
+    }
+
+    
+    // Agregar a lista de deseos
+    function addToWishlist(productId) {
+      alert('Producto agregado a lista de deseos');
+      // Aquí integrarías con tu sistema de favoritos
+    }
+
+    // Compartir producto
+    function shareProduct() {
+      if (navigator.share) {
+        navigator.share({
+          title: currentProduct.titulo,
+          text: currentProduct.descripcion.substring(0, 100) + '...',
+          url: window.location.href
+        });
+      } else {
+        alert('Enlace copiado: ' + window.location.href);
+      }
+    }
+
+    // Mostrar error
+    function showError(message) {
+      const container = document.getElementById('product-container');
+      container.innerHTML = `
+        <div class="error-state">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Error</h3>
+          <p>${message}</p>
+          <button class="btn-retry" onclick="window.location.reload()">Reintentar</button>
+          <button class="btn-retry" onclick="window.location.href='barra.html'">Volver al inicio</button>
+        </div>
+      `;
+    }
+
+    // Menú lateral
+    function openMenu() {
+      alert('Menú de navegación');
+    }
+       // Estrellas de calificación
+    const estrellas = document.querySelectorAll('.estrellas');
+    let calificaciones = [];
+    let chart;
+
+    estrellas.forEach(estrella => {
+      estrella.addEventListener('click', () => {
+        let valor = estrella.getAttribute('data-valor');
+        calificaciones.push(parseInt(valor));
+        actualizarEstrellas(valor);
+        actualizarGrafica();
+      });
+    });
+
+    function actualizarEstrellas(valor) {
+      estrellas.forEach(e => {
+        e.classList.toggle('estrella-activa', e.getAttribute('data-valor') <= valor);
+      });
+    }
+
+    // Gráfica con Chart.js
+    function crearGrafica() {
+      const ctx = document.getElementById('grafica').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ["1★", "2★", "3★", "4★", "5★"],
+          datasets: [{
+            label: "Cantidad de calificaciones",
+            data: [0,0,0,0,0],
+            borderColor: "blue",
+            borderWidth: 2,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    function actualizarGrafica() {
+      let conteo = [0,0,0,0,0];
+      calificaciones.forEach(c => conteo[c-1]++);
+      chart.data.datasets[0].data = conteo;
+      chart.update();
+    }
+
+    crearGrafica();
+
+    function agregarComentario() {
+    const input = document.getElementById("comentario-input");
+    const texto = input.value.trim();
+
+    if (texto === "") return;
+
+    const lista = document.getElementById("comentarios-lista");
+
+    function agregarComentario() {
+  const input = document.getElementById("comentario-input");
+  const texto = input.value.trim();
+
+  if (texto === "") return;
+
+  const lista = document.getElementById("comentarios-lista");
+
+  // Crear contenedor del comentario
+  const comentario = document.createElement("div");
+  comentario.classList.add("comentario");
+
+  // Imagen de perfil
+  const img = document.createElement("img");
+  img.src = "https://i.pinimg.com/736x/d2/50/af/d250af5bf078a388b23d9916b575dc48.jpg";
+
+  // Contenedor texto
+  const comentarioTexto = document.createElement("div");
+  comentarioTexto.classList.add("comentario-texto");
+
+  const nombre = document.createElement("h4");
+  nombre.textContent = "Usuario";
+
+  const contenido = document.createElement("p");
+  contenido.textContent = texto;
+
+  // Botones de acción
+  const acciones = document.createElement("div");
+  acciones.classList.add("comentario-acciones");
+
+  const btnEditar = document.createElement("button");
+  btnEditar.textContent = "Editar";
+  btnEditar.classList.add("btn-editar");
+  btnEditar.onclick = () => {
+    const nuevoTexto = prompt("Edita tu comentario:", contenido.textContent);
+    if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
+      contenido.textContent = nuevoTexto.trim();
+    }
+  };
+
+  const btnEliminar = document.createElement("button");
+  btnEliminar.textContent = "Eliminar";
+  btnEliminar.classList.add("btn-eliminar");
+  btnEliminar.onclick = () => {
+    lista.removeChild(comentario);
+  };
+
+  acciones.appendChild(btnEditar);
+  acciones.appendChild(btnEliminar);
+
+  // Insertar todo en el contenedor
+  comentarioTexto.appendChild(nombre);
+  comentarioTexto.appendChild(contenido);
+  comentarioTexto.appendChild(acciones);
+
+  comentario.appendChild(img);
+  comentario.appendChild(comentarioTexto);
+
+  lista.appendChild(comentario);
+
+  // Limpiar textarea
+  input.value = "";
+}
+    // Crear contenedor del comentario
+    const comentario = document.createElement("div");
+    comentario.classList.add("comentario");
+
+    // Imagen de perfil (fija por ahora)
+    const img = document.createElement("img");
+    img.src = "https://via.placeholder.com/50"; 
+
+    // Contenedor texto
+    const comentarioTexto = document.createElement("div");
+    comentarioTexto.classList.add("comentario-texto");
+
+    const nombre = document.createElement("h4");
+    nombre.textContent = "Usuario"; // puedes reemplazar por nombre dinámico
+
+    const contenido = document.createElement("p");
+    contenido.textContent = texto;
+
+    // Botones de acción
+    const acciones = document.createElement("div");
+    acciones.style.marginTop = "8px";
+
+    const btnEditar = document.createElement("button");
+    btnEditar.textContent = "Editar";
+    btnEditar.style.marginRight = "10px";
+    btnEditar.style.background = "#ffc107";
+    btnEditar.style.border = "none";
+    btnEditar.style.padding = "5px 10px";
+    btnEditar.style.borderRadius = "6px";
+    btnEditar.style.cursor = "pointer";
+
+    btnEditar.onclick = () => {
+      const nuevoTexto = prompt("Edita tu comentario:", contenido.textContent);
+      if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
+        contenido.textContent = nuevoTexto.trim();
+      }
+    };
+
+    const btnEliminar = document.createElement("button");
+    btnEliminar.textContent = "Eliminar";
+    btnEliminar.style.background = "#dc3545";
+    btnEliminar.style.border = "none";
+    btnEliminar.style.padding = "5px 10px";
+    btnEliminar.style.borderRadius = "6px";
+    btnEliminar.style.cursor = "pointer";
+    btnEliminar.style.color = "#fff";
+
+    btnEliminar.onclick = () => {
+      lista.removeChild(comentario);
+    };
+
+    acciones.appendChild(btnEditar);
+    acciones.appendChild(btnEliminar);
+
+    // Insertar todo en el contenedor
+    comentarioTexto.appendChild(nombre);
+    comentarioTexto.appendChild(contenido);
+    comentarioTexto.appendChild(acciones);
+
+    comentario.appendChild(img);
+    comentario.appendChild(comentarioTexto);
+
+    lista.appendChild(comentario);
+
+    // Limpiar textarea
+    input.value = "";
+  }
+
   </script>
 </body>
 </html>
-

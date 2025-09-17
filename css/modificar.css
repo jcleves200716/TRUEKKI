@@ -1,0 +1,404 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #fff;
+}
+
+/* === BOTÓN DE MENÚ === */
+.menu-btn {
+  font-size: 22px;
+  cursor: pointer;
+  padding: 8px 12px;
+  margin-left: 15px;
+  background: #000;
+  color: #fff;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.menu-btn:hover {
+  background: #333;
+}
+
+/* === SIDEBAR (DERECHA) === */
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.4s;
+  padding-top: 60px;
+  z-index: 1002;
+}
+
+.sidebar a {
+  padding: 12px 20px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #f1f1f1;
+  display: block;
+  transition: 0.2s;
+}
+
+.sidebar a:hover {
+  background: #333;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 26px;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Overlay */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 1000;
+}
+
+/* === HEADER === */
+header {
+  background: #000;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* Barra de búsqueda centrada */
+.search-bar {
+  flex: 0 1 500px;
+  display: flex;
+  align-items: center;
+  background: #f4e9f8;
+  border-radius: 20px;
+  padding: 5px 10px;
+  margin: 0 auto;
+}
+
+.search-bar input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.search-bar i {
+  color: #555;
+  margin-right: 8px;
+}
+
+/* Íconos + botón menú */
+.header-icons {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* === CONTENEDOR PRINCIPAL === */
+.container {
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+/* Galería lateral */
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gallery img {
+  width: 80px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+}
+
+.main-image img {
+  max-width: 500px;
+  border-radius: 10px;
+}
+
+/* Detalles producto */
+.details {
+  flex: 1;
+  background: #cfe0f4;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.details h2 {
+  margin-top: 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.price {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.botones {
+  margin: 15px 0;
+}
+
+.botones button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* Etiquetas */
+.tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: #2e3f5b;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 13px;
+}
+
+/* Botones sociales */
+.btns {
+  margin-top: 15px;
+  display: flex;
+  gap: 20px;
+}
+
+.btns button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btns button:first-child {
+  color: red;
+}
+
+.btns button:last-child {
+  color: #2e3f5b;
+}
+
+/* Mensaje al vendedor */
+.message-box {
+  margin: 30px 20px;
+  background: #d9e8f8;
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 2px solid #000;
+}
+
+.message-box span {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.message-input {
+  flex: 1;
+  background: #bcd1eb;
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  font-size: 16px;
+  margin-right: 20px;
+}
+
+.send-btn {
+  background: #003366;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.send-btn:hover {
+  background: #001f4d;
+}
+
+/* Comentarios */
+.comentarios-container {
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.comentarios-container h2 {
+  margin-bottom: 15px;
+}
+
+.comentario {
+  display: flex;
+  align-items: flex-start;
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.comentario img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+
+.comentario-texto {
+  flex: 1;
+}
+
+.comentario-texto h4 {
+  margin: 0 0 5px;
+  font-size: 15px;
+  color: #333;
+}
+
+.comentario-texto p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.form-comentario {
+  display: flex;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.form-comentario textarea {
+  flex: 1;
+  resize: none;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.form-comentario button {
+  background: #003366;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.form-comentario button:hover {
+  background: #001f4d;
+}
+
+/* === FORMULARIO MODIFICAR PRODUCTO === */
+.form-modificar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-modificar label {
+  font-weight: bold;
+  color: #2e3f5b;
+}
+
+.form-modificar input,
+.form-modificar textarea,
+.form-modificar select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.form-modificar textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-modificar input:focus,
+.form-modificar textarea:focus,
+.form-modificar select:focus {
+  outline: none;
+  border: 2px solid #003366;
+  background: #f0f6ff;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.form-buttons .guardar {
+  background: #003366;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.form-buttons .guardar:hover {
+  background: #001f4d;
+}
+
+.form-buttons .cancelar {
+  background: #e74c3c;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  transition: 0.3s;
+}
+
+.form-buttons .cancelar:hover {
+  background: #c0392b;
+}

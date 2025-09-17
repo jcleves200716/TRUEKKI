@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRUEKKI - Mis Productos</title>
+  <link rel="stylesheet" href="/css/catalogo.css">
+</head>
+<body>
+    <!-- Botón de menú -->
+    <div class="menu-btn" onclick="openMenu()">☰</div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <span class="close-btn" onclick="closeMenu()">✖</span>
+      <a href="./barra.html">Explorar</a>
+      <a href="publicar_producto.html">Publicar</a>
+      <a href="#">Notificaciones</a>
+      <a href="./chat.html">Chats</a>
+      <a href="#">Historial</a>
+      <a href="perfil_vendedor.html">Perfil</a>
+      <a href="./bloqueo.html">Bloquear Usuario</a>
+      <a href="./reportar.html">Reportar Usuario</a>
+      <a href="./catalogo.html">Mis productos</a>
+      <a href="#">Ayuda</a>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+  <!-- Header -->
+  <header>
+    <h1>TRUEKKI</h1>
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar...">
+      <button>+</button>
+    </div>
+    <div class="filter-toggle" onclick="toggleFilters()">⋮</div>
+
+    <!-- Filtros -->
+    <div id="filters" class="hidden">
+      <select id="categoryFilter">
+        <option value="all">Todas las categorías</option>
+        <option value="ropa">Ropa</option>
+        <option value="tecnologia">Tecnología</option>
+        <option value="libros">Libros</option>
+      </select>
+
+      <select id="priceFilter">
+        <option value="all">Todos los precios</option>
+        <option value="low">Menor a 20.000 COP</option>
+        <option value="medium">100.000 - 500.000 COP</option>
+        <option value="high">Mayor a 500.000 COP</option>
+      </select>
+
+      <select id="conditionFilter">
+        <option value="all">Todos los estados</option>
+        <option value="nuevo">Nuevo</option>
+        <option value="usado">Usado</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Catálogo de productos -->
+  <section class="products">
+    <!-- Producto 1 -->
+    <div class="card producto" data-category="ropa" data-price="150" data-condition="nuevo">
+      <img src="https://i.pinimg.com/736x/8e/8d/19/8e8d19acba343386d4cc1f917bf80995.jpg" alt="Jeans">
+      <div class="actions">
+        <span class="heart">❤</span>
+        <span class="cart">💬</span>
+      </div>
+      <p>Jeans Baggy</p>
+      <div class="card-buttons">
+        <a href="modificar.html" class="btn-modificar">✏️ Modificar</a>
+        <button class="btn-eliminar">🗑️ Eliminar</button>
+      </div>
+    </div>
+
+    <!-- Producto 2 -->
+    <div class="card producto" data-category="ropa" data-price="120" data-condition="usado">
+      <img src="https://static.wixstatic.com/media/e3c921_72852877781f47609ed2099aeb792674~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg" alt="Corset">
+      <div class="actions">
+        <span class="heart">❤</span>
+        <span class="cart">💬</span>
+      </div>
+      <p>Corset Café</p>
+      <div class="card-buttons">
+        <a href="modificar.html" class="btn-modificar">✏️ Modificar</a>
+        <button class="btn-eliminar">🗑️ Eliminar</button>
+      </div>
+    </div>
+
+    <!-- Producto 3 -->
+    <div class="card producto" data-category="tecnologia" data-price="900" data-condition="nuevo">
+      <img src="https://th.bing.com/th/id/OIP.vewfenftbHKrLMt4yaq72wHaHa" alt="Portatil Gamer">
+      <div class="actions">
+        <span class="heart">❤</span>
+        <span class="cart">💬</span>
+      </div>
+      <p>Portátil Gamer</p>
+      <div class="card-buttons">
+        <a href="modificar.html" class="btn-modificar">✏️ Modificar</a>
+        <button class="btn-eliminar">🗑️ Eliminar</button>
+      </div>
+    </div>
+
+    <!-- Producto 4 -->
+    <div class="card producto" data-category="libros" data-price="50" data-condition="usado">
+      <img src="https://tse3.mm.bing.net/th/id/OIP.X81k0hwApMg-aeIyPZJ3FwHaLH" alt="Libro 100 Años">
+      <div class="actions">
+        <span class="heart">❤</span>
+        <span class="cart">💬</span>
+      </div>
+      <p>Libro Original 100 Años de Soledad</p>
+      <div class="card-buttons">
+        <a href="modificar.html" class="btn-modificar">✏️ Modificar</a>
+        <button class="btn-eliminar">🗑️ Eliminar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scripts -->
+  <script>
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    function openMenu() {
+      sidebar.style.width = "250px";
+      overlay.style.display = "block";
+    }
+
+    function closeMenu() {
+      sidebar.style.width = "0";
+      overlay.style.display = "none";
+    }
+
+    function toggleFilters() {
+      document.getElementById("filters").classList.toggle("hidden");
+    }
+
+    // Botones eliminar
+    document.querySelectorAll(".btn-eliminar").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (confirm("¿Seguro que quieres ELIMINAR este producto?")) {
+          alert("Producto eliminado");
+        }
+      });
+    });
+
+      // Filtros
+  const filters = {
+    category: "all",
+    price: "all",
+    condition: "all"
+  };
+
+  document.getElementById("categoryFilter").addEventListener("change", (e) => {
+    filters.category = e.target.value;
+    applyFilters();
+  });
+
+  document.getElementById("priceFilter").addEventListener("change", (e) => {
+    filters.price = e.target.value;
+    applyFilters();
+  });
+
+  document.getElementById("conditionFilter").addEventListener("change", (e) => {
+    filters.condition = e.target.value;
+    applyFilters();
+  });
+
+  function applyFilters() {
+    const products = document.querySelectorAll(".producto");
+
+    products.forEach(product => {
+      const category = product.getAttribute("data-category");
+      const price = parseFloat(product.getAttribute("data-price"));
+      const condition = product.getAttribute("data-condition");
+
+      let visible = true;
+
+      if (filters.category !== "all" && category !== filters.category) {
+        visible = false;
+      }
+
+      if (filters.price === "low" && price >= 100) visible = false;
+      if (filters.price === "medium" && (price < 100 || price > 500)) visible = false;
+      if (filters.price === "high" && price <= 500) visible = false;
+
+      if (filters.condition !== "all" && condition !== filters.condition) {
+        visible = false;
+      }
+
+      product.style.display = visible ? "block" : "none";
+    });
+  }
+
+
+
+  function toggleFilters() {
+    const filters = document.getElementById("filters");
+    filters.classList.toggle("hidden");
+  }
+
+  </script>
+</body>
+</html>

@@ -27,13 +27,19 @@
                         <input type="email" id="email" name="email" placeholder="Ingresa tu correo electrónico" required>
                         <div class="error-message" id="emailError"></div>
                     </div>
-                    
+                                        
                     <div class="input-group">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
-                        <div class="error-message" id="passwordError"></div>
-                    </div>
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
                     
+                    <!-- 👁 Ojo añadido -->
+                    <span class="toggle-password" onclick="togglePassword()">
+                        <img src="../img/ojo-cerrado.png" class="ojo" id="ojo">
+                    </span>
+                    
+                    <div class="error-message" id="passwordError"></div>
+                    </div>
+
                     <button type="submit" class="login-btn">ACCEDER</button>
                 </form>
                 
@@ -152,6 +158,8 @@
     </div>
 
   <script>
+
+    
     // Variables globales
     let currentStep = 1;
     let recoveryToken = '';
@@ -277,6 +285,19 @@
         goToStep(1);
         clearInterval(timerInterval);
     }
+
+  function togglePassword() {
+    const input = document.getElementById("password");
+    const ojo = document.getElementById("ojo");
+
+    if (input.type === "password") {
+      input.type = "text";
+      ojo.src = "../img/ojo-abierto.png";
+    } else {
+      input.type = "password";
+      ojo.src = "../img/ojo-cerrado.png";
+    }
+  }
 </script>
 </body>
 </html>

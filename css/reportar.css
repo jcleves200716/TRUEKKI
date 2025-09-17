@@ -1,0 +1,254 @@
+
+/* ====== ESTILOS GENERALES ====== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-image: url('/img/fondo-log-reg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  padding-top: 70px; /* espacio bajo navbar */
+}
+
+li a {
+  color: white;       /* texto blanco */
+  text-decoration: none; /* quita el subrayado */
+}
+
+li a:hover {
+  cursor: pointer;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  z-index: 1000;
+}
+
+.logo-text {
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+}
+
+.navbar-center {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  max-width: 500px;
+  margin: 0 1rem;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: none;
+  background-color: #ebe5ff;
+  color: #4b4a65;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.search-btn {
+  border: none;
+  background-color: #c4bbff;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  color: #7f7adb;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background-color: #a39cf9;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.icon-btn:hover {
+  color: #7f7adb;
+}
+/* ====== CONTENEDOR PRINCIPAL ====== */
+.contenedor {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ====== FORMULARIO REPORTAR ====== */
+.reportado {
+  flex: 1;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  min-width: 300px;
+}
+
+/* ====== FORM ELEMENTOS ====== */
+input[type="text"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* ====== BOTONES ====== */
+button,
+.btn-file {
+  width: 100%;
+  background: #007bff;
+  color: white;
+  font-size: 15px;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  margin-top: 10px;
+  text-align: center;
+}
+
+button:hover,
+.btn-file:hover {
+  background: #0056b3;
+  transform: scale(1.02);
+}
+
+/* Contenedor del input de archivo */
+.form-group-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  margin-bottom: 14px;
+}
+
+/* Texto del archivo */
+#file-name {
+  font-size: 14px;
+  color: #555;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ====== BLOQUE DE INFORMACIÓN ====== */
+.info {
+  flex: 1;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  min-width: 300px;
+}
+
+.info h2 {
+  color: #007bff;
+  margin-bottom: 15px;
+}
+
+.info p,
+.info ul {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.info ul {
+  padding-left: 20px;
+}
+
+/* ====== IMAGEN (SI LA NECESITAS) ====== */
+.imagen {
+  background-image: url('/img/xd2.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  height: 200px;
+  width: 100%;
+}
+
+/* ====== RESPONSIVE DESIGN ====== */
+@media (max-width: 900px) {
+  .contenedor {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .form-group-file {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #file-name {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar-search {
+    max-width: 180px;
+    margin: 0 0.5rem;
+  }
+
+  .navbar-logo {
+    font-size: 1rem;
+  }
+
+  .navbar-icons i {
+    margin-left: 0.5rem;
+  }
+}

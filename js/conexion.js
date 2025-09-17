@@ -54,9 +54,21 @@ app.get('/vistas/login.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../vistas/login.html'));
 });
 
-// Registro de usuario (EXISTENTE - sin cambios)
+
+// poiner un email valido
 app.post('/registro', async (req, res) => {
     const { nombre, email, password, confirmPassword, telefono, direccion } = req.body;
+
+    const dominiosValidos = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
+
+    function validarDominio(email) {
+        const dominio = email.split('@')[1].toLowerCase();
+        return dominiosValidos.includes(dominio);
+    }   
+// validación de email
+    if (!validarDominio(email)) {
+        return res.status(400).json({ success: false, message: 'Dominio de correo no válido' });
+    }
 
     if (!nombre || !email || !password || !confirmPassword || !telefono || !direccion) {
         return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios' });
@@ -348,6 +360,48 @@ function logout() {
     localStorage.removeItem('isLoggedIn');
     window.location.href = 'login.html';
 }
+
+// ✅ Ruta para obtener un producto específico con información del vendedor
+app.get('/producto/:id', (req, res) => {
+    const productId = req.params.id;
+    
+    const query = `
+        SELECT p.*, u.nombre as vendedor_nombre, u.numero_telefono, u.email 
+        FROM productos p 
+        JOIN usuario u ON p.id_usuario = u.id_usuario 
+        WHERE p.id_producto = ?
+    `;
+    
+    conexion.query(query, [productId], (error, results) => {
+        if (error) {
+            console.error("Error obteniendo producto:", error);
+            return res.status(500).json({ success: false, message: 'Error al obtener producto' });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: 'Producto no encontrado' });
+        }
+        
+        const producto = results[0];
+        const vendedor = {
+            id: producto.id_usuario,
+            nombre: producto.vendedor_nombre,
+            telefono: producto.numero_telefono,
+            email: producto.email
+        };
+        
+        // Remover datos del vendedor del objeto producto
+        delete producto.vendedor_nombre;
+        delete producto.numero_telefono;
+        delete producto.email;
+        
+        res.status(200).json({ 
+            success: true, 
+            producto: producto,
+            vendedor: vendedor
+        });
+    });
+});
 
 // Iniciar servidor
 app.listen(port, () => {

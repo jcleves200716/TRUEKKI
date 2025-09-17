@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>TRUEKKI - Modificar Producto</title>
+  <link rel="stylesheet" href="/css/modificar.css">
+</head>
+<body>
+  <!-- Encabezado -->
+  <header>
+    <h1>TRUEKKI</h1>
+    <input type="text" class="search-bar" placeholder="🔍">
+    <div class="header-icons">
+      <span>♡</span>
+      <span>👤</span>
+      <span class="menu-btn" onclick="openMenu()">☰</span>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <span class="close-btn" onclick="closeMenu()">✖</span>
+    <a href="./barra.html">Explorar</a>
+    <a href="publicar_producto.html">Publicar</a>
+    <a href="#">Notificaciones</a>
+    <a href="./chat.html">Chats</a>
+    <a href="#">Historial</a>
+    <a href="perfil_vendedor.html">Perfil</a>
+    <a href="./bloqueo.html">Bloquear Usuario</a>
+    <a href="./reportar.html">Reportar Usuario</a>
+    <a href="./catalogo.html">Mis productos</a>
+    <a href="#">Ayuda</a>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+  <!-- Contenido principal -->
+  <div class="container">
+    <!-- Galería lateral -->
+    <div class="gallery">
+      <img src="https://m.media-amazon.com/images/I/71gTJNxmBAL._AC_SL1500_.jpg" alt="miniatura">
+      <img src="https://m.media-amazon.com/images/I/81OWho29ifL._AC_SL1500_.jpg" alt="miniatura">
+      <img src="https://m.media-amazon.com/images/I/81mCL57SQsL._AC_SL1500_.jpg" alt="miniatura">
+      <img src="https://m.media-amazon.com/images/I/81qlWx19nYL._AC_SL1500_.jpg" alt="miniatura">
+    </div>
+
+    <!-- Imagen principal -->
+    <div class="main-image">
+      <img src="https://m.media-amazon.com/images/I/71zuMSjwDfL._AC_SL1500_.jpg" alt="Producto principal">
+    </div>
+
+    <!-- Formulario de edición -->
+    <div class="details">
+      <h2>Modificar Producto</h2>
+      <form class="form-modificar">
+        <label for="nombre">Nombre del producto:</label>
+        <input type="text" id="nombre" value="PORTÁTIL GAMING ASUS TUF R5 7535H RAM 24GB SSD 512GB">
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" rows="5">
+El TUF Gaming es un portátil diseñado para servirte la victoria en bandeja. La nueva GPU GeForce RTX™ 2050 ofrece una gran fluidez gráfica en la pantalla de 144Hz y 100% sRGB, mientras que la potente CPU AMD Ryzen™ 5 se encuentra respaldada por un nuevo sistema de refrigeración.
+        </textarea>
+
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" value="2899900">
+
+        <label for="ubicacion">Ubicación:</label>
+        <input type="text" id="ubicacion" value="Bogotá D.C, Suba Lombardia">
+
+        <label for="categoria">Categoría:</label>
+        <select id="categoria">
+          <option value="electronicos" selected>Electrónicos</option>
+          <option value="ropa">Ropa</option>
+          <option value="libros">Libros</option>
+          <option value="hogar">Hogar</option>
+        </select>
+
+        <div class="form-buttons">
+          <button type="submit" class="guardar">💾 Guardar cambios</button>
+          <a href="mis_productos.html" class="cancelar">❌ Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    function openMenu() {
+      sidebar.style.width = "250px";
+      overlay.style.display = "block";
+    }
+
+    function closeMenu() {
+      sidebar.style.width = "0";
+      overlay.style.display = "none";
+    }
+
+    document.querySelector(".form-modificar").addEventListener("submit", function(e){
+      e.preventDefault();
+      alert("✅ Producto actualizado correctamente");
+    });
+  </script>
+</body>
+</html>

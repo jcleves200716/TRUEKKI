@@ -1,0 +1,203 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-image: url('/img/fondo-log-reg.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover; /* o try 100% 100% si quieres sin recortar */
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+
+
+li a {
+  color: white;       /* texto blanco */
+  text-decoration: none; /* quita el subrayado */
+}
+
+li a:hover {
+  cursor: pointer;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  z-index: 1000;
+}
+
+.logo-text {
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+}
+
+.navbar-center {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  max-width: 500px;
+  margin: 0 1rem;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: none;
+  background-color: #ebe5ff;
+  color: #4b4a65;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.search-btn {
+  border: none;
+  background-color: #c4bbff;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  color: #7f7adb;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background-color: #a39cf9;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.icon-btn:hover {
+  color: #7f7adb;
+}
+
+/* Contenedor principal: ahora con fondo blanco semitransparente y centrado */
+.main-container {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1.2rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  width: 100%;
+  max-height: 95vh;
+  overflow-y: auto;
+  z-index: 10;
+  margin-top: 50px; /* Para no tapar navbar */
+}
+
+/* LOGO */
+.logo-truekki {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.logo-truekki img {
+  max-width: 140px;
+  height: auto;
+}
+
+/* FORMULARIO */
+label {
+  font-weight: bold;
+  color: var(--azul-oscuro);
+  font-size: 0.95rem;
+  display: block;
+  margin-top: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: var(--azul-medio);
+  outline: none;
+}
+
+/* INFO BOX */
+.info-box {
+  background-color: var(--azul-claro);
+  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 1.2rem;
+  color: var(--gris-texto);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.icon {
+  font-size: 1rem;
+  margin-right: 0.25rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .main-container {
+    padding: 1rem;
+    max-width: 90vw;
+  }
+
+  .logo-truekki img {
+    max-width: 120px;
+  }
+
+  .info-box {
+    font-size: 0.85rem;
+    max-height: 180px;
+  }
+
+  input[type="text"] {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  .navbar-center {
+    max-width: 200px;
+    margin: 0 0.5rem;
+  }
+}

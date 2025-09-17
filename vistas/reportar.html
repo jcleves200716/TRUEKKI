@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/reportar.css">
+    <title>Reportar_Usuarios</title>
+</head>
+<body>
+<!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-left">
+      <span class="logo-text">TRUEKKI</span>
+    </div>
+    <div class="navbar-center">
+      <input
+        type="search"
+        class="search-input"
+        placeholder="Buscar..."
+        aria-label="Buscar"
+      />
+      <button class="search-btn">+</button>
+    </div>
+    <ul><li><a href="./barra.html">Volver al Menu</a></li>
+    
+    </ul>
+    <div class="navbar-right">
+      <button class="icon-btn">❤️</button>
+      <button class="icon-btn">💬</button>
+      <button class="icon-btn">☰</button>
+    </div>
+  </nav>
+<div class="contenedor">
+    <!-- Columna izquierda -->
+    <div class="reportado">
+        <h1>⛔ Reportar Usuario</h1>
+        <form>
+            <div class="form-group">
+                <label for="usuario">⚠️ Usuario reportado</label>
+                <input type="text" id="usuario" name="usuario" placeholder="Nombre del usuario que desea reportar">
+            </div>
+
+            <div class="form-group">
+                <label for="motivo">❓ Motivo</label>
+                <select id="motivo" name="motivo">
+                    <option value="">-- Selecciona --</option>
+                    <option value="spam">Lenguaje Ofensivo</option>
+                    <option value="acoso">Posible Estafa</option>
+                    <option value="fraude">Acoso</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="evidencia">📰 Evidencia</label>
+                <div class="form-group-file">
+                    <!-- input oculto -->
+                    <input type="file" id="evidencia" name="file" accept="image/*,video/*,application/pdf" hidden>
+                    
+                    <!-- botón personalizado -->
+                    <button type="button" onclick="document.getElementById('evidencia').click()" class="btn-file">
+                        Seleccionar archivo
+                    </button>
+                    
+                    <!-- nombre del archivo -->
+                    <span id="file-name">Ningún archivo seleccionado</span>
+                </div>
+            </div>
+
+            <div class="form-group descripcion">
+                <label for="detalles">📝 Detalles</label>
+                <textarea id="detalles" name="detalles" placeholder="Escribe aquí los detalles"></textarea>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Enviar reporte</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="info">
+        <h2>ℹ️ ¿Por qué deberías reportar?</h2>
+        <p>
+            El reporte ayuda a mantener la comunidad segura y confiable.  
+            Al reportar usuarios con conductas indebidas, contribuyes a:  
+        </p>
+        <ul>
+            <li>🚫 Evitar fraudes y estafas</li>
+            <li>🛡️ Prevenir acoso o lenguaje ofensivo</li>
+            <li>✅ Mantener un ambiente respetuoso</li>
+        </ul>
+        <p>
+            Todos los reportes son revisados cuidadosamente para garantizar la protección de los usuarios.
+        </p>
+
+        <div class="imagen"></div>
+    </div>
+</div>
+
+<script>
+    // Mostrar nombre del archivo seleccionado
+    const evidencia = document.getElementById("evidencia");
+    const fileName = document.getElementById("file-name");
+
+    evidencia.addEventListener("change", () => {
+        fileName.textContent = evidencia.files.length > 0 
+            ? evidencia.files[0].name 
+            : "Ningún archivo seleccionado";
+    });
+</script>
+</body>
+</html>

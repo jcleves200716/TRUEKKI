@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat | TRUEKKI</title>
+  <link rel="stylesheet" href="/css/chat.css">
+</head>
+<body>
+  <!-- Botón hamburguesa -->
+  <button class="toggle-btn">☰</button>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="./barra.html">Explorar</a>
+    <a href="./publicar_producto.html">Publicar</a>
+    <a href="#">Notificaciones</a>
+    <a href="#">Historial</a>
+    <a href="./perfil_vendedor.html">Perfil</a>
+    <a href="./catalogo.html">Mis productos</a>
+    <a href="#">Ayuda</a>
+  </div>
+
+  <!-- Contenedor principal -->
+  <div class="main-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">TRUEKKI</div>
+      <div class="search-bar">
+        <input type="text" placeholder="Buscar...">
+      </div>
+      <div class="icons">
+        <span>♡</span>
+      </div>
+    </header>
+
+    <!-- Cuerpo del chat -->
+    <div class="chat-container">
+      <!-- Lista de usuarios -->
+      <div class="user-list">
+        <input type="text" placeholder="Buscar...">
+        <ul>
+          <li class="active">Juan Pérez</li>
+          <li>Diego Gallego</li>
+          <li>Laura Inchima</li>
+        </ul>
+      </div>
+
+      <!-- Ventana de chat -->
+      <div class="chat-window">
+        <div class="chat-header">
+          Juan Pérez
+          <button class="delete-btn" onclick="deleteMessages()">🗑 Borrar Mensajes</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="message sent">¡Hola! ¿Cómo estás?</div>
+          <div class="message received">Hola, bien ¿y tú?</div>
+          <div class="message sent">Estoy interesado en tu artículo</div>
+        </div>
+        <div class="chat-input">
+          <input type="text" id="messageInput" placeholder="Escribe un mensaje...">
+          <button onclick="sendMessage()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    // Sidebar toggle
+    document.querySelector(".toggle-btn").addEventListener("click", () => {
+      document.querySelector(".sidebar").classList.toggle("active");
+    });
+
+    // Enviar mensaje
+    function sendMessage() {
+      const input = document.getElementById("messageInput");
+      const message = input.value.trim();
+
+      if (message !== "") {
+        const msgDiv = document.createElement("div");
+        msgDiv.classList.add("message", "sent");
+        msgDiv.textContent = message;
+
+        document.getElementById("chatMessages").appendChild(msgDiv);
+        input.value = "";
+        document.getElementById("chatMessages").scrollTop = document.getElementById("chatMessages").scrollHeight;
+      }
+    }
+
+    // Borrar todos los mensajes
+    function deleteMessages() {
+      if (confirm("¿Seguro que quieres borrar todos los mensajes de este chat?")) {
+        document.getElementById("chatMessages").innerHTML = "";
+      }
+    }
+  </script>
+</body>
+</html>

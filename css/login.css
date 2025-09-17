@@ -116,6 +116,57 @@
             top: 40%;
             color: var(--primary-color);
         }
+
+        .input-group {
+  position: relative;
+  width: 100%;
+  margin: 15px 0;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 40px 12px 40px; /* espacio para íconos */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #4A90E2;
+  box-shadow: 0 0 4px rgba(74, 144, 226, 0.5);
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 18px;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-password img.ojo {
+  width: 22px;
+  height: 22px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.toggle-password img.ojo:hover {
+  opacity: 1;
+}
+
         
         .login-btn {
             width: 100%;

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Conexión</title>
+</head>
+<body>
+    <h1>Test de Conexión con el Servidor</h1>
+    <button onclick="testConnection()">Probar Conexión</button>
+    <div id="result"></div>
+
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Probando conexión...</p>';
+            
+            try {
+                // Test 1: Conexión básica
+                const response = await fetch('http://localhost  :5000/');
+                resultDiv.innerHTML += `<p>Status: ${response.status}</p>`;
+                
+                // Test 2: Obtener productos
+                const productsResponse = await fetch('http://localhost:5000/productos');
+                const productsResult = await productsResponse.json();
+                resultDiv.innerHTML += `<p>Productos: ${productsResult.success ? 'Éxito' : 'Error'}</p>`;
+                
+                // Test 3: Obtener un producto específico
+                const productResponse = await fetch('http://localhost:5000/producto/1');
+                if (productResponse.ok) {
+                    const productResult = await productResponse.json();
+                    resultDiv.innerHTML += `<p>Producto 1: ${productResult.success ? 'Éxito' : 'Error'}</p>`;
+                } else {
+                    resultDiv.innerHTML += `<p>Producto 1: Error ${productResponse.status}</p>`;
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<p style="color: red;">Error: ${error.message}</p>`;
+                resultDiv.innerHTML += `<p>Verifica que el servidor esté ejecutándose en http://localhost:5000</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
