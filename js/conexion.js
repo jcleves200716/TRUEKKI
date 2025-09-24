@@ -55,26 +55,29 @@ app.get('/vistas/login.html', (req, res) => {
 });
 
 
-// poiner un email valido
+// ✅ REGISTRO MODIFICADO - Sin teléfono y dirección obligatorios
 app.post('/registro', async (req, res) => {
-    const { nombre, email, password, confirmPassword, telefono, direccion } = req.body;
+    const { nombre, email, password, confirmPassword } = req.body;
 
     const dominiosValidos = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
 
     function validarDominio(email) {
         const dominio = email.split('@')[1].toLowerCase();
         return dominiosValidos.includes(dominio);
-    }   
-// validación de email
+    }
+
+    // Validación de email
     if (!validarDominio(email)) {
         return res.status(400).json({ success: false, message: 'Dominio de correo no válido' });
     }
 
-    if (!nombre || !email || !password || !confirmPassword || !telefono || !direccion) {
-        return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios' });
+    // ✅ VALIDACIÓN CORREGIDA - Solo campos esenciales
+    if (!nombre || !email || !password) {
+        return res.status(400).json({ success: false, message: 'Nombre, email y contraseña son obligatorios' });
     }
 
-    if (password !== confirmPassword) {
+    // Validar confirmación de contraseña si está presente
+    if (confirmPassword && password !== confirmPassword) {
         return res.status(400).json({ success: false, message: 'Las contraseñas no coinciden' });
     }
 
@@ -95,9 +98,11 @@ app.post('/registro', async (req, res) => {
             }
 
             const hashedPassword = await bcrypt.hash(password, 10);
-            const insertUserQuery = 'INSERT INTO usuario (nombre, email, contraseña, numero_telefono, direccion) VALUES (?, ?, ?, ?, ?)';
             
-            conexion.query(insertUserQuery, [nombre, email, hashedPassword, telefono, direccion], (error, results) => {
+            // ✅ INSERT modificado - teléfono y dirección como NULL por defecto
+            const insertUserQuery = 'INSERT INTO usuario (nombre, email, contraseña, numero_telefono, direccion) VALUES (?, ?, ?, NULL, NULL)';
+            
+            conexion.query(insertUserQuery, [nombre, email, hashedPassword], (error, results) => {
                 if (error) {
                     console.error("Error insertando usuario:", error);
                     return res.status(500).json({ success: false, message: 'Error al registrar usuario: ' + error.message });

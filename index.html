@@ -1,24 +1,139 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRUEKKI - Intercambios seguros y rápidos</title>
-    <link rel="stylesheet" href="../css/index.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRUEKKI</title>
+  <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="logo">TRUEKKI</h1>
-        <h2 class="tagline">Intercambios seguros y rápidos</h2>
-        
-        <div class="buttons">
-            <button class="btn btn-login" id="loginBtn" onclick="redirectToLogin() ">INICIAR SESIÓN</button>
-            <button class="btn btn-register" id="loginBtn" onclick="redirectToRegister()">REGISTRARSE</button>
+  <!-- HEADER -->
+  <header class="header">
+    <h1>TRUEKKI</h1>
+    <p>
+    Truekki es una plataforma para intercambiar, comprar o vender objetos de segunda mano y darles una nueva vida.
+    </p>
+    <a href="./vistas/login.html" class="button">Iniciar Sesión</a>
+    <a href="./vistas/registro.html" class="button">Registrarse</a>
+  </header>
+
+  <!-- CATEGORÍAS -->
+  <section class="categories">
+    <h2>EXPLORAR POR CATEGORÍAS</h2>
+    <div class="categories-grid">
+      
+      <!-- Electrodomésticos -->
+      <div class="category">
+          <h3>ELECTRODOMÉSTICOS</h3>
+        <img src="../TRUEKKI-main/img/hogar.png" alt="Electrodomésticos">
+        <div class="category-info">
+          <p>5,420 productos disponibles</p>
+          <a href="../TRUEKKI-main/vistas/login.html">Ver productos</a>
         </div>
-         
+          <!-- SECCIÓN: ELECTRODOMÉSTICOS -->
+  <section id="electrodomesticos" class="product-section">
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="../TRUEKKI-main/img/LICUADORA OSTER.PNG" alt="Licuadora">
+        <h4>Licuadora Oster</h4>
+        <p>Estado: Usado</p>
+        <p>Intercambio disponible</p>
+      </div>
+      <div class="product-card">
+        <img src="../TRUEKKI-main/img/microondas1.webp" alt="Microondas">
+        <h4>Microondas Samsung</h4>
+        <p>Estado: Como nuevo</p>
+        <p>Precio: $500 MXN</p>
+      </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <script src="../js/scrip.js"></script>
+  </section>
+      </div>
+
+      <!-- Ropa -->
+      <div class="category">
+            <h3>ROPA</h3>
+        <img src="../TRUEKKI-main/img/ropa.png" alt="Ropa">
+        <div class="category-info">
+          <p>8,230 productos disponibles</p>
+          <a href="../TRUEKKI-main/vistas/login.html">Ver productos</a>
+        </div>
+          <!-- SECCIÓN: ROPA -->
+  <section id="ropa" class="product-section">
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="../TRUEKKI-main/img/Chaqueta de mezclilla.jpg" alt="Chaqueta">
+        <h4>Chaqueta de mezclilla</h4>
+        <p>Talla M</p>
+        <p>Intercambio o venta</p>
+      </div>
+      <div class="product-card">
+        <img src="../TRUEKKI-main/img/Pantalón Levi's.png" alt="Pantalón">
+        <h4>Pantalón Levi's</h4>
+        <p>Talla 32</p>
+        <p>Buen estado</p>
+      </div>
+    </div>
+  </section>
+      </div>
+
+      <!-- Libros -->
+      <div class="category">
+          <h3>LIBROS</h3>
+
+        <img src="../TRUEKKI-main/img/libros.jpg" alt="Libros">
+        <div class="category-info">
+          <p>3,890 productos disponibles</p>
+          <a href="../TRUEKKI-main/vistas/login.html">Ver productos</a>
+        </div>
+                <!-- SECCIÓN: LIBROS -->
+  <section id="libros" class="product-section">
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="../TRUEKKI-main/img/libro.principito.png" alt="El Principito">
+        <h4>El Principito</h4>
+        <p>Autor: Antoine de Saint-Exupéry</p>
+        <p>Buen estado</p>
+      </div>
+      <div class="product-card">
+        <img src="../TRUEKKI-main/img/HARRY.POTTER.PNG.jpg" alt="Harry Potter">
+        <h4>Harry Potter</h4>
+        <p>Autor: J.K. Rowling</p>
+        <p>Intercambio disponible</p>
+      </div>
+    </div>
+      </div>
+
+  </section>
+    </div>
+  </section>
+  <!-- SOBRE NOSOTROS -->
+  <section id="sobre-nosotros" style="padding: 60px 20px; background-color: #f2f4f8;">
+    <div style="max-width: 900px; margin: auto; background-color: white; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+      <h2 style="font-size: 2.2rem; color: #222; margin-bottom: 10px; text-align: center;">Sobre Nosotros</h2>
+      <hr style="width: 60px; height: 3px; background-color: #0056d2; border: none; margin: 20px auto;">
+      <p style="text-align: center;">TRUEKKI</strong> es una plataforma para dar nueva vida a lo que ya no usas. Aquí puedes intercambiar, 
+      comprar o vender productos de segunda mano, conectando con miles de personas en busca de algo nuevo. Nuestro objetivo es fomentar el ahorro, 
+      el cuidado del medio ambiente y crear una comunidad solidaria.</p>
+      <div style="text-align: center;">
+      </div>
+    </div>
+  </section>
+    <!-- REGISTRO -->       
+
+
+    <section id="registro" class="registro-section">
+      <h2>ÚNETE A TRUEKKI</h2>
+      <p>Crea tu cuenta para empezar a intercambiar, comprar y vender productos de segunda mano.</p>
+      <a href="./vistas/registro.html" class="button">Regístrate</a>
+    </section>
+    <!-- CONTACTO -->   
+    <section id="contacto" class="contact-section">
+      <h2>CONTÁCTANOS</h2>
+      <p>¿Tienes preguntas o necesitas ayuda? Estamos aquí para asistirte.</p>
+      <a href="./vistas/login.html" class="button">Iniciar Sesión</a>
+    </section>
+
+    <!-- FOOTER -->
+  <footer></footer>
 </body>
- </html>
+</html>
