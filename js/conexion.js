@@ -279,7 +279,47 @@ app.get('/productos-usuario/:idUsuario', (req, res) => {
     });
 });
 
+// ✅ Ruta para eliminar producto - VERSIÓN CORREGIDA
+app.delete('/producto/:id', (req, res) => {
+    const productId = req.params.id;
+    
+    if (!productId || isNaN(productId)) {
+        console.log("❌ ID inválido:", productId);
+        return res.status(400).json({ success: false, message: 'ID de producto inválido' });
+    }
 
+    // Primero verificamos que el producto exista
+    const checkQuery = 'SELECT * FROM productos WHERE id_producto = ?';
+    
+    conexion.query(checkQuery, [productId], (error, results) => {
+        if (error) {
+            console.error("❌ Error en consulta de verificación:", error);
+            return res.status(500).json({ success: false, message: 'Error al verificar producto' });
+        }
+        
+        if (results.length === 0) {
+            console.log("❌ Producto no encontrado ID:", productId);
+            return res.status(404).json({ success: false, message: 'Producto no encontrado' });
+        }
+        
+        // Eliminar el producto
+        const deleteQuery = 'DELETE FROM productos WHERE id_producto = ?';
+        
+        conexion.query(deleteQuery, [productId], (error, results) => {
+            if (error) {
+                console.error("❌ Error eliminando producto:", error);
+                return res.status(500).json({ success: false, message: 'Error al eliminar producto: ' + error.message });
+            }
+            
+            console.log(" Producto eliminado exitosamente ID:", productId);
+            res.status(200).json({ 
+                success: true, 
+                message: 'Producto eliminado exitosamente',
+                deletedId: productId
+            });
+        });
+    });
+});
 
 // ✅ Ruta para obtener información del usuario por ID
 app.get('/usuario/:id', (req, res) => {
@@ -339,6 +379,138 @@ app.get('/productos-usuario/:idUsuario', (req, res) => {
         res.status(200).json({ success: true, productos: results });
     });
 });
+
+// ✅ RUTAS PARA FAVORITOS
+
+// Agregar producto a favoritos
+app.post('/favoritos/agregar', (req, res) => {
+    const { id_usuario, id_producto } = req.body;
+    
+    console.log("📍 Agregando a favoritos - Usuario:", id_usuario, "Producto:", id_producto);
+    
+    if (!id_usuario || !id_producto) {
+        return res.status(400).json({ success: false, message: 'Datos incompletos' });
+    }
+    
+    // Verificar si el producto existe
+    const checkProductQuery = 'SELECT * FROM productos WHERE id_producto = ?';
+    conexion.query(checkProductQuery, [id_producto], (error, results) => {
+        if (error) {
+            console.error("❌ Error verificando producto:", error);
+            return res.status(500).json({ success: false, message: 'Error al verificar producto' });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: 'Producto no encontrado' });
+        }
+        
+        // Verificar si ya está en favoritos
+        const checkFavoriteQuery = 'SELECT * FROM favoritos WHERE id_usuario = ? AND id_producto = ?';
+        conexion.query(checkFavoriteQuery, [id_usuario, id_producto], (error, results) => {
+            if (error) {
+                console.error("❌ Error verificando favorito:", error);
+                return res.status(500).json({ success: false, message: 'Error al verificar favorito' });
+            }
+            
+            if (results.length > 0) {
+                return res.status(400).json({ success: false, message: 'El producto ya está en favoritos' });
+            }
+            
+            // Agregar a favoritos
+            const insertQuery = 'INSERT INTO favoritos (id_usuario, id_producto) VALUES (?, ?)';
+            conexion.query(insertQuery, [id_usuario, id_producto], (error, results) => {
+                if (error) {
+                    console.error("❌ Error agregando a favoritos:", error);
+                    return res.status(500).json({ success: false, message: 'Error al agregar a favoritos' });
+                }
+                
+                console.log("✅ Producto agregado a favoritos ID:", results.insertId);
+                res.status(200).json({ 
+                    success: true, 
+                    message: 'Producto agregado a favoritos',
+                    id_favorito: results.insertId
+                });
+            });
+        });
+    });
+});
+
+// Eliminar producto de favoritos
+app.post('/favoritos/eliminar', (req, res) => {
+    const { id_usuario, id_producto } = req.body;
+    
+    console.log("📍 Eliminando de favoritos - Usuario:", id_usuario, "Producto:", id_producto);
+    
+    if (!id_usuario || !id_producto) {
+        return res.status(400).json({ success: false, message: 'Datos incompletos' });
+    }
+    
+    const deleteQuery = 'DELETE FROM favoritos WHERE id_usuario = ? AND id_producto = ?';
+    conexion.query(deleteQuery, [id_usuario, id_producto], (error, results) => {
+        if (error) {
+            console.error("❌ Error eliminando de favoritos:", error);
+            return res.status(500).json({ success: false, message: 'Error al eliminar de favoritos' });
+        }
+        
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Producto no encontrado en favoritos' });
+        }
+        
+        console.log("✅ Producto eliminado de favoritos");
+        res.status(200).json({ 
+            success: true, 
+            message: 'Producto eliminado de favoritos'
+        });
+    });
+});
+
+// Obtener favoritos de un usuario
+app.get('/favoritos/usuario/:idUsuario', (req, res) => {
+    const idUsuario = req.params.idUsuario;
+    
+    console.log("📍 Obteniendo favoritos del usuario:", idUsuario);
+    
+    const query = `
+        SELECT p.*, u.nombre as usuario_nombre, f.fecha_agregado 
+        FROM favoritos f 
+        JOIN productos p ON f.id_producto = p.id_producto 
+        JOIN usuario u ON p.id_usuario = u.id_usuario 
+        WHERE f.id_usuario = ? 
+        ORDER BY f.fecha_agregado DESC
+    `;
+    
+    conexion.query(query, [idUsuario], (error, results) => {
+        if (error) {
+            console.error("❌ Error obteniendo favoritos:", error);
+            return res.status(500).json({ success: false, message: 'Error al obtener favoritos' });
+        }
+        
+        console.log("✅ Favoritos encontrados:", results.length);
+        res.status(200).json({ 
+            success: true, 
+            favoritos: results 
+        });
+    });
+});
+
+// Verificar si un producto está en favoritos
+app.get('/favoritos/verificar/:idUsuario/:idProducto', (req, res) => {
+    const { idUsuario, idProducto } = req.params;
+    
+    const query = 'SELECT * FROM favoritos WHERE id_usuario = ? AND id_producto = ?';
+    conexion.query(query, [idUsuario, idProducto], (error, results) => {
+        if (error) {
+            console.error("❌ Error verificando favorito:", error);
+            return res.status(500).json({ success: false, message: 'Error al verificar favorito' });
+        }
+        
+        res.status(200).json({ 
+            success: true, 
+            esFavorito: results.length > 0 
+        });
+    });
+});
+
 
 
 // Verificar si el usuario está logueado

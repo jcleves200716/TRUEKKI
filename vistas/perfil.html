@@ -24,8 +24,8 @@
     <nav>
         <div class="container">
             <ul class="nav-links">
-                <li><a onclick="window.location.href='index.html'">Inicio</a></li>
-                <li><a onclick="window.location.href='productos.html'">Productos</a></li>
+                <li><a onclick="window.location.href='barra.html'">Inicio</a></li>
+                <li><a onclick="window.location.href='barra.html'">Productos</a></li>
                 <li><a href="#">Categorías</a></li>
                 <li><a href="#">Ofertas</a></li>
                 <li><a href="#">Contacto</a></li>
@@ -191,6 +191,7 @@
             
             // Obtener usuario del localStorage
             currentUser = getCurrentUser();
+            console.log('Usuario actual:', currentUser);
             
             // Cargar información del usuario
             await loadUserData();
@@ -202,10 +203,16 @@
         // Cargar datos del usuario desde la API
         async function loadUserData() {
             try {
-                showLoading('profile-section');
+                console.log('Cargando datos del usuario ID:', currentUser.id);
                 
                 const response = await fetch(`http://localhost:5000/usuario/${currentUser.id}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
                 const result = await response.json();
+                console.log('Datos del usuario recibidos:', result);
                 
                 if (result.success) {
                     const usuario = result.usuario;
@@ -222,38 +229,48 @@
                     document.getElementById('bio').value = usuario.bio || '';
                     document.getElementById('location').value = usuario.direccion || '';
                     
-                    hideLoading('profile-section');
                 } else {
-                    showError('Error al cargar datos del usuario');
-                    hideLoading('profile-section');
+                    throw new Error(result.message || 'Error al cargar datos del usuario');
                 }
             } catch (error) {
                 console.error('Error cargando datos del usuario:', error);
-                showError('Error de conexión al cargar datos');
-                hideLoading('profile-section');
+                showMessage('Error al cargar perfil: ' + error.message, 'error');
             }
         }
 
         // Cargar productos del usuario
         async function loadUserProducts() {
             try {
-                showLoading('my-products-section');
+                console.log('Cargando productos del usuario ID:', currentUser.id);
                 
                 const response = await fetch(`http://localhost:5000/productos-usuario/${currentUser.id}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
                 const result = await response.json();
+                console.log('Productos recibidos:', result);
                 
                 if (result.success) {
                     userProducts = result.productos;
                     renderUserProducts();
-                    hideLoading('my-products-section');
                 } else {
-                    showError('Error al cargar productos');
-                    hideLoading('my-products-section');
+                    throw new Error(result.message || 'Error al cargar productos');
                 }
             } catch (error) {
                 console.error('Error cargando productos del usuario:', error);
-                showError('Error de conexión al cargar productos');
-                hideLoading('my-products-section');
+                showMessage('Error al cargar productos: ' + error.message, 'error');
+                
+                // Mostrar estado vacío
+                const productsGrid = document.getElementById('products-grid');
+                productsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error al cargar productos</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
             }
         }
 
@@ -274,20 +291,31 @@
             }
             
             productsGrid.innerHTML = userProducts.map(product => `
-                <div class="product-card">
+                <div class="product-card" id="product-${product.id_producto}">
                     <div class="product-image">
                         ${product.foto ? 
-                            `<img src="http://localhost:5000/imagen-producto/${product.id_producto}" alt="${product.titulo}" onerror="this.style.display='none'; this.parentElement.innerHTML='${product.titulo.substring(0, 2).toUpperCase()}'">` : 
-                            product.titulo.substring(0, 2).toUpperCase()
+                            `<img src="http://localhost:5000/imagen-producto/${product.id_producto}" alt="${product.titulo}" onerror="this.style.display='none'">` : 
+                            '<i class="fas fa-image"></i>'
                         }
                     </div>
                     <div class="product-info">
                         <div class="product-title">${product.titulo}</div>
+                        <div class="product-category">${product.categoria}</div>
                         <div class="product-price">${product.precio ? `$${parseInt(product.precio).toLocaleString()}` : 'Intercambio'}</div>
-                        <div class="product-stats">${product.intercambios_realizados || 0} intercambios</div>
+                        <div class="product-stats">
+                            <span class="product-state">${product.estado}</span>
+                            <span class="product-intercambios">${product.intercambios_realizados || 0} intercambios</span>
+                        </div>
                         <div class="product-actions">
-                            <button class="btn btn-outline" onclick="editProduct(${product.id_producto})">Editar</button>
-                            <button class="btn btn-primary" onclick="viewProduct(${product.id_producto})">Ver</button>
+                            <button class="btn btn-outline" onclick="editProduct(${product.id_producto})">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-primary" onclick="viewProduct(${product.id_producto})">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="btn btn-danger" onclick="confirmDeleteProduct(${product.id_producto})">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -328,6 +356,10 @@
                     })
                 });
                 
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
                 const result = await response.json();
                 
                 if (result.success) {
@@ -341,23 +373,27 @@
                     // Actualizar usuario en localStorage
                     const updatedUser = {...currentUser, nombre: nombre};
                     localStorage.setItem('usuario', JSON.stringify(updatedUser));
+                    currentUser = updatedUser;
                 } else {
-                    showMessage('Error: ' + result.message, 'error');
+                    throw new Error(result.message || 'Error al actualizar perfil');
                 }
             } catch (error) {
                 console.error('Error actualizando perfil:', error);
-                showMessage('Error de conexión al actualizar perfil', 'error');
+                showMessage('Error al actualizar perfil: ' + error.message, 'error');
             }
         }
 
         // Función para cambiar entre secciones
         function showSection(sectionId) {
+            // Ocultar todas las secciones
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
             
+            // Mostrar sección seleccionada
             document.getElementById(sectionId + '-section').classList.add('active');
             
+            // Actualizar menú activo
             document.querySelectorAll('.sidebar-menu a').forEach(link => {
                 link.classList.remove('active');
             });
@@ -383,35 +419,139 @@
             window.location.href = `editar_producto.html?id=${productId}`;
         }
 
-        // Mostrar mensaje
-        function showMessage(text, type) {
-            const messageElement = document.getElementById('profile-message');
-            messageElement.textContent = text;
-            messageElement.className = `message-${type}`;
+        // Confirmar eliminación de producto
+        function confirmDeleteProduct(productId) {
+            const productElement = document.getElementById(`product-${productId}`);
+            if (!productElement) {
+                showMessage('Error: No se pudo encontrar el producto', 'error');
+                return;
+            }
             
-            if (type !== 'loading') {
-                setTimeout(() => {
-                    messageElement.className = 'message-hidden';
-                }, 3000);
+            const productTitle = productElement.querySelector('.product-title').textContent;
+            
+            if (confirm(`¿Estás seguro de que quieres eliminar el producto "${productTitle}"?\n\nEsta acción no se puede deshacer.`)) {
+                deleteProduct(productId);
             }
         }
 
-        // Mostrar estado de carga
-        function showLoading(section) {
-            const sectionElement = document.getElementById(section);
-            sectionElement.classList.add('loading');
+        // Eliminar producto - ADAPTADA A TU BACKEND (POST /producto/:id/eliminar)
+    // Eliminar producto - VERSIÓN CON DELETE
+async function deleteProduct(productId) {
+    try {
+        console.log('Eliminando producto ID:', productId);
+        
+        const deleteBtn = document.querySelector(`#product-${productId} .btn-danger`);
+        if (deleteBtn) {
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Eliminando...';
+            deleteBtn.disabled = true;
         }
+        
+        // Usar DELETE en lugar de POST
+        const response = await fetch(`http://localhost:5000/producto/${productId}`, {
+            method: 'DELETE',  // Cambiado a DELETE
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        console.log('Respuesta del servidor:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error HTTP: ${response.status} - ${errorText}`);
+        }
+        
+        const result = await response.json();
+        console.log('Resultado de eliminación:', result);
+        
+        if (result.success) {
+            showMessage('Producto eliminado correctamente', 'success');
+            
+            const productElement = document.getElementById(`product-${productId}`);
+            if (productElement) {
+                productElement.style.opacity = '0';
+                productElement.style.transform = 'translateX(-100px)';
+                productElement.style.transition = 'all 0.5s ease';
+                
+                setTimeout(() => {
+                    productElement.remove();
+                    
+                    const remainingProducts = document.querySelectorAll('.product-card');
+                    if (remainingProducts.length === 0) {
+                        loadUserProducts();
+                    }
+                }, 500);
+            }
+        } else {
+            throw new Error(result.message || 'Error del servidor');
+        }
+        
+    } catch (error) {
+        console.error('Error eliminando producto:', error);
+        showMessage('Error al eliminar producto: ' + error.message, 'error');
+        
+        const deleteBtn = document.querySelector(`#product-${productId} .btn-danger`);
+        if (deleteBtn) {
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Eliminar';
+            deleteBtn.disabled = false;
+        }
+    }
+}
 
-        // Ocultar estado de carga
-        function hideLoading(section) {
-            const sectionElement = document.getElementById(section);
-            sectionElement.classList.remove('loading');
+
+        // Mostrar mensaje
+        function showMessage(text, type) {
+            // Buscar elemento existente o crear uno nuevo
+            let messageElement = document.getElementById('global-message');
+            if (!messageElement) {
+                messageElement = document.createElement('div');
+                messageElement.id = 'global-message';
+                messageElement.style.position = 'fixed';
+                messageElement.style.top = '20px';
+                messageElement.style.right = '20px';
+                messageElement.style.zIndex = '1000';
+                messageElement.style.padding = '15px 20px';
+                messageElement.style.borderRadius = '8px';
+                messageElement.style.color = 'white';
+                messageElement.style.fontWeight = 'bold';
+                messageElement.style.maxWidth = '400px';
+                messageElement.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+                messageElement.style.transition = 'all 0.3s ease';
+                document.body.appendChild(messageElement);
+            }
+            
+            // Configurar estilo según el tipo
+            if (type === 'success') {
+                messageElement.style.backgroundColor = '#28a745';
+            } else if (type === 'error') {
+                messageElement.style.backgroundColor = '#dc3545';
+            } else if (type === 'loading') {
+                messageElement.style.backgroundColor = '#007bff';
+            }
+            
+            messageElement.innerHTML = text;
+            messageElement.style.display = 'block';
+            messageElement.style.opacity = '1';
+            
+            // Ocultar después de 4 segundos (excepto para loading)
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    messageElement.style.opacity = '0';
+                    setTimeout(() => {
+                        messageElement.style.display = 'none';
+                    }, 300);
+                }, 4000);
+            }
+            
+            return messageElement;
         }
 
         // Mostrar error
         function showError(message) {
-            alert(message);
+            showMessage(message, 'error');
         }
     </script>
+
+
 </body>
 </html>
