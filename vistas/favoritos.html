@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Favoritos - TRUEKKI</title>
+    <link rel="stylesheet" href="../estilos/barra.css">
+    <link rel="stylesheet" href="../css/favoritos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header (usando el mismo de barra.html) -->
+    <header>
+        <div class="header-content">
+            <h1 onclick="window.location.href='barra.html'">TRUEKKI</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar productos...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="icons">
+                <span class="icon" onclick="window.location.href='favoritos.html'">
+                    <i class="fas fa-heart"></i>
+                </span>
+                <span class="icon" onclick="window.location.href='perfil.html'">
+                    <i class="fas fa-user"></i>
+                </span>
+                <span class="icon menu-btn" onclick="openMenu()">
+                    <i class="fas fa-bars"></i>
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <h2 style="margin: 30px 0 20px; color: #2c3e50;">Mis Productos Favoritos</h2>
+        
+        <div id="favoritos-container" class="products-grid">
+            <!-- Los favoritos se cargarán aquí -->
+        </div>
+
+        <div id="sin-favoritos" class="empty-state" style="display: none;">
+            <i class="far fa-heart"></i>
+            <h3>No tienes productos favoritos</h3>
+            <p>Explora nuestros productos y agrega tus favoritos haciendo clic en el corazón</p>
+            <button class="btn btn-primary" onclick="window.location.href='barra.html'">Explorar Productos</button>
+        </div>
+
+        <div id="cargando-favoritos" class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Cargando tus favoritos...</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TRUEKKI</h3>
+                    <p>Plataforma de intercambio y venta de productos de segunda mano.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces rápidos</h3>
+                    <ul>
+                        <li><a onclick="window.location.href='barra.html'">Inicio</a></li>
+                        <li><a onclick="window.location.href='perfil.html'">Mi Perfil</a></li>
+                        <li><a onclick="window.location.href='favoritos.html'">Favoritos</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 TRUEKKI. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Cargar favoritos al iniciar la página
+        document.addEventListener('DOMContentLoaded', cargarFavoritos);
+
+        async function cargarFavoritos() {
+            const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+            
+            if (!usuario.id) {
+                alert('Debes iniciar sesión para ver tus favoritos');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/favoritos/usuario/${usuario.id}`);
+                const result = await response.json();
+
+                const container = document.getElementById('favoritos-container');
+                const sinFavoritos = document.getElementById('sin-favoritos');
+                const cargando = document.getElementById('cargando-favoritos');
+
+                cargando.style.display = 'none';
+
+                if (result.success && result.favoritos.length > 0) {
+                    container.innerHTML = result.favoritos.map(producto => `
+                        <div class="product-card" data-product-id="${producto.id_producto}">
+                            <a href="producto.html?id=${producto.id_producto}" class="card-link"></a>
+                            <div class="product-overlay">
+                                <button class="btn-wishlist favorito-activo" 
+                                        onclick="event.stopPropagation(); eliminarFavorito(${producto.id_producto}, this)">
+                                    <i class="fas fa-heart" style="color: #dc3545;"></i>
+                                </button>
+                            </div>
+                            <div class="product-image">
+                                ${producto.foto ? 
+                                    `<img src="http://localhost:5000/imagen-producto/${producto.id_producto}" 
+                                         alt="${producto.titulo}">` : 
+                                    '<div>Imagen no disponible</div>'
+                                }
+                            </div>
+                            <div class="product-info">
+                                <div class="product-category">${producto.categoria}</div>
+                                <h3 class="product-title">${producto.titulo}</h3>
+                                <div class="product-price">$${parseInt(producto.precio).toLocaleString()}</div>
+                                <div class="product-location">
+                                    <i class="fas fa-map-marker-alt"></i> ${producto.ciudad}, ${producto.barrio}
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn btn-primary" onclick="event.stopPropagation(); window.location.href='producto.html?id=${producto.id_producto}'">Ver Detalles</button>
+                                    <button class="btn btn-outline" onclick="event.stopPropagation(); eliminarFavorito(${producto.id_producto}, this.closest('.product-card'))">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    sinFavoritos.style.display = 'none';
+                    container.style.display = 'grid';
+                } else {
+                    container.style.display = 'none';
+                    sinFavoritos.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error cargando favoritos:', error);
+                document.getElementById('cargando-favoritos').innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error al cargar favoritos</h3>
+                    <p>Intenta recargar la página</p>
+                    <button class="btn btn-primary" onclick="location.reload()">Reintentar</button>
+                `;
+            }
+        }
+
+        async function eliminarFavorito(idProducto, elemento) {
+            if (!confirm('¿Estás seguro de que quieres eliminar este producto de tus favoritos?')) {
+                return;
+            }
+
+            const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+            
+            try {
+                const response = await fetch('http://localhost:5000/favoritos/eliminar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id_usuario: usuario.id,
+                        id_producto: idProducto
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Eliminar el elemento del DOM
+                    if (elemento.closest) {
+                        elemento.closest('.product-card').remove();
+                    } else {
+                        elemento.remove();
+                    }
+                    
+                    // Verificar si quedan favoritos
+                    const container = document.getElementById('favoritos-container');
+                    if (container.children.length === 0) {
+                        container.style.display = 'none';
+                        document.getElementById('sin-favoritos').style.display = 'block';
+                    }
+                    
+                    mostrarNotificacion('Producto eliminado de favoritos');
+                } else {
+                    alert('Error al eliminar: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error eliminando favorito:', error);
+                alert('Error al eliminar el favorito');
+            }
+        }
+
+        function mostrarNotificacion(mensaje) {
+            // Implementar notificación similar a la de producto.html
+            alert(mensaje); // Temporal - puedes mejorar esto
+        }
+    </script>
+</body>
+</html>

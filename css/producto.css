@@ -633,5 +633,250 @@ header h1:hover {
   
   .comentario img {
     align-self: center;
+  } 
+}
+
+.btn-favorito {
+    background: none;
+    border: 2px solid #dc3545;
+    color: #dc3545;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.btn-favorito:hover {
+    background: #dc3545;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-favorito.favorito-activo {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.btn-favorito.favorito-activo i {
+    color: white;
+}
+
+.favorite-section {
+    margin: 20px 0;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+/* Estilos para el modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #28a745;
+  color: white;
+}
+
+.modal-header h3 {
+  margin: 0;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+}
+
+.modal-body {
+  padding: 20px;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #007bff;
+  color: #007bff;
+}
+
+.btn-outline:hover {
+  background: #007bff;
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Mejoras para el botón de enviar mensaje */
+.send-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.send-btn:disabled:hover {
+  background: #6c757d;
+  transform: none;
+}
+
+/* Responsive para modal */
+@media (max-width: 480px) {
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-content {
+    margin: 20px;
   }
 }
+    /* Estilos para el modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #28a745;
+      color: white;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .modal-body {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: #007bff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #0056b3;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #007bff;
+      color: #007bff;
+    }
+
+    .btn-outline:hover {
+      background: #007bff;
+      color: white;
+    }
+  

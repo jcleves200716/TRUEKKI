@@ -4,20 +4,46 @@
   <meta charset="UTF-8">
   <title>TRUEKKI - Detalle de Producto</title>
   <link rel="stylesheet" href="../css/producto.css">
+  <link rel="stylesheet" href="../estilos/barra.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Encabezado -->
-  <header>
-    <h1 onclick="window.location.href='barra.html'">TRUEKKI</h1>
-    <input type="text" class="search-bar" placeholder="🔍 Buscar productos...">
-    <div class="header-icons">
-      <span onclick="window.location.href='favoritos.html'">♡</span>
-      <span onclick="window.location.href='perfil.html'">👤</span>
-      <span onclick="openMenu()">☰</span>
+ <header>
+    <div class="header-content">
+      <h1>TRUEKKI</h1>
+      <div class="search-bar">
+        <input type="text" placeholder="Buscar productos..." id="search-input">
+        <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+      </div>
+      <div class="icons">
+        <span class="icon" onclick="showSection('favorites')"><i class="fas fa-heart"></i></span>
+        <span class="icon" onclick="showSection('messages')"><i class="fas fa-comment"></i></span>
+        <span class="icon menu-btn" onclick="openMenu()"><i class="fas fa-bars"></i></span>
+      </div> 
     </div>
   </header>
+
+  <!-- Menú lateral -->
+  <div class="sidebar" id="sidebar">
+    <span class="close-btn" onclick="closeMenu()">✖</span>
+    <div class="user-info">
+      <div class="user-avatar" id="sidebar-avatar">US</div>
+      <div class="user-name" id="sidebar-name">Usuario</div>
+    </div>
+    <a href="publicar_producto.html"><i class="fas fa-plus-circle"></i> Publicar</a>
+    <a href="#"><i class="fas fa-bell"></i> Notificaciones</a>
+    <a href="chat.html"><i class="fas fa-comments"></i> Chats</a>
+    <a href="historial.html"><i class="fas fa-history"></i> Historial</a>
+    <a href="perfil.html"><i class="fas fa-user"></i> Perfil</a>
+    <a href="#"><i class="fas fa-question-circle"></i> Ayuda</a>
+    <a href="subastas.html"><i class="fas fa-gavel"></i> Subastas</a>
+    <a href="favoritos.html"><i class="fas fa-heart"></i> Mis Favoritos</a>
+    <button onclick="logout()" class="cerrar-sesion"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
   <!-- Contenido principal -->
   <div class="container" id="product-container">
@@ -33,22 +59,26 @@
     <div class="message-box">
       <div class="message-header">
         <span>ENVIAR MENSAJE AL VENDEDOR</span>
-        <input type="text" class="message-input" value="Hola, ¿sigue estando disponible?">
+        <input type="text" class="message-input" id="message-to-seller" placeholder="Hola, ¿sigue estando disponible?" value="Hola, ¿sigue estando disponible?">
       </div>
-      <button class="send-btn">ENVIAR MENSAJE</button>
+      <button class="send-btn" id="send-message-btn" onclick="sendMessageToSeller()">
+        <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
+      </button>
     </div>
 
     <!-- Perfil del vendedor -->
     <div class="perfil">
-      <p><b>LUIS FERNANDO RAMÍREZ.</b></p>
-      <p>APASIONADO DEL MUNDO GAMER Y DE LA TECNOLOGÍA DE ALTO RENDIMIENTO. 
-         CON MÁS DE 8 AÑOS DE EXPERIENCIA EN LA VENTA Y ENSAMBLE DE COMPUTADORES GAMER, 
-         SE HA GANADO UN LUGAR DE CONFIANZA DENTRO DE LA COMUNIDAD TECNOLÓGICA.</p>
-      <button>VISITAR PERFIL</button>
+      <p><b id="seller-name">LUIS FERNANDO RAMÍREZ.</b></p>
+      <p id="seller-description">
+        APASIONADO DEL MUNDO GAMER Y DE LA TECNOLOGÍA DE ALTO RENDIMIENTO. 
+        CON MÁS DE 8 AÑOS DE EXPERIENCIA EN LA VENTA Y ENSAMBLE DE COMPUTADORES GAMER, 
+        SE HA GANADO UN LUGAR DE CONFIANZA DENTRO DE LA COMUNIDAD TECNOLÓGICA.
+      </p>
+      <button onclick="viewSellerProfile()">VISITAR PERFIL</button>
     </div>
 
     <p class="last-update">
-      ULTIMA ACTUALIZACION <span>22/08/25</span>
+      ULTIMA ACTUALIZACION <span id="last-update-date">22/08/25</span>
     </p>
 
     <!-- Estadísticas -->
@@ -90,12 +120,39 @@
     </div>
   </div>
 
-  <!-- Resto del script se mantiene igual -->
+  <!-- Modal de confirmación -->
+  <div class="modal" id="messageModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Mensaje Enviado</h3>
+        <button class="close-modal" onclick="closeMessageModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Tu mensaje ha sido enviado correctamente al vendedor.</p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="goToChat()">
+            <i class="fas fa-comments"></i> Ir al Chat
+          </button>
+          <button class="btn btn-outline" onclick="continueBrowsing()">
+            <i class="fas fa-shopping-bag"></i> Seguir Explorando
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="../js/auth.js"></script>
   <script>
-    
+    // Variables globales
     let currentProduct = null;
     let currentSeller = null;
+    let currentUser = null;
+    let esFavorito = false;
+    let favoritoId = null;
+    let calificaciones = [];
+    let chart;
+
+
 
     // Cargar datos al iniciar
     document.addEventListener('DOMContentLoaded', async function() {
@@ -103,6 +160,9 @@
       if (!checkAuth()) {
         return;
       }
+      
+      // Obtener usuario del localStorage
+      currentUser = getCurrentUser();
       
       // Obtener ID del producto de la URL
       const urlParams = new URLSearchParams(window.location.search);
@@ -115,7 +175,162 @@
       
       // Cargar información del producto
       await loadProductData(productId);
+
+      if (currentProduct) {
+        await verificarFavorito();
+      }
+      function updateUserInfo() {
+      document.getElementById('sidebar-avatar').textContent = getInitials(currentUser.nombre);
+      document.getElementById('sidebar-name').textContent = currentUser.nombre;
+    }
+
+    // Obtener iniciales del nombre
+    function getInitials(name) {
+      return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
+    }
     });
+
+    // Menú lateral
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    function openMenu() {
+      sidebar.style.width = "280px";
+      overlay.style.display = "block";
+    }
+
+    function closeMenu() {
+      sidebar.style.width = "0";
+      overlay.style.display = "none";
+    }
+    // ========== FUNCIONALIDAD DE MENSAJES AL VENDEDOR ==========
+
+    // Enviar mensaje al vendedor
+    async function sendMessageToSeller() {
+      try {
+        const messageInput = document.getElementById('message-to-seller');
+        const message = messageInput.value.trim();
+        const sendBtn = document.getElementById('send-message-btn');
+        
+        if (!message) {
+          showNotification('Por favor escribe un mensaje', 'error');
+          return;
+        }
+
+        if (!currentUser || !currentUser.id) {
+          showNotification('Debes iniciar sesión para enviar mensajes', 'error');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        // Deshabilitar botón mientras se envía
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
+
+        console.log('📍 Iniciando conversación con vendedor:', currentSeller.id);
+        
+        // 1. Crear o obtener conversación
+        const conversationResponse = await fetch('http://localhost:5000/chat/conversacion', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id_usuario1: currentUser.id,
+            id_usuario2: currentSeller.id
+          })
+        });
+
+        if (!conversationResponse.ok) {
+          throw new Error(`Error HTTP: ${conversationResponse.status}`);
+        }
+
+        const conversationResult = await conversationResponse.json();
+        
+        if (!conversationResult.success) {
+          throw new Error(conversationResult.message);
+        }
+
+        const conversation = conversationResult.conversacion;
+        console.log('✅ Conversación:', conversation);
+
+        // 2. Enviar mensaje
+        const messageResponse = await fetch('http://localhost:5000/chat/mensaje', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id_conversacion: conversation.id_conversacion,
+            id_remitente: currentUser.id,
+            mensaje: message
+          })
+        });
+
+        if (!messageResponse.ok) {
+          throw new Error(`Error HTTP: ${messageResponse.status}`);
+        }
+
+        const messageResult = await messageResponse.json();
+        
+        if (!messageResult.success) {
+          throw new Error(messageResult.message);
+        }
+
+        console.log('✅ Mensaje enviado correctamente');
+        
+        // Mostrar modal de éxito
+        showMessageModal();
+        
+      } catch (error) {
+        console.error('❌ Error enviando mensaje:', error);
+        showNotification('Error al enviar mensaje: ' + error.message, 'error');
+        
+        // Rehabilitar botón
+        const sendBtn = document.getElementById('send-message-btn');
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR MENSAJE';
+      }
+    }
+
+    // Mostrar modal de mensaje enviado
+    function showMessageModal() {
+      const modal = document.getElementById('messageModal');
+      modal.style.display = 'flex';
+      
+      // Rehabilitar botón
+      const sendBtn = document.getElementById('send-message-btn');
+      sendBtn.disabled = false;
+      sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR MENSAJE';
+    }
+
+    // Cerrar modal
+    function closeMessageModal() {
+      const modal = document.getElementById('messageModal');
+      modal.style.display = 'none';
+    }
+
+    // Ir al chat después de enviar mensaje
+    function goToChat() {
+      closeMessageModal();
+      window.location.href = 'chat.html';
+    }
+
+    // Seguir explorando productos
+    function continueBrowsing() {
+      closeMessageModal();
+      // Puedes redirigir a la página principal o dejar en la misma página
+      // window.location.href = 'barra.html';
+    }
+
+    // Ver perfil del vendedor
+    function viewSellerProfile() {
+      // Por ahora redirige al perfil del usuario actual
+      // En una implementación completa, redirigiría al perfil del vendedor
+      window.location.href = 'perfil.html';
+    }
+
+    // ========== FUNCIONALIDAD EXISTENTE DEL PRODUCTO ==========
 
     // Cargar datos del producto desde la API
     async function loadProductData(productId) {
@@ -135,6 +350,7 @@
           currentProduct = result.producto;
           currentSeller = result.vendedor;
           renderProduct(currentProduct, currentSeller);
+          updateSellerInfo(currentSeller);
         } else {
           showError('Error: ' + result.message);
         }
@@ -142,6 +358,12 @@
         console.error('Error cargando producto:', error);
         showError('Error de conexión. Verifica que el servidor esté ejecutándose.');
       }
+    }
+
+    // Actualizar información del vendedor en la UI
+    function updateSellerInfo(seller) {
+      document.getElementById('seller-name').textContent = seller.nombre + '.';
+      // Aquí podrías cargar más información del vendedor si está disponible
     }
 
     // Renderizar producto
@@ -189,9 +411,9 @@
           </div>
           
           <div class="tags">
-           <span class="tag2">venta</span>
-           <span class="tag2">trueque</span>
-           <span class="tag2">venta/trueque</span>
+            <span class="tag2">venta</span>
+            <span class="tag2">trueque</span>
+            <span class="tag2">venta/trueque</span>
           </div>
 
           <div class="btns">
@@ -202,11 +424,21 @@
               <i class="fas fa-share"></i> Compartir
             </button>
           </div>
-        </div>
 
-        
+          <!-- SECCIÓN DE FAVORITOS -->
+          <div class="favorite-section">
+            <button id="btn-favorito" class="btn-favorito" onclick="toggleFavorito()">
+              <i class="far fa-heart"></i> Agregar a Favoritos
+            </button>
+          </div>
+        </div>
       `;
+
+      // Verificar estado de favorito después de renderizar
+      setTimeout(verificarFavorito, 100);
     }
+
+    // ========== FUNCIONES AUXILIARES ==========
 
     // Manejar error de imagen
     function handleImageError(img) {
@@ -214,236 +446,148 @@
       img.parentElement.innerHTML = '<div class="no-image">Imagen no disponible</div>';
     }
 
-    
-    // Agregar a lista de deseos
-    function addToWishlist(productId) {
-      alert('Producto agregado a lista de deseos');
-      // Aquí integrarías con tu sistema de favoritos
-    }
-
-    // Compartir producto
-    function shareProduct() {
-      if (navigator.share) {
-        navigator.share({
-          title: currentProduct.titulo,
-          text: currentProduct.descripcion.substring(0, 100) + '...',
-          url: window.location.href
-        });
-      } else {
-        alert('Enlace copiado: ' + window.location.href);
-      }
-    }
-
-    // Mostrar error
-    function showError(message) {
-      const container = document.getElementById('product-container');
-      container.innerHTML = `
-        <div class="error-state">
-          <i class="fas fa-exclamation-triangle"></i>
-          <h3>Error</h3>
-          <p>${message}</p>
-          <button class="btn-retry" onclick="window.location.reload()">Reintentar</button>
-          <button class="btn-retry" onclick="window.location.href='barra.html'">Volver al inicio</button>
-        </div>
+    // Mostrar notificación
+    function showNotification(mensaje, tipo = 'success') {
+      const notificacion = document.createElement('div');
+      notificacion.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${tipo === 'success' ? '#28a745' : '#dc3545'};
+        color: white;
+        border-radius: 5px;
+        z-index: 1000;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       `;
-    }
-
-    // Menú lateral
-    function openMenu() {
-      alert('Menú de navegación');
-    }
-       // Estrellas de calificación
-    const estrellas = document.querySelectorAll('.estrellas');
-    let calificaciones = [];
-    let chart;
-
-    estrellas.forEach(estrella => {
-      estrella.addEventListener('click', () => {
-        let valor = estrella.getAttribute('data-valor');
-        calificaciones.push(parseInt(valor));
-        actualizarEstrellas(valor);
-        actualizarGrafica();
-      });
-    });
-
-    function actualizarEstrellas(valor) {
-      estrellas.forEach(e => {
-        e.classList.toggle('estrella-activa', e.getAttribute('data-valor') <= valor);
-      });
-    }
-
-    // Gráfica con Chart.js
-    function crearGrafica() {
-      const ctx = document.getElementById('grafica').getContext('2d');
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ["1★", "2★", "3★", "4★", "5★"],
-          datasets: [{
-            label: "Cantidad de calificaciones",
-            data: [0,0,0,0,0],
-            borderColor: "blue",
-            borderWidth: 2,
-            fill: false
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false }
-          }
+      notificacion.textContent = mensaje;
+      
+      document.body.appendChild(notificacion);
+      
+      setTimeout(() => {
+        if (document.body.contains(notificacion)) {
+          document.body.removeChild(notificacion);
         }
-      });
+      }, 3000);
     }
 
-    function actualizarGrafica() {
-      let conteo = [0,0,0,0,0];
-      calificaciones.forEach(c => conteo[c-1]++);
-      chart.data.datasets[0].data = conteo;
-      chart.update();
-    }
+    // ========== FUNCIONES EXISTENTES (mantener las que ya tienes) ==========
 
-    crearGrafica();
+    // ... (mantén todas tus funciones existentes como verificarFavorito, toggleFavorito, 
+    // agregarFavorito, eliminarFavorito, actualizarBotonFavorito, etc.)
 
-    function agregarComentario() {
-    const input = document.getElementById("comentario-input");
-    const texto = input.value.trim();
+    // Función para verificar si el producto está en favoritos
+    async function verificarFavorito() {
+      try {
+        const usuario = getCurrentUser();
+        if (!usuario || !usuario.id) return;
 
-    if (texto === "") return;
-
-    const lista = document.getElementById("comentarios-lista");
-
-    function agregarComentario() {
-  const input = document.getElementById("comentario-input");
-  const texto = input.value.trim();
-
-  if (texto === "") return;
-
-  const lista = document.getElementById("comentarios-lista");
-
-  // Crear contenedor del comentario
-  const comentario = document.createElement("div");
-  comentario.classList.add("comentario");
-
-  // Imagen de perfil
-  const img = document.createElement("img");
-  img.src = "https://i.pinimg.com/736x/d2/50/af/d250af5bf078a388b23d9916b575dc48.jpg";
-
-  // Contenedor texto
-  const comentarioTexto = document.createElement("div");
-  comentarioTexto.classList.add("comentario-texto");
-
-  const nombre = document.createElement("h4");
-  nombre.textContent = "Usuario";
-
-  const contenido = document.createElement("p");
-  contenido.textContent = texto;
-
-  // Botones de acción
-  const acciones = document.createElement("div");
-  acciones.classList.add("comentario-acciones");
-
-  const btnEditar = document.createElement("button");
-  btnEditar.textContent = "Editar";
-  btnEditar.classList.add("btn-editar");
-  btnEditar.onclick = () => {
-    const nuevoTexto = prompt("Edita tu comentario:", contenido.textContent);
-    if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
-      contenido.textContent = nuevoTexto.trim();
-    }
-  };
-
-  const btnEliminar = document.createElement("button");
-  btnEliminar.textContent = "Eliminar";
-  btnEliminar.classList.add("btn-eliminar");
-  btnEliminar.onclick = () => {
-    lista.removeChild(comentario);
-  };
-
-  acciones.appendChild(btnEditar);
-  acciones.appendChild(btnEliminar);
-
-  // Insertar todo en el contenedor
-  comentarioTexto.appendChild(nombre);
-  comentarioTexto.appendChild(contenido);
-  comentarioTexto.appendChild(acciones);
-
-  comentario.appendChild(img);
-  comentario.appendChild(comentarioTexto);
-
-  lista.appendChild(comentario);
-
-  // Limpiar textarea
-  input.value = "";
-}
-    // Crear contenedor del comentario
-    const comentario = document.createElement("div");
-    comentario.classList.add("comentario");
-
-    // Imagen de perfil (fija por ahora)
-    const img = document.createElement("img");
-    img.src = "https://via.placeholder.com/50"; 
-
-    // Contenedor texto
-    const comentarioTexto = document.createElement("div");
-    comentarioTexto.classList.add("comentario-texto");
-
-    const nombre = document.createElement("h4");
-    nombre.textContent = "Usuario"; // puedes reemplazar por nombre dinámico
-
-    const contenido = document.createElement("p");
-    contenido.textContent = texto;
-
-    // Botones de acción
-    const acciones = document.createElement("div");
-    acciones.style.marginTop = "8px";
-
-    const btnEditar = document.createElement("button");
-    btnEditar.textContent = "Editar";
-    btnEditar.style.marginRight = "10px";
-    btnEditar.style.background = "#ffc107";
-    btnEditar.style.border = "none";
-    btnEditar.style.padding = "5px 10px";
-    btnEditar.style.borderRadius = "6px";
-    btnEditar.style.cursor = "pointer";
-
-    btnEditar.onclick = () => {
-      const nuevoTexto = prompt("Edita tu comentario:", contenido.textContent);
-      if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
-        contenido.textContent = nuevoTexto.trim();
+        const response = await fetch(`http://localhost:5000/favoritos/verificar/${usuario.id}/${currentProduct.id_producto}`);
+        const result = await response.json();
+        
+        if (result.success) {
+          esFavorito = result.esFavorito;
+          actualizarBotonFavorito();
+        }
+      } catch (error) {
+        console.error('Error verificando favorito:', error);
       }
-    };
+    }
 
-    const btnEliminar = document.createElement("button");
-    btnEliminar.textContent = "Eliminar";
-    btnEliminar.style.background = "#dc3545";
-    btnEliminar.style.border = "none";
-    btnEliminar.style.padding = "5px 10px";
-    btnEliminar.style.borderRadius = "6px";
-    btnEliminar.style.cursor = "pointer";
-    btnEliminar.style.color = "#fff";
+    // Función para alternar favorito
+    async function toggleFavorito() {
+      try {
+        const usuario = getCurrentUser();
+        if (!usuario || !usuario.id) {
+          showNotification('Debes iniciar sesión para agregar favoritos', 'error');
+          window.location.href = '../vistas/login.html';
+          return;
+        }
 
-    btnEliminar.onclick = () => {
-      lista.removeChild(comentario);
-    };
+        if (esFavorito) {
+          await eliminarFavorito();
+        } else {
+          await agregarFavorito();
+        }
+      } catch (error) {
+        console.error('Error al manejar favorito:', error);
+        showNotification('Error al procesar la acción', 'error');
+      }
+    }
 
-    acciones.appendChild(btnEditar);
-    acciones.appendChild(btnEliminar);
+    // Función para agregar a favoritos
+    async function agregarFavorito() {
+      const usuario = getCurrentUser();
+      
+      const response = await fetch('http://localhost:5000/favoritos/agregar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_usuario: usuario.id,
+          id_producto: currentProduct.id_producto
+        })
+      });
 
-    // Insertar todo en el contenedor
-    comentarioTexto.appendChild(nombre);
-    comentarioTexto.appendChild(contenido);
-    comentarioTexto.appendChild(acciones);
+      const result = await response.json();
+      
+      if (result.success) {
+        esFavorito = true;
+        favoritoId = result.id_favorito;
+        actualizarBotonFavorito();
+        showNotification('Producto agregado a favoritos');
+      } else {
+        showNotification(result.message, 'error');
+      }
+    }
 
-    comentario.appendChild(img);
-    comentario.appendChild(comentarioTexto);
+    // Función para eliminar de favoritos
+    async function eliminarFavorito() {
+      const usuario = getCurrentUser();
+      
+      const response = await fetch('http://localhost:5000/favoritos/eliminar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_usuario: usuario.id,
+          id_producto: currentProduct.id_producto
+        })
+      });
 
-    lista.appendChild(comentario);
+      const result = await response.json();
+      
+      if (result.success) {
+        esFavorito = false;
+        favoritoId = null;
+        actualizarBotonFavorito();
+        showNotification('Producto eliminado de favoritos');
+      } else {
+        showNotification(result.message, 'error');
+      }
+    }
 
-    // Limpiar textarea
-    input.value = "";
-  }
+    // Función para actualizar la apariencia del botón
+    function actualizarBotonFavorito() {
+      const boton = document.getElementById('btn-favorito');
+      if (!boton) return;
+
+      if (esFavorito) {
+        boton.innerHTML = '<i class="fas fa-heart"></i> Eliminar de Favoritos';
+        boton.classList.add('favorito-activo');
+      } else {
+        boton.innerHTML = '<i class="far fa-heart"></i> Agregar a Favoritos';
+        boton.classList.remove('favorito-activo');
+      }
+    }
+
+    // ... (mantén el resto de tus funciones existentes como agregarComentario, 
+    // actualizarEstrellas, crearGrafica, etc.)
 
   </script>
+
 </body>
 </html>

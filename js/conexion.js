@@ -580,6 +580,274 @@ app.get('/producto/:id', (req, res) => {
     });
 });
 
+
+// ✅ RUTAS PARA EL CHAT - COLOCAR DESPUÉS DE LAS RUTAS DE FAVORITOS
+
+// Obtener conversaciones de un usuario - VERSIÓN CORREGIDA
+app.get('/chat/conversaciones/:idUsuario', (req, res) => {
+    const idUsuario = parseInt(req.params.idUsuario);
+    
+    console.log("📍 Obteniendo conversaciones del usuario:", idUsuario);
+    
+    if (!idUsuario || isNaN(idUsuario)) {
+        return res.status(400).json({ success: false, message: 'ID de usuario inválido' });
+    }
+
+    const query = `
+        SELECT 
+            c.*,
+            CASE 
+                WHEN c.id_usuario1 = ? THEN u2.id_usuario
+                ELSE u1.id_usuario
+            END as otro_usuario_id,
+            CASE 
+                WHEN c.id_usuario1 = ? THEN u2.nombre
+                ELSE u1.nombre
+            END as otro_usuario_nombre,
+            CASE 
+                WHEN c.id_usuario1 = ? THEN u2.email
+                ELSE u1.email
+            END as otro_usuario_email,
+            (SELECT COUNT(*) FROM mensajes m WHERE m.id_conversacion = c.id_conversacion AND m.id_remitente != ? AND m.leido = FALSE) as mensajes_no_leidos,
+            (SELECT m.mensaje FROM mensajes m WHERE m.id_conversacion = c.id_conversacion ORDER BY m.fecha_envio DESC LIMIT 1) as ultimo_mensaje,
+            (SELECT m.fecha_envio FROM mensajes m WHERE m.id_conversacion = c.id_conversacion ORDER BY m.fecha_envio DESC LIMIT 1) as fecha_ultimo_mensaje
+        FROM conversaciones c
+        JOIN usuario u1 ON c.id_usuario1 = u1.id_usuario
+        JOIN usuario u2 ON c.id_usuario2 = u2.id_usuario
+        WHERE c.id_usuario1 = ? OR c.id_usuario2 = ?
+        ORDER BY c.fecha_ultimo_mensaje DESC
+    `;
+    
+    conexion.query(query, [idUsuario, idUsuario, idUsuario, idUsuario, idUsuario, idUsuario], (error, results) => {
+        if (error) {
+            console.error("❌ Error obteniendo conversaciones:", error);
+            return res.status(500).json({ success: false, message: 'Error al obtener conversaciones: ' + error.message });
+        }
+        
+        console.log("✅ Conversaciones encontradas:", results.length);
+        res.status(200).json({ 
+            success: true, 
+            conversaciones: results 
+        });
+    });
+});
+
+// Crear o obtener conversación entre dos usuarios - VERSIÓN CORREGIDA
+app.post('/chat/conversacion', (req, res) => {
+    const { id_usuario1, id_usuario2 } = req.body;
+    
+    console.log("📍 Buscando conversación entre:", id_usuario1, "y", id_usuario2);
+    
+    if (!id_usuario1 || !id_usuario2) {
+        return res.status(400).json({ success: false, message: 'Datos incompletos' });
+    }
+    
+    // Ordenar los IDs para evitar duplicados
+    const [minId, maxId] = [Math.min(id_usuario1, id_usuario2), Math.max(id_usuario1, id_usuario2)];
+    
+    const query = `
+        SELECT c.*, 
+               u1.nombre as usuario1_nombre,
+               u2.nombre as usuario2_nombre
+        FROM conversaciones c
+        JOIN usuario u1 ON c.id_usuario1 = u1.id_usuario
+        JOIN usuario u2 ON c.id_usuario2 = u2.id_usuario
+        WHERE c.id_usuario1 = ? AND c.id_usuario2 = ?
+    `;
+    
+    conexion.query(query, [minId, maxId], (error, results) => {
+        if (error) {
+            console.error("❌ Error buscando conversación:", error);
+            return res.status(500).json({ success: false, message: 'Error al buscar conversación' });
+        }
+        
+        if (results.length > 0) {
+            console.log("✅ Conversación encontrada ID:", results[0].id_conversacion);
+            return res.status(200).json({ 
+                success: true, 
+                conversacion: results[0],
+                existe: true
+            });
+        }
+        
+        // Crear nueva conversación
+        const insertQuery = 'INSERT INTO conversaciones (id_usuario1, id_usuario2) VALUES (?, ?)';
+        conexion.query(insertQuery, [minId, maxId], (error, results) => {
+            if (error) {
+                console.error("❌ Error creando conversación:", error);
+                return res.status(500).json({ success: false, message: 'Error al crear conversación' });
+            }
+            
+            // Obtener la conversación creada con información de usuarios
+            const getQuery = `
+                SELECT c.*, 
+                       u1.nombre as usuario1_nombre,
+                       u2.nombre as usuario2_nombre
+                FROM conversaciones c
+                JOIN usuario u1 ON c.id_usuario1 = u1.id_usuario
+                JOIN usuario u2 ON c.id_usuario2 = u2.id_usuario
+                WHERE c.id_conversacion = ?
+            `;
+            
+            conexion.query(getQuery, [results.insertId], (error, conversacionResults) => {
+                if (error) {
+                    console.error("❌ Error obteniendo conversación creada:", error);
+                    return res.status(500).json({ success: false, message: 'Error al obtener conversación' });
+                }
+                
+                console.log("✅ Nueva conversación creada ID:", results.insertId);
+                res.status(200).json({ 
+                    success: true, 
+                    conversacion: conversacionResults[0],
+                    existe: false
+                });
+            });
+        });
+    });
+});
+
+// Enviar mensaje - VERSIÓN CORREGIDA
+app.post('/chat/mensaje', (req, res) => {
+    const { id_conversacion, id_remitente, mensaje } = req.body;
+    
+    console.log("📍 Enviando mensaje a conversación:", id_conversacion);
+    
+    if (!id_conversacion || !id_remitente || !mensaje) {
+        return res.status(400).json({ success: false, message: 'Datos incompletos' });
+    }
+    
+    // Insertar mensaje
+    const insertQuery = 'INSERT INTO mensajes (id_conversacion, id_remitente, mensaje) VALUES (?, ?, ?)';
+    conexion.query(insertQuery, [id_conversacion, id_remitente, mensaje], (error, results) => {
+        if (error) {
+            console.error("❌ Error enviando mensaje:", error);
+            return res.status(500).json({ success: false, message: 'Error al enviar mensaje: ' + error.message });
+        }
+        
+        // Actualizar fecha del último mensaje en la conversación
+        const updateQuery = 'UPDATE conversaciones SET fecha_ultimo_mensaje = CURRENT_TIMESTAMP WHERE id_conversacion = ?';
+        conexion.query(updateQuery, [id_conversacion], (error, updateResults) => {
+            if (error) {
+                console.error("❌ Error actualizando conversación:", error);
+            }
+            
+            console.log("✅ Mensaje enviado ID:", results.insertId);
+            
+            // Obtener el mensaje recién creado con información del remitente
+            const getMessageQuery = `
+                SELECT m.*, u.nombre as remitente_nombre 
+                FROM mensajes m 
+                JOIN usuario u ON m.id_remitente = u.id_usuario 
+                WHERE m.id_mensaje = ?
+            `;
+            
+            conexion.query(getMessageQuery, [results.insertId], (error, messageResults) => {
+                if (error) {
+                    console.error("❌ Error obteniendo mensaje:", error);
+                    return res.status(500).json({ success: false, message: 'Error al obtener mensaje' });
+                }
+                
+                res.status(200).json({ 
+                    success: true, 
+                    mensaje: messageResults[0]
+                });
+            });
+        });
+    });
+});
+
+// Obtener mensajes de una conversación - VERSIÓN CORREGIDA
+app.get('/chat/mensajes/:idConversacion', (req, res) => {
+    const idConversacion = parseInt(req.params.idConversacion);
+    
+    console.log("📍 Obteniendo mensajes de conversación:", idConversacion);
+    
+    if (!idConversacion || isNaN(idConversacion)) {
+        return res.status(400).json({ success: false, message: 'ID de conversación inválido' });
+    }
+
+    const query = `
+        SELECT m.*, u.nombre as remitente_nombre
+        FROM mensajes m
+        JOIN usuario u ON m.id_remitente = u.id_usuario
+        WHERE m.id_conversacion = ?
+        ORDER BY m.fecha_envio ASC
+    `;
+    
+    conexion.query(query, [idConversacion], (error, results) => {
+        if (error) {
+            console.error("❌ Error obteniendo mensajes:", error);
+            return res.status(500).json({ success: false, message: 'Error al obtener mensajes: ' + error.message });
+        }
+        
+        console.log("✅ Mensajes encontrados:", results.length);
+        res.status(200).json({ 
+            success: true, 
+            mensajes: results 
+        });
+    });
+});
+
+// Marcar mensajes como leídos - VERSIÓN CORREGIDA
+app.post('/chat/mensajes/leer', (req, res) => {
+    const { id_conversacion, id_usuario } = req.body;
+    
+    console.log("📍 Marcando mensajes como leídos - Conversación:", id_conversacion, "Usuario:", id_usuario);
+    
+    if (!id_conversacion || !id_usuario) {
+        return res.status(400).json({ success: false, message: 'Datos incompletos' });
+    }
+
+    const query = 'UPDATE mensajes SET leido = TRUE WHERE id_conversacion = ? AND id_remitente != ? AND leido = FALSE';
+    
+    conexion.query(query, [id_conversacion, id_usuario], (error, results) => {
+        if (error) {
+            console.error("❌ Error marcando mensajes como leídos:", error);
+            return res.status(500).json({ success: false, message: 'Error al marcar mensajes como leídos: ' + error.message });
+        }
+        
+        console.log("✅ Mensajes marcados como leídos:", results.affectedRows);
+        res.status(200).json({ 
+            success: true, 
+            mensajes_actualizados: results.affectedRows 
+        });
+    });
+});
+
+// Ruta para buscar usuarios (para iniciar nuevos chats)
+app.get('/chat/usuarios', (req, res) => {
+    const searchTerm = req.query.search || '';
+    
+    console.log("📍 Buscando usuarios:", searchTerm);
+    
+    let query = `
+        SELECT id_usuario, nombre, email, fecha_registro
+        FROM usuario 
+        WHERE estado = 'activo'
+    `;
+    
+    const params = [];
+    
+    if (searchTerm) {
+        query += ' AND (nombre LIKE ? OR email LIKE ?)';
+        params.push(`%${searchTerm}%`, `%${searchTerm}%`);
+    }
+    
+    query += ' ORDER BY nombre LIMIT 20';
+    
+    conexion.query(query, params, (error, results) => {
+        if (error) {
+            console.error("❌ Error buscando usuarios:", error);
+            return res.status(500).json({ success: false, message: 'Error al buscar usuarios' });
+        }
+        
+        console.log("✅ Usuarios encontrados:", results.length);
+        res.status(200).json({ 
+            success: true, 
+            usuarios: results 
+        });
+    });
+});
 // Iniciar servidor
 app.listen(port, () => {
     console.log(`Servidor ejecutándose en http://localhost:${port}`);

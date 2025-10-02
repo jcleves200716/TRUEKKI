@@ -1,99 +1,620 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat | TRUEKKI</title>
-  <link rel="stylesheet" href="/css/chat.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truekki - Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/chat.css">
 </head>
 <body>
-  <!-- Botón hamburguesa -->
-  <button class="toggle-btn">☰</button>
-
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <a href="./barra.html">Explorar</a>
-    <a href="./publicar_producto.html">Publicar</a>
-    <a href="#">Notificaciones</a>
-    <a href="#">Historial</a>
-    <a href="./perfil_vendedor.html">Perfil</a>
-    <a href="./catalogo.html">Mis productos</a>
-    <a href="#">Ayuda</a>
-  </div>
-
-  <!-- Contenedor principal -->
-  <div class="main-container">
-    <!-- Header -->
-    <header class="header">
-      <div class="logo">TRUEKKI</div>
-      <div class="search-bar">
-        <input type="text" placeholder="Buscar...">
-      </div>
-      <div class="icons">
-        <span>♡</span>
-      </div>
-    </header>
-
-    <!-- Cuerpo del chat -->
+    <button class="mobile-toggle" id="togglePanel">
+        <i class="fas fa-bars"></i>
+    </button>
+    
     <div class="chat-container">
-      <!-- Lista de usuarios -->
-      <div class="user-list">
-        <input type="text" placeholder="Buscar...">
-        <ul>
-          <li class="active">Juan Pérez</li>
-          <li>Diego Gallego</li>
-          <li>Laura Inchima</li>
-        </ul>
-      </div>
-
-      <!-- Ventana de chat -->
-      <div class="chat-window">
-        <div class="chat-header">
-          Juan Pérez
-          <button class="delete-btn" onclick="deleteMessages()">🗑 Borrar Mensajes</button>
+        <!-- Panel lateral de conversaciones -->
+        <div class="conversations-panel" id="conversationsPanel">
+            <div class="panel-header">
+                <h2>Chats</h2>
+                <div class="user-profile">
+                    <div class="user-avatar" id="currentUserAvatar">TU</div>
+                    <div class="user-info">
+                        <h3 id="currentUserName">Cargando...</h3>
+                        <p><span class="online-indicator"></span>En línea</p>
+                    </div>
+                </div>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar conversaciones...">
+                </div>
+            </div>
+            
+            <button class="new-chat-btn" id="newChatBtn">
+                <i class="fas fa-plus"></i> Nueva Conversación
+            </button>
+            
+            <div class="conversations-list" id="conversationsList">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Cargando conversaciones...
+                </div>
+            </div>
         </div>
-        <div class="chat-messages" id="chatMessages">
-          <div class="message sent">¡Hola! ¿Cómo estás?</div>
-          <div class="message received">Hola, bien ¿y tú?</div>
-          <div class="message sent">Estoy interesado en tu artículo</div>
+        
+        <!-- Área principal del chat -->
+        <div class="chat-area" id="chatArea">
+            <div class="no-chat-selected" id="noChatSelected">
+                <i class="fas fa-comments"></i>
+                <h3>Selecciona una conversación</h3>
+                <p>Elige un chat existente de la lista o inicia una nueva conversación para comenzar a chatear.</p>
+            </div>
+            
+            <div class="chat-header" id="chatHeader" style="display: none;">
+                <div class="chat-header-info">
+                    <div class="chat-header-avatar" id="chatAvatar">JD</div>
+                    <div>
+                        <div class="chat-header-name" id="chatName">Cargando...</div>
+                        <div class="chat-header-status" id="chatStatus">En línea</div>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <i class="fas fa-phone-alt"></i>
+                    <i class="fas fa-video"></i>
+                    <i class="fas fa-info-circle"></i>
+                </div>
+            </div>
+            
+            <div class="messages-container" id="messagesContainer" style="display: none;">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Cargando mensajes...
+                </div>
+            </div>
+            
+            <div class="message-input-container" id="messageInputContainer" style="display: none;">
+                <div class="input-actions">
+                    <i class="fas fa-paperclip"></i>
+                    <i class="fas fa-smile"></i>
+                </div>
+                <input type="text" class="message-input" id="messageInput" placeholder="Escribe un mensaje...">
+                <button class="send-button" id="sendButton">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
         </div>
-        <div class="chat-input">
-          <input type="text" id="messageInput" placeholder="Escribe un mensaje...">
-          <button onclick="sendMessage()">Enviar</button>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- JS -->
-  <script>
-    // Sidebar toggle
-    document.querySelector(".toggle-btn").addEventListener("click", () => {
-      document.querySelector(".sidebar").classList.toggle("active");
+    <!-- Modal para nuevo chat -->
+    <div class="modal" id="newChatModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nueva Conversación</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="user-search-input" id="userSearchInput" placeholder="Buscar usuarios...">
+                <div class="user-list" id="userList">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Cargando usuarios...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+       document.addEventListener('DOMContentLoaded', async function() {
+      // Verificar autenticación
+      if (!checkAuth()) {
+        return;
+      }
+      
+      // Obtener usuario del localStorage
+      currentUser = getCurrentUser();
+      
+      // Actualizar información del usuario en el sidebar
+      updateUserInfo();
+      
+      // Cargar productos
+      await loadProducts();
     });
 
-    // Enviar mensaje
-    function sendMessage() {
-      const input = document.getElementById("messageInput");
-      const message = input.value.trim();
-
-      if (message !== "") {
-        const msgDiv = document.createElement("div");
-        msgDiv.classList.add("message", "sent");
-        msgDiv.textContent = message;
-
-        document.getElementById("chatMessages").appendChild(msgDiv);
-        input.value = "";
-        document.getElementById("chatMessages").scrollTop = document.getElementById("chatMessages").scrollHeight;
-      }
+    // Actualizar información del usuario en el sidebar
+    function updateUserInfo() {
+      document.getElementById('sidebar-avatar').textContent = getInitials(currentUser.nombre);
+      document.getElementById('sidebar-name').textContent = currentUser.nombre;
     }
 
-    // Borrar todos los mensajes
-    function deleteMessages() {
-      if (confirm("¿Seguro que quieres borrar todos los mensajes de este chat?")) {
-        document.getElementById("chatMessages").innerHTML = "";
-      }
+    // Obtener iniciales del nombre
+    function getInitials(name) {
+      return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
     }
-  </script>
+    // Menú lateral
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+
+        function openMenu() {
+          sidebar.style.width = "280px";
+          overlay.style.display = "block";
+        }
+
+        function closeMenu() {
+          sidebar.style.width = "0";
+          overlay.style.display = "none";
+        }
+        // Clase para gestionar el chat con la base de datos
+        class ChatManager {
+            constructor() {
+                this.currentUser = null;
+                this.currentConversation = null;
+                this.conversations = [];
+                this.pollingInterval = null;
+                
+                this.init();
+            }
+            
+            async init() {
+                // Verificar autenticación
+                await this.checkAuth();
+                
+                // Cargar datos iniciales
+                await this.loadCurrentUser();
+                await this.loadConversations();
+                
+                // Configurar event listeners
+                this.setupEventListeners();
+                
+                // Iniciar polling para mensajes nuevos
+                this.startPolling();
+            }
+            
+            async checkAuth() {
+                const isLoggedIn = localStorage.getItem('isLoggedIn');
+                const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+                
+                if (!isLoggedIn || !usuario.id) {
+                    window.location.href = 'login.html';
+                    throw new Error('Usuario no autenticado');
+                }
+                
+                this.currentUser = usuario;
+            }
+            
+            async loadCurrentUser() {
+                try {
+                    document.getElementById('currentUserName').textContent = this.currentUser.nombre;
+                    document.getElementById('currentUserAvatar').textContent = 
+                        this.currentUser.nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                } catch (error) {
+                    console.error('Error cargando usuario:', error);
+                }
+            }
+            
+            async loadConversations() {
+                try {
+                    const response = await fetch(`/chat/conversaciones/${this.currentUser.id}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.conversations = data.conversaciones;
+                        this.renderConversations();
+                    } else {
+                        console.error('Error cargando conversaciones:', data.message);
+                    }
+                } catch (error) {
+                    console.error('Error cargando conversaciones:', error);
+                }
+            }
+            
+            renderConversations() {
+                const conversationsList = document.getElementById('conversationsList');
+                
+                if (this.conversations.length === 0) {
+                    conversationsList.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px; color: #65676b;">
+                            <i class="fas fa-comments" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                            <p>No tienes conversaciones aún</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                conversationsList.innerHTML = '';
+                
+                this.conversations.forEach(conversation => {
+                    const lastMessage = conversation.ultimo_mensaje || 'No hay mensajes';
+                    const unreadCount = conversation.mensajes_no_leidos || 0;
+                    const otherUserName = conversation.otro_usuario_nombre;
+                    const avatarText = otherUserName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    
+                    const conversationElement = document.createElement('div');
+                    conversationElement.className = `conversation-item ${this.currentConversation?.id_conversacion === conversation.id_conversacion ? 'active' : ''}`;
+                    conversationElement.setAttribute('data-conversation-id', conversation.id_conversacion);
+                    
+                    conversationElement.innerHTML = `
+                        <div class="avatar">${avatarText}</div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">
+                                ${otherUserName}
+                                <span class="conversation-time">${this.formatTime(conversation.fecha_ultimo_mensaje)}</span>
+                            </div>
+                            <div class="conversation-preview">${lastMessage}</div>
+                        </div>
+                        ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
+                    `;
+                    
+                    conversationElement.addEventListener('click', () => {
+                        this.selectConversation(conversation);
+                    });
+                    
+                    conversationsList.appendChild(conversationElement);
+                });
+            }
+            
+            async selectConversation(conversation) {
+                this.currentConversation = conversation;
+                this.renderConversations();
+                
+                // Mostrar elementos del chat
+                document.getElementById('noChatSelected').style.display = 'none';
+                document.getElementById('chatHeader').style.display = 'flex';
+                document.getElementById('messagesContainer').style.display = 'flex';
+                document.getElementById('messageInputContainer').style.display = 'flex';
+                
+                // Actualizar información del chat
+                const avatarText = conversation.otro_usuario_nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                document.getElementById('chatAvatar').textContent = avatarText;
+                document.getElementById('chatName').textContent = conversation.otro_usuario_nombre;
+                
+                // Cargar mensajes
+                await this.loadMessages(conversation.id_conversacion);
+                
+                // Marcar mensajes como leídos
+                await this.markMessagesAsRead(conversation.id_conversacion);
+                
+                // En dispositivos móviles, cambiar a la vista del chat
+                if (window.innerWidth <= 768) {
+                    document.getElementById('conversationsPanel').style.display = 'none';
+                    document.getElementById('chatArea').style.display = 'flex';
+                }
+            }
+            
+            async loadMessages(conversationId) {
+                try {
+                    const messagesContainer = document.getElementById('messagesContainer');
+                    messagesContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Cargando mensajes...</div>';
+                    
+                    const response = await fetch(`/chat/mensajes/${conversationId}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.renderMessages(data.mensajes);
+                    } else {
+                        console.error('Error cargando mensajes:', data.message);
+                        messagesContainer.innerHTML = '<div class="loading">Error cargando mensajes</div>';
+                    }
+                } catch (error) {
+                    console.error('Error cargando mensajes:', error);
+                    document.getElementById('messagesContainer').innerHTML = '<div class="loading">Error cargando mensajes</div>';
+                }
+            }
+            
+            renderMessages(messages) {
+                const messagesContainer = document.getElementById('messagesContainer');
+                messagesContainer.innerHTML = '';
+                
+                if (messages.length === 0) {
+                    messagesContainer.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px; color: #65676b;">
+                            <i class="fas fa-comment-slash" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                            <p>No hay mensajes en esta conversación</p>
+                            <p style="font-size: 12px; margin-top: 5px;">Envía el primer mensaje</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                messages.forEach(message => {
+                    const messageElement = document.createElement('div');
+                    const isSent = message.id_remitente === this.currentUser.id;
+                    messageElement.className = `message ${isSent ? 'sent' : 'received'}`;
+                    
+                    messageElement.innerHTML = `
+                        <div class="message-bubble">${message.mensaje}</div>
+                        <div class="message-time">${this.formatTime(message.fecha_envio)}</div>
+                    `;
+                    
+                    messagesContainer.appendChild(messageElement);
+                });
+                
+                // Desplazarse al final de los mensajes
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            async sendMessage() {
+                const messageInput = document.getElementById('messageInput');
+                const messageText = messageInput.value.trim();
+                
+                if (!messageText || !this.currentConversation) return;
+                
+                try {
+                    const response = await fetch('/chat/mensaje', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            id_conversacion: this.currentConversation.id_conversacion,
+                            id_remitente: this.currentUser.id,
+                            mensaje: messageText
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Recargar mensajes
+                        await this.loadMessages(this.currentConversation.id_conversacion);
+                        // Recargar lista de conversaciones para actualizar último mensaje
+                        await this.loadConversations();
+                        
+                        // Limpiar campo de entrada
+                        messageInput.value = '';
+                    } else {
+                        console.error('Error enviando mensaje:', data.message);
+                        alert('Error al enviar mensaje: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Error enviando mensaje:', error);
+                    alert('Error al enviar mensaje');
+                }
+            }
+            
+            async createConversation(otherUserId) {
+                try {
+                    const response = await fetch('/chat/conversacion', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            id_usuario1: this.currentUser.id,
+                            id_usuario2: otherUserId
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Cerrar modal
+                        this.closeNewChatModal();
+                        // Recargar conversaciones
+                        await this.loadConversations();
+                        // Seleccionar la nueva conversación
+                        this.selectConversation(data.conversacion);
+                    } else {
+                        console.error('Error creando conversación:', data.message);
+                        alert('Error al crear conversación: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Error creando conversación:', error);
+                    alert('Error al crear conversación');
+                }
+            }
+            
+            async markMessagesAsRead(conversationId) {
+                try {
+                    await fetch('/chat/mensajes/leer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            id_conversacion: conversationId,
+                            id_usuario: this.currentUser.id
+                        })
+                    });
+                    
+                    // Recargar conversaciones para actualizar contadores
+                    await this.loadConversations();
+                } catch (error) {
+                    console.error('Error marcando mensajes como leídos:', error);
+                }
+            }
+            
+            async searchUsers(searchTerm = '') {
+                try {
+                    const response = await fetch(`/chat/usuarios?search=${encodeURIComponent(searchTerm)}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.renderUserList(data.usuarios);
+                    } else {
+                        console.error('Error buscando usuarios:', data.message);
+                    }
+                } catch (error) {
+                    console.error('Error buscando usuarios:', error);
+                }
+            }
+            
+            renderUserList(users) {
+                const userList = document.getElementById('userList');
+                
+                // Filtrar usuario actual
+                const otherUsers = users.filter(user => user.id_usuario !== this.currentUser.id);
+                
+                if (otherUsers.length === 0) {
+                    userList.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: #65676b;">
+                            <i class="fas fa-user-slash" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                            <p>No se encontraron usuarios</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                userList.innerHTML = '';
+                
+                otherUsers.forEach(user => {
+                    const userElement = document.createElement('div');
+                    userElement.className = 'user-item';
+                    
+                    const avatarText = user.nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    
+                    userElement.innerHTML = `
+                        <div class="user-item-avatar">${avatarText}</div>
+                        <div class="user-item-info">
+                            <h4>${user.nombre}</h4>
+                            <p>${user.email}</p>
+                        </div>
+                    `;
+                    
+                    userElement.addEventListener('click', () => {
+                        this.createConversation(user.id_usuario);
+                    });
+                    
+                    userList.appendChild(userElement);
+                });
+            }
+            
+            openNewChatModal() {
+                document.getElementById('newChatModal').style.display = 'flex';
+                this.searchUsers();
+            }
+            
+            closeNewChatModal() {
+                document.getElementById('newChatModal').style.display = 'none';
+                document.getElementById('userSearchInput').value = '';
+            }
+            
+            startPolling() {
+                // Polling cada 5 segundos para mensajes nuevos
+                this.pollingInterval = setInterval(async () => {
+                    if (this.currentConversation) {
+                        await this.loadMessages(this.currentConversation.id_conversacion);
+                    }
+                    await this.loadConversations();
+                }, 5000);
+            }
+            
+            stopPolling() {
+                if (this.pollingInterval) {
+                    clearInterval(this.pollingInterval);
+                }
+            }
+            
+            formatTime(dateString) {
+                if (!dateString) return '';
+                
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                
+                if (diffMins < 1) return 'Ahora';
+                if (diffMins < 60) return `${diffMins}m`;
+                if (diffHours < 24) return `${diffHours}h`;
+                if (diffDays < 7) return `${diffDays}d`;
+                
+                return date.toLocaleDateString();
+            }
+            
+            setupEventListeners() {
+                // Enviar mensaje
+                document.getElementById('sendButton').addEventListener('click', () => {
+                    this.sendMessage();
+                });
+                
+                document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendMessage();
+                    }
+                });
+                
+                // Nueva conversación
+                document.getElementById('newChatBtn').addEventListener('click', () => {
+                    this.openNewChatModal();
+                });
+                
+                // Cerrar modal
+                document.getElementById('closeModal').addEventListener('click', () => {
+                    this.closeNewChatModal();
+                });
+                
+                // Cerrar modal al hacer clic fuera
+                document.getElementById('newChatModal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('newChatModal')) {
+                        this.closeNewChatModal();
+                    }
+                });
+                
+                // Búsqueda en tiempo real en modal
+                document.getElementById('userSearchInput').addEventListener('input', (e) => {
+                    this.searchUsers(e.target.value);
+                });
+                
+                // Búsqueda de conversaciones
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const conversationItems = document.querySelectorAll('.conversation-item');
+                    
+                    conversationItems.forEach(item => {
+                        const name = item.querySelector('.conversation-name').textContent.toLowerCase();
+                        if (name.includes(searchTerm)) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+                
+                // Toggle para móviles
+                document.getElementById('togglePanel').addEventListener('click', () => {
+                    const conversationsPanel = document.getElementById('conversationsPanel');
+                    const chatArea = document.getElementById('chatArea');
+                    
+                    if (conversationsPanel.style.display !== 'none') {
+                        conversationsPanel.style.display = 'none';
+                        chatArea.style.display = 'flex';
+                    } else {
+                        conversationsPanel.style.display = 'flex';
+                        chatArea.style.display = 'none';
+                    }
+                });
+                
+                // Ajustar para dispositivos móviles al cargar
+                window.addEventListener('load', () => {
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('conversationsPanel').style.display = 'flex';
+                        document.getElementById('chatArea').style.display = 'none';
+                        document.getElementById('togglePanel').style.display = 'block';
+                    }
+                });
+                
+                // Ajustar cuando cambia el tamaño de la ventana
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('togglePanel').style.display = 'block';
+                    } else {
+                        document.getElementById('togglePanel').style.display = 'none';
+                        document.getElementById('conversationsPanel').style.display = 'flex';
+                        document.getElementById('chatArea').style.display = 'flex';
+                    }
+                });
+                
+                // Detener polling cuando se cierra la página
+                window.addEventListener('beforeunload', () => {
+                    this.stopPolling();
+                });
+            }
+        }
+
+        // Inicializar la aplicación cuando se carga la página
+        document.addEventListener('DOMContentLoaded', () => {
+            new ChatManager();
+        });
+    </script>
 </body>
 </html>
