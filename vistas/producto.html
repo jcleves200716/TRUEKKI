@@ -11,7 +11,7 @@
 <body>
  <header>
     <div class="header-content">
-      <h1>TRUEKKI</h1>
+    <div class="logo" onclick="window.location.href='barra.html'">TRUEKKI</div>
       <div class="search-bar">
         <input type="text" placeholder="Buscar productos..." id="search-input">
         <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
@@ -65,17 +65,19 @@
         <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
       </button>
     </div>
-
+    
     <!-- Perfil del vendedor -->
-    <div class="perfil">
-      <p><b id="seller-name">LUIS FERNANDO RAMÍREZ.</b></p>
-      <p id="seller-description">
-        APASIONADO DEL MUNDO GAMER Y DE LA TECNOLOGÍA DE ALTO RENDIMIENTO. 
-        CON MÁS DE 8 AÑOS DE EXPERIENCIA EN LA VENTA Y ENSAMBLE DE COMPUTADORES GAMER, 
-        SE HA GANADO UN LUGAR DE CONFIANZA DENTRO DE LA COMUNIDAD TECNOLÓGICA.
-      </p>
-      <button onclick="viewSellerProfile()">VISITAR PERFIL</button>
+<div class="perfil">
+    <div class="vendedor-info">
+        <h3>Información del Vendedor</h3>
+        <div id="info-vendedor">
+            <div class="loading">Cargando información del vendedor...</div>
+        </div>
+        <button id="btn-ver-perfil" class="btn-ver-perfil" onclick="verPerfilVendedor()">
+            👤 Ver Perfil Completo del Vendedor
+        </button>
     </div>
+</div>
 
     <p class="last-update">
       ULTIMA ACTUALIZACION <span id="last-update-date">22/08/25</span>
@@ -323,12 +325,101 @@
       // window.location.href = 'barra.html';
     }
 
-    // Ver perfil del vendedor
-    function viewSellerProfile() {
-      // Por ahora redirige al perfil del usuario actual
-      // En una implementación completa, redirigiría al perfil del vendedor
-      window.location.href = 'perfil.html';
+// ========== FUNCIONALIDAD DEL PERFIL DEL VENDEDOR ==========
+
+// Función para ver el perfil del vendedor
+function verPerfilVendedor() {
+    if (!currentSeller || !currentSeller.id) {
+        console.error('No hay información del vendedor disponible');
+        showNotification('Error: No se pudo cargar el perfil del vendedor', 'error');
+        return;
     }
+    
+    // Obtener el ID del producto actual de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    
+    if (productId) {
+        // Redirigir a la página del perfil del vendedor con el ID del producto origen
+        window.location.href = `perfil-vendedor.html?id_producto_origen=${productId}`;
+    } else {
+        // Si no hay ID de producto, usar el ID directo del vendedor
+        window.location.href = `perfil-vendedor.html?id_vendedor=${currentSeller.id}`;
+    }
+}
+
+// Función para cargar y mostrar información del vendedor
+async function cargarInformacionVendedor(vendedor) {
+    try {
+        const infoVendedor = document.getElementById('info-vendedor');
+        
+        if (!vendedor) {
+            infoVendedor.innerHTML = '<div class="error">No se pudo cargar la información del vendedor</div>';
+            return;
+        }
+
+        // Obtener información completa del vendedor
+        const response = await fetch(`http://localhost:5000/usuario/${vendedor.id}`);
+        const result = await response.json();
+        
+        let vendedorCompleto = vendedor;
+        if (result.success) {
+            vendedorCompleto = { ...vendedor, ...result.usuario };
+        }
+
+        // Mostrar información del vendedor
+        infoVendedor.innerHTML = `
+            <div class="vendedor-details">
+                <div class="vendedor-detail-item">
+                    <i>👤</i> 
+                    <strong>Nombre:</strong> ${vendedorCompleto.nombre}
+                    ${vendedorCompleto.verificado ? '<span class="verificado-badge">✓ Verificado</span>' : ''}
+                </div>
+                <div class="vendedor-detail-item">
+                    <i>📧</i> 
+                    <strong>Email:</strong> ${vendedorCompleto.email || 'No disponible'}
+                </div>
+                <div class="vendedor-detail-item">
+                    <i>📱</i> 
+                    <strong>Teléfono:</strong> ${vendedorCompleto.numero_telefono || 'No disponible'}
+                </div>
+                ${vendedorCompleto.fecha_registro ? `
+                <div class="vendedor-detail-item">
+                    <i>📅</i> 
+                    <strong>Miembro desde:</strong> ${formatearFecha(vendedorCompleto.fecha_registro)}
+                </div>
+                ` : ''}
+            </div>
+        `;
+
+    } catch (error) {
+        console.error('Error cargando información del vendedor:', error);
+        document.getElementById('info-vendedor').innerHTML = `
+            <div class="vendedor-details">
+                <div class="vendedor-detail-item">
+                    <i>👤</i> <strong>Nombre:</strong> ${vendedor.nombre}
+                </div>
+                <div class="vendedor-detail-item">
+                    <i>📧</i> <strong>Email:</strong> ${vendedor.email || 'No disponible'}
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Función auxiliar para formatear fechas
+function formatearFecha(fechaString) {
+    try {
+        const fecha = new Date(fechaString);
+        return fecha.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } catch (error) {
+        return 'Fecha no disponible';
+    }
+}
 
     // ========== FUNCIONALIDAD EXISTENTE DEL PRODUCTO ==========
 
@@ -436,7 +527,10 @@
 
       // Verificar estado de favorito después de renderizar
       setTimeout(verificarFavorito, 100);
-    }
+        // Cargar información del vendedor en la sección correspondiente
+      cargarInformacionVendedor(seller);
+      }
+
 
     // ========== FUNCIONES AUXILIARES ==========
 
@@ -471,11 +565,6 @@
         }
       }, 3000);
     }
-
-    // ========== FUNCIONES EXISTENTES (mantener las que ya tienes) ==========
-
-    // ... (mantén todas tus funciones existentes como verificarFavorito, toggleFavorito, 
-    // agregarFavorito, eliminarFavorito, actualizarBotonFavorito, etc.)
 
     // Función para verificar si el producto está en favoritos
     async function verificarFavorito() {

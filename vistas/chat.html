@@ -8,10 +8,48 @@
     <link rel="stylesheet" href="../css/chat.css">
 </head>
 <body>
+    <!-- Barra superior -->
+<header>
+  <div class="header-content">
+    <div class="logo" onclick="window.location.href='barra.html'">TRUEKKI</div>
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar productos..." id="search-input">
+      <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+    </div>
+    <div class="icons">
+      <span class="icon" onclick="showSection('favorites')"><i class="fas fa-heart"></i></span>
+      <span class="icon" onclick="showSection('messages')"><i class="fas fa-comment"></i></span>
+      <span class="icon menu-btn" onclick="openMenu()"><i class="fas fa-bars"></i></span>
+    </div> 
+  </div>
+</header>
+
+<!-- Menú lateral -->
+<div class="sidebar" id="sidebar">
+  <span class="close-btn" onclick="closeMenu()">✖</span>
+  <div class="user-info">
+    <div class="user-avatar" id="sidebar-avatar">US</div>
+    <div class="user-name" id="sidebar-name">Usuario</div>
+  </div>
+  <a href="barra.html"><i class="fas fa-home"></i> Inicio</a>
+  <a href="publicar_producto.html"><i class="fas fa-plus-circle"></i> Publicar</a>
+  <a href="#"><i class="fas fa-bell"></i> Notificaciones</a>
+  <a href="chat.html"><i class="fas fa-comments"></i> Chats</a>
+  <a href="historial.html"><i class="fas fa-history"></i> Historial</a>
+  <a href="perfil.html"><i class="fas fa-user"></i> Perfil</a>
+  <a href="#"><i class="fas fa-question-circle"></i> Ayuda</a>
+  <a href="subastas.html"><i class="fas fa-gavel"></i> Subastas</a>
+  <a href="favoritos.html"><i class="fas fa-heart"></i> Mis Favoritos</a>
+  <button onclick="logout()" class="cerrar-sesion"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
     <button class="mobile-toggle" id="togglePanel">
         <i class="fas fa-bars"></i>
     </button>
-    
+<div class="main-content">
     <div class="chat-container">
         <!-- Panel lateral de conversaciones -->
         <div class="conversations-panel" id="conversationsPanel">
@@ -100,48 +138,8 @@
             </div>
         </div>
     </div>
-
+</div>
     <script>
-
-       document.addEventListener('DOMContentLoaded', async function() {
-      // Verificar autenticación
-      if (!checkAuth()) {
-        return;
-      }
-      
-      // Obtener usuario del localStorage
-      currentUser = getCurrentUser();
-      
-      // Actualizar información del usuario en el sidebar
-      updateUserInfo();
-      
-      // Cargar productos
-      await loadProducts();
-    });
-
-    // Actualizar información del usuario en el sidebar
-    function updateUserInfo() {
-      document.getElementById('sidebar-avatar').textContent = getInitials(currentUser.nombre);
-      document.getElementById('sidebar-name').textContent = currentUser.nombre;
-    }
-
-    // Obtener iniciales del nombre
-    function getInitials(name) {
-      return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
-    }
-    // Menú lateral
-        const sidebar = document.getElementById("sidebar");
-        const overlay = document.getElementById("overlay");
-
-        function openMenu() {
-          sidebar.style.width = "280px";
-          overlay.style.display = "block";
-        }
-
-        function closeMenu() {
-          sidebar.style.width = "0";
-          overlay.style.display = "none";
-        }
         // Clase para gestionar el chat con la base de datos
         class ChatManager {
             constructor() {
@@ -615,6 +613,47 @@
         document.addEventListener('DOMContentLoaded', () => {
             new ChatManager();
         });
+
+        // Funciones del menú lateral
+function openMenu() {
+  document.getElementById("sidebar").style.width = "280px";
+  document.getElementById("overlay").style.display = "block";
+}
+
+function closeMenu() {
+  document.getElementById("sidebar").style.width = "0";
+  document.getElementById("overlay").style.display = "none";
+}
+
+// Funciones de navegación
+function showSection(section) {
+  if (section === 'messages') {
+    // Ya estamos en la página de mensajes
+    return;
+  }
+  alert(`Navegando a ${section}`);
+}
+
+function searchProducts() {
+  const searchTerm = document.getElementById('search-input').value;
+  if (searchTerm.trim()) {
+    alert(`Buscando: ${searchTerm}`);
+  }
+}
+
+// Actualizar información del usuario en el sidebar
+function updateUserInfo() {
+  const currentUser = JSON.parse(localStorage.getItem('usuario') || '{}');
+  if (currentUser.nombre) {
+    document.getElementById('sidebar-avatar').textContent = 
+      currentUser.nombre.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
+    document.getElementById('sidebar-name').textContent = currentUser.nombre;
+  }
+}
+
+// Llamar a updateUserInfo al cargar la página
+document.addEventListener('DOMContentLoaded', updateUserInfo);
+
     </script>
 </body>
 </html>

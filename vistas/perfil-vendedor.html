@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil Vendedor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../estilos/perfil_vendedor.css">
+</head>
+<body>
+  <div class="container">
+
+    <!-- Botón para volver al producto -->
+    <a href="#" id="volver-producto" class="volver-btn">← Volver al Producto</a>
+
+    <!-- Perfil -->
+    <div class="perfil">
+      <img id="foto-perfil" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" alt="Perfil">
+      <h2 id="nombre-vendedor">Cargando...
+        <span id="badge-verificado" class="verificado-badge" style="display: none;">✓ Verificado</span>
+      </h2>
+    </div>
+
+    <!-- Descripción -->
+    <div class="descripcion" id="descripcion-vendedor">
+      Cargando descripción...
+    </div>
+
+    <!-- Información de contacto -->
+    <div class="info-contacto">
+      <h3>Información de Contacto</h3>
+      <div class="contacto-item">
+        <i>📧</i> <span id="email-vendedor">Cargando...</span>
+      </div>
+      <div class="contacto-item">
+        <i>📱</i> <span id="telefono-vendedor">Cargando...</span>
+      </div>
+      <div class="contacto-item">
+        <i>📍</i> <span id="ubicacion-vendedor">Cargando...</span>
+      </div>
+      <div class="contacto-item">
+        <i>📅</i> <span id="fecha-registro">Cargando...</span>
+      </div>
+    </div>
+
+    <!-- Productos -->
+    <h3 style="color: #2a6592;">Productos del Vendedor</h3>
+    <div class="productos" id="lista-productos">
+      <div class="loading">Cargando productos...</div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="estadisticas">
+      <div class="box">
+        <div class="estrellas" id="calificacion-estrellas">★★★★★</div>
+        <p>CALIFICACIÓN</p>
+        <p id="calificacion-numero">5.0</p>
+      </div>
+      <div class="box">
+        <p class="intercambios">TOTAL INTERCAMBIOS <br> <span id="total-intercambios">0</span></p>
+        <div class="etiquetas">
+          <span class="etiqueta">🏆 Calidad</span>
+          <span class="etiqueta">⚡ Confianza</span>
+          <span class="etiqueta">💻 Comunicación</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comentarios -->
+    <div class="comentarios">
+      <h3>COMENTARIOS</h3>
+      <div id="lista-comentarios">
+        <div class="loading">Cargando comentarios...</div>
+      </div>
+      <div class="btn-comentar" onclick="abrirModalComentario()">COMENTAR</div>
+    </div>
+  </div>
+
+  <!-- Modal para comentar -->
+  <div id="modal-comentario" class="modal">
+    <div class="modal-content">
+      <h3>Dejar Comentario</h3>
+      <div style="margin: 15px 0;">
+        <label style="display: block; margin-bottom: 5px; color: #2a6592;">Calificación:</label>
+        <div id="estrellas-calificacion" style="font-size: 24px; color: #ccc; cursor: pointer;">
+          <span onclick="seleccionarEstrellas(1)">★</span>
+          <span onclick="seleccionarEstrellas(2)">★</span>
+          <span onclick="seleccionarEstrellas(3)">★</span>
+          <span onclick="seleccionarEstrellas(4)">★</span>
+          <span onclick="seleccionarEstrellas(5)">★</span>
+        </div>
+      </div>
+      <div style="margin: 15px 0;">
+        <label style="display: block; margin-bottom: 5px; color: #2a6592;">Comentario:</label>
+        <textarea id="texto-comentario" style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; resize: vertical;"></textarea>
+      </div>
+      <div class="modal-buttons">
+        <button onclick="cerrarModalComentario()" class="modal-btn modal-btn-cancel">Cancelar</button>
+        <button onclick="enviarComentario()" class="modal-btn modal-btn-send">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Variables globales
+    let idVendedorActual = null;
+    let idProductoOrigen = null;
+    let calificacionSeleccionada = 0;
+
+    // Función para obtener parámetros de URL
+    function obtenerParametroURL(nombre) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(nombre);
+    }
+
+    // Función para debug
+    function mostrarDebugInfo(mensaje) {
+      const debugDiv = document.getElementById('debug-info');
+      if (debugDiv) {
+        debugDiv.innerHTML = `<strong>Debug:</strong> ${mensaje}`;
+        debugDiv.style.display = 'block';
+      }
+      console.log('Debug:', mensaje);
+    }
+
+    // Función para formatear fecha
+    function formatearFecha(fechaString) {
+      try {
+        const fecha = new Date(fechaString);
+        return fecha.toLocaleDateString('es-ES', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      } catch (error) {
+        return 'Fecha no disponible';
+      }
+    }
+
+    // Función para obtener el ID del vendedor desde el producto
+    async function obtenerVendedorDesdeProducto(idProducto) {
+      try {
+        mostrarDebugInfo(`Obteniendo vendedor desde producto: ${idProducto}`);
+        
+        const response = await fetch(`/producto/${idProducto}`);
+        
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        mostrarDebugInfo(`Respuesta del servidor: ${JSON.stringify(data)}`);
+        
+        if (data.success && data.vendedor) {
+          const idVendedor = data.vendedor.id;
+          mostrarDebugInfo(`Vendedor encontrado: ID ${idVendedor}`);
+          return idVendedor;
+        } else {
+          throw new Error('No se pudo obtener información del vendedor desde el producto');
+        }
+      } catch (error) {
+        console.error('Error al obtener vendedor desde producto:', error);
+        mostrarDebugInfo(`Error: ${error.message}`);
+        throw error;
+      }
+    }
+
+    // Función para cargar datos del vendedor
+    async function cargarVendedor(idVendedor) {
+      try {
+        mostrarDebugInfo(`Cargando datos del vendedor ID: ${idVendedor}`);
+        
+        const response = await fetch(`/usuario/${idVendedor}`);
+        
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          const vendedor = data.usuario;
+          mostrarDebugInfo(`Datos del vendedor cargados: ${vendedor.nombre}`);
+          
+          // Actualizar la interfaz con los datos del vendedor
+          document.getElementById('nombre-vendedor').textContent = vendedor.nombre;
+          document.getElementById('email-vendedor').textContent = vendedor.email;
+          document.getElementById('telefono-vendedor').textContent = vendedor.numero_telefono || 'No especificado';
+          document.getElementById('ubicacion-vendedor').textContent = vendedor.direccion || 'Ubicación no especificada';
+          document.getElementById('fecha-registro').textContent = `Miembro desde ${formatearFecha(vendedor.fecha_registro)}`;
+          
+          // Mostrar badge de verificado
+          if (vendedor.verificado) {
+            document.getElementById('badge-verificado').style.display = 'inline-block';
+          }
+          
+          // Descripción personalizada basada en la información del vendedor
+          let descripcion = `${vendedor.nombre} es un vendedor registrado en nuestra plataforma. `;
+          
+          if (vendedor.verificado) {
+            descripcion += `Su cuenta está verificada, lo que garantiza mayor confianza en las transacciones. `;
+          }
+          
+          if (vendedor.direccion) {
+            descripcion += `Se encuentra ubicado en ${vendedor.direccion}. `;
+          }
+          
+          descripcion += `Miembro de nuestra comunidad desde ${formatearFecha(vendedor.fecha_registro)}.`;
+          
+          document.getElementById('descripcion-vendedor').textContent = descripcion;
+          
+          return vendedor;
+        } else {
+          throw new Error('Error en la respuesta del servidor');
+        }
+      } catch (error) {
+        console.error('Error al cargar datos del vendedor:', error);
+        mostrarDebugInfo(`Error cargando vendedor: ${error.message}`);
+        document.getElementById('nombre-vendedor').textContent = 'Error al cargar';
+        document.getElementById('descripcion-vendedor').textContent = 'No se pudo cargar la información del vendedor.';
+        throw error;
+      }
+    }
+
+    // Función para cargar productos del vendedor
+    async function cargarProductos(idVendedor) {
+      try {
+        mostrarDebugInfo(`Cargando productos del vendedor: ${idVendedor}`);
+        
+        const response = await fetch(`/productos-usuario/${idVendedor}`);
+        
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const listaProductos = document.getElementById('lista-productos');
+        
+        if (data.success && data.productos && data.productos.length > 0) {
+          listaProductos.innerHTML = '';
+          
+          data.productos.forEach(producto => {
+            const productoElement = document.createElement('div');
+            productoElement.className = 'producto';
+            productoElement.onclick = () => {
+              window.location.href = `producto.html?id_producto=${producto.id_producto}`;
+            };
+            
+            const estadoClase = producto.estado === 'nuevo' ? 'estado-nuevo' : 'estado-usado';
+            const estadoTexto = producto.estado === 'nuevo' ? 'NUEVO' : 'USADO';
+            const imagenURL = producto.foto 
+              ? `/imagen-producto/${producto.id_producto}`
+              : 'https://via.placeholder.com/260x200/2a6592/ffffff?text=Sin+imagen';
+            
+            productoElement.innerHTML = `
+              <img src="${imagenURL}" alt="${producto.titulo}" onerror="this.src='https://via.placeholder.com/260x200/2a6592/ffffff?text=Sin+imagen'">
+              <div>
+                <p>${producto.titulo}</p>
+                <div class="producto-precio">$${parseFloat(producto.precio).toLocaleString()}</div>
+                <div class="producto-estado ${estadoClase}">${estadoTexto}</div>
+              </div>
+            `;
+            
+            listaProductos.appendChild(productoElement);
+          });
+          
+          // Actualizar estadísticas de intercambios
+          const totalIntercambios = data.productos.reduce((total, producto) => {
+            return total + (producto.intercambios_realizados || 0);
+          }, 0);
+          
+          document.getElementById('total-intercambios').textContent = totalIntercambios;
+          
+          mostrarDebugInfo(`Cargados ${data.productos.length} productos, total intercambios: ${totalIntercambios}`);
+        } else {
+          listaProductos.innerHTML = '<div class="sin-productos">Este vendedor no tiene productos publicados.</div>';
+          mostrarDebugInfo('El vendedor no tiene productos');
+        }
+      } catch (error) {
+        console.error('Error al cargar productos:', error);
+        document.getElementById('lista-productos').innerHTML = '<div class="error">Error al cargar productos</div>';
+        mostrarDebugInfo(`Error cargando productos: ${error.message}`);
+      }
+    }
+
+    // Función para cargar comentarios del vendedor
+    async function cargarComentarios(idVendedor) {
+      try {
+        mostrarDebugInfo(`Cargando comentarios del vendedor: ${idVendedor}`);
+        
+        // En una implementación real, aquí llamarías a tu endpoint de comentarios
+        // Por ahora, simularemos algunos comentarios
+        const comentariosSimulados = [
+          {
+            nombre: "Cliente Satisfecho",
+            texto: "Excelente vendedor, producto en perfectas condiciones y entrega rápida. Muy recomendado.",
+            estrellas: 5,
+            etiquetas: ["Calidad", "Confianza"]
+          },
+          {
+            nombre: "Usuario Verificado",
+            texto: "Muy buena comunicación y producto exactamente como se describe. Todo perfecto.",
+            estrellas: 4,
+            etiquetas: ["Comunicación", "Calidad"]
+          },
+          {
+            nombre: "Comprador Frecuente",
+            texto: "Segunda compra con este vendedor. Siempre cumple con lo prometido.",
+            estrellas: 5,
+            etiquetas: ["Confianza", "Rapidez"]
+          }
+        ];
+        
+        const listaComentarios = document.getElementById('lista-comentarios');
+        listaComentarios.innerHTML = '';
+        
+        if (comentariosSimulados.length === 0) {
+          listaComentarios.innerHTML = '<div class="sin-productos">Este vendedor no tiene comentarios aún.</div>';
+          mostrarDebugInfo('No hay comentarios para mostrar');
+          return;
+        }
+        
+        // Calcular calificación promedio
+        let sumaCalificaciones = 0;
+        comentariosSimulados.forEach(comentario => {
+          sumaCalificaciones += comentario.estrellas;
+        });
+        const calificacionPromedio = sumaCalificaciones / comentariosSimulados.length;
+        
+        // Actualizar calificación en estadísticas
+        document.getElementById('calificacion-numero').textContent = calificacionPromedio.toFixed(1);
+        document.getElementById('calificacion-estrellas').innerHTML = generarEstrellas(calificacionPromedio);
+        
+        // Mostrar comentarios
+        comentariosSimulados.forEach(comentario => {
+          const comentarioElement = document.createElement('div');
+          comentarioElement.className = 'comentario';
+          
+          const estrellasHTML = generarEstrellas(comentario.estrellas, 16);
+          const etiquetasHTML = comentario.etiquetas 
+            ? comentario.etiquetas.map(etiqueta => `<span class="badge">${etiqueta}</span>`).join('')
+            : '';
+          
+          comentarioElement.innerHTML = `
+            <img src="https://cdn-icons-png.flaticon.com/512/4140/4140037.png" alt="${comentario.nombre}">
+            <div>
+              <strong>${comentario.nombre}</strong>
+              ${comentario.texto}
+              <div>
+                ${etiquetasHTML}
+                <span class="estrellas-mini">${estrellasHTML}</span>
+              </div>
+            </div>
+          `;
+          
+          listaComentarios.appendChild(comentarioElement);
+        });
+        
+        mostrarDebugInfo(`Cargados ${comentariosSimulados.length} comentarios, calificación promedio: ${calificacionPromedio.toFixed(1)}`);
+      } catch (error) {
+        console.error('Error al cargar comentarios:', error);
+        document.getElementById('lista-comentarios').innerHTML = '<div class="error">Error al cargar comentarios</div>';
+        mostrarDebugInfo(`Error cargando comentarios: ${error.message}`);
+      }
+    }
+
+    // Función para generar estrellas según calificación
+    function generarEstrellas(calificacion, tamaño = 24) {
+      const estrellasLlenas = Math.floor(calificacion);
+      const mediaEstrella = calificacion % 1 >= 0.5;
+      const estrellasVacias = 5 - estrellasLlenas - (mediaEstrella ? 1 : 0);
+      
+      let estrellasHTML = '';
+      
+      // Estrellas llenas
+      for (let i = 0; i < estrellasLlenas; i++) {
+        estrellasHTML += '★';
+      }
+      
+      // Media estrella si aplica
+      if (mediaEstrella) {
+        estrellasHTML += '½';
+      }
+      
+      // Estrellas vacías
+      for (let i = 0; i < estrellasVacias; i++) {
+        estrellasHTML += '☆';
+      }
+      
+      return estrellasHTML;
+    }
+
+    // Funciones para el modal de comentarios
+    function abrirModalComentario() {
+      // Verificar si el usuario está logueado
+      const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+      if (!usuario.id) {
+        alert('Debes iniciar sesión para dejar un comentario');
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      document.getElementById('modal-comentario').style.display = 'flex';
+      calificacionSeleccionada = 0;
+      actualizarEstrellasModal();
+    }
+
+    function cerrarModalComentario() {
+      document.getElementById('modal-comentario').style.display = 'none';
+    }
+
+    function seleccionarEstrellas(cantidad) {
+      calificacionSeleccionada = cantidad;
+      actualizarEstrellasModal();
+    }
+
+    function actualizarEstrellasModal() {
+      const estrellas = document.getElementById('estrellas-calificacion');
+      let estrellasHTML = '';
+      
+      for (let i = 1; i <= 5; i++) {
+        if (i <= calificacionSeleccionada) {
+          estrellasHTML += `<span onclick="seleccionarEstrellas(${i})" style="color: gold;">★</span>`;
+        } else {
+          estrellasHTML += `<span onclick="seleccionarEstrellas(${i})" style="color: #ccc;">★</span>`;
+        }
+      }
+      
+      estrellas.innerHTML = estrellasHTML;
+    }
+
+    function enviarComentario() {
+      const texto = document.getElementById('texto-comentario').value.trim();
+      
+      if (calificacionSeleccionada === 0) {
+        alert('Por favor selecciona una calificación');
+        return;
+      }
+      
+      if (texto.length < 10) {
+        alert('El comentario debe tener al menos 10 caracteres');
+        return;
+      }
+      
+      // Aquí iría la lógica para enviar el comentario a tu API
+      alert('¡Comentario enviado con éxito!');
+      cerrarModalComentario();
+      
+      // Recargar comentarios
+      cargarComentarios(idVendedorActual);
+    }
+
+    // Configurar botón de volver
+    function configurarBotonVolver() {
+      const botonVolver = document.getElementById('volver-producto');
+      if (idProductoOrigen) {
+        botonVolver.href = `producto.html?id_producto=${idProductoOrigen}`;
+        mostrarDebugInfo(`Botón volver configurado para producto: ${idProductoOrigen}`);
+      } else {
+        botonVolver.href = 'index.html';
+        mostrarDebugInfo('Botón volver configurado para página principal');
+      }
+    }
+
+    // Función principal de inicialización
+    async function inicializarPagina() {
+      try {
+        mostrarDebugInfo('Inicializando página de perfil del vendedor...');
+        
+        // Obtener parámetros de la URL
+        idVendedorActual = obtenerParametroURL('id_vendedor');
+        idProductoOrigen = obtenerParametroURL('id_producto_origen');
+        
+        mostrarDebugInfo(`Parámetros URL - id_vendedor: ${idVendedorActual}, id_producto_origen: ${idProductoOrigen}`);
+        
+        // Estrategia 1: Si tenemos ID directo del vendedor
+        if (idVendedorActual) {
+          mostrarDebugInfo(`Usando ID directo del vendedor: ${idVendedorActual}`);
+        }
+        // Estrategia 2: Si tenemos ID del producto, obtener el vendedor desde ahí
+        else if (idProductoOrigen) {
+          mostrarDebugInfo(`Obteniendo vendedor desde producto: ${idProductoOrigen}`);
+          idVendedorActual = await obtenerVendedorDesdeProducto(idProductoOrigen);
+        }
+        // Estrategia 3: Fallback (para testing)
+        else {
+          mostrarDebugInfo('No hay parámetros, usando vendedor por defecto (ID: 1)');
+          idVendedorActual = 1;
+        }
+        
+        // Validar que tenemos un ID válido
+        if (!idVendedorActual || isNaN(idVendedorActual)) {
+          throw new Error('ID de vendedor inválido: ' + idVendedorActual);
+        }
+        
+        mostrarDebugInfo(`ID final del vendedor: ${idVendedorActual}`);
+        
+        // Configurar navegación
+        configurarBotonVolver();
+        
+        // Cargar datos
+        await cargarVendedor(idVendedorActual);
+        await cargarProductos(idVendedorActual);
+        await cargarComentarios(idVendedorActual);
+        
+        mostrarDebugInfo('Página cargada exitosamente');
+        
+      } catch (error) {
+        console.error('Error al inicializar la página:', error);
+        mostrarDebugInfo(`Error crítico: ${error.message}`);
+        alert('Error al cargar el perfil del vendedor: ' + error.message);
+      }
+    }
+
+    // Inicializar cuando se carga la página
+    document.addEventListener('DOMContentLoaded', inicializarPagina);
+  </script>
+</body>
+</html>

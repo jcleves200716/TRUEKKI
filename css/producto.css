@@ -879,4 +879,61 @@ header h1:hover {
       background: #007bff;
       color: white;
     }
-  
+/* Estilos para la sección del vendedor */
+.vendedor-info {
+    background: #e1f2fb;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px 0;
+    border: 1px solid #b6d9f3;
+}
+
+.vendedor-info h3 {
+    color: #2a6592;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.btn-ver-perfil {
+    background: #2a6592;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 14px;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+.btn-ver-perfil:hover {
+    background: #1e4a6e;
+}
+
+.vendedor-details {
+    margin: 10px 0;
+}
+
+.vendedor-detail-item {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.vendedor-detail-item i {
+    margin-right: 10px;
+    color: #2a6592;
+    width: 20px;
+    text-align: center;
+}
+
+.verificado-badge {
+    display: inline-block;
+    background: #4CAF50;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    margin-left: 8px;
+}
