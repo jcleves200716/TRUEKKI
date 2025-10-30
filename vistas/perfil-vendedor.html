@@ -244,7 +244,7 @@
             const productoElement = document.createElement('div');
             productoElement.className = 'producto';
             productoElement.onclick = () => {
-              window.location.href = `producto.html?id_producto=${producto.id_producto}`;
+              window.location.href = `producto.html?id=${producto.id_producto}`;
             };
             
             const estadoClase = producto.estado === 'nuevo' ? 'estado-nuevo' : 'estado-usado';
@@ -455,7 +455,7 @@
     function configurarBotonVolver() {
       const botonVolver = document.getElementById('volver-producto');
       if (idProductoOrigen) {
-        botonVolver.href = `producto.html?id_producto=${idProductoOrigen}`;
+        botonVolver.href = `producto.html?id=${idProductoOrigen}`;
         mostrarDebugInfo(`Botón volver configurado para producto: ${idProductoOrigen}`);
       } else {
         botonVolver.href = 'index.html';

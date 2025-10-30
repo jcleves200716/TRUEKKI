@@ -672,9 +672,182 @@ function formatearFecha(fechaString) {
         boton.classList.remove('favorito-activo');
       }
     }
+  function agregarComentario() {
+     const input = document.getElementById("comentario-input");
+    const texto = input.value.trim();
+    if (texto === "") return;
+    const lista = document.getElementById("comentarios-lista");
+  
+   // Crear contenedor del comentario
+  const comentario = document.createElement("div");
+  comentario.classList.add("comentario");
+  // Imagen de perfil
+  const img = document.createElement("img");
+  img.src = "https://i.pinimg.com/736x/d2/50/af/d250af5bf078a388b23d9916b575dc48.jpg";  
 
-    // ... (mantén el resto de tus funciones existentes como agregarComentario, 
-    // actualizarEstrellas, crearGrafica, etc.)
+  // Contenedor texto
+  const comentarioTexto = document.createElement("div");
+  comentarioTexto.classList.add("comentario-texto");
+  const nombre = document.createElement("h4");
+  nombre.textContent = "Usuario";
+   const contenido = document.createElement("p");
+  contenido.textContent = texto;
+
+  // Botones de acción
+  const acciones = document.createElement("div");
+  acciones.classList.add("comentario-acciones");
+
+  const btnEditar = document.createElement("button");
+  btnEditar.textContent = "Editar";
+  btnEditar.classList.add("btn-editar");
+  btnEditar.onclick = () => {
+    const nuevoTexto = prompt("Edita tu comentario:", contenido.textContent);
+    if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
+      contenido.textContent = nuevoTexto.trim();
+     } 
+  };
+  
+   const btnEliminar = document.createElement("button");
+  btnEliminar.textContent = "Eliminar";
+  btnEliminar.classList.add("btn-eliminar");
+  btnEliminar.onclick = () => {
+    lista.removeChild(comentario);
+  };
+
+  acciones.appendChild(btnEditar);
+  acciones.appendChild(btnEliminar);
+
+  // Insertar todo en el contenedor
+  comentarioTexto.appendChild(nombre);
+  comentarioTexto.appendChild(contenido);
+  comentarioTexto.appendChild(acciones);
+
+  comentario.appendChild(img);
+  comentario.appendChild(comentarioTexto);
+
+  lista.appendChild(comentario);
+
+  // Limpiar textarea
+  input.value = "";
+}
+    // Crear contenedor del comentario
+    const comentario = document.createElement("div");
+    comentario.classList.add("comentario");
+
+    // Imagen de perfil (fija por ahora)
+    const img = document.createElement("img");
+    img.src = "https://via.placeholder.com/50"; 
+
+    // Contenedor texto
+    const comentarioTexto = document.createElement("div");
+    comentarioTexto.classList.add("comentario-texto");
+
+    const nombre = document.createElement("h4");
+    nombre.textContent = "Usuario"; // puedes reemplazar por nombre dinámico
+
+    const contenido = document.createElement("p");
+    contenido.textContent = texto;
+
+    // Botones de acción
+    const acciones = document.createElement("div");
+    acciones.style.marginTop = "8px";
+
+    const btnEditar = document.createElement("button");
+    btnEditar.textContent = "Editar";
+    btnEditar.style.marginRight = "10px";
+    btnEditar.style.background = "#ffc107";
+    btnEditar.style.border = "none";
+    btnEditar.style.padding = "5px 10px";
+    btnEditar.style.borderRadius = "6px";
+    btnEditar.style.cursor = "pointer";
+
+    btnEditar.onclick = () => {
+      const nuevoTexto = prompt("Edita tu comentario:", contenido.textContent);
+      if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
+        contenido.textContent = nuevoTexto.trim();
+      }
+    };
+
+    const btnEliminar = document.createElement("button");
+    btnEliminar.textContent = "Eliminar";
+    btnEliminar.style.background = "#dc3545";
+    btnEliminar.style.border = "none";
+    btnEliminar.style.padding = "5px 10px";
+    btnEliminar.style.borderRadius = "6px";
+    btnEliminar.style.cursor = "pointer";
+    btnEliminar.style.color = "#fff";
+
+    btnEliminar.onclick = () => {
+      lista.removeChild(comentario);
+    };
+
+    acciones.appendChild(btnEditar);
+    acciones.appendChild(btnEliminar);
+
+    // Insertar todo en el contenedor
+    comentarioTexto.appendChild(nombre);
+    comentarioTexto.appendChild(contenido);
+    comentarioTexto.appendChild(acciones);
+
+    comentario.appendChild(img);
+    comentario.appendChild(comentarioTexto);
+
+    lista.appendChild(comentario);
+
+    // Limpiar textarea
+    input.value = "";
+
+ // Estrellas de calificación
+    const estrellas = document.querySelectorAll('.estrellas');
+
+    estrellas.forEach(estrella => {
+      estrella.addEventListener('click', () => {
+        let valor = estrella.getAttribute('data-valor');
+        calificaciones.push(parseInt(valor));
+        actualizarEstrellas(valor);
+        actualizarGrafica();
+      });
+    });
+
+    function actualizarEstrellas(valor) {
+      estrellas.forEach(e => {
+        e.classList.toggle('estrella-activa', e.getAttribute('data-valor') <= valor);
+      });
+    }
+
+    // Gráfica con Chart.js
+    function crearGrafica() {
+      const ctx = document.getElementById('grafica').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ["1★", "2★", "3★", "4★", "5★"],
+          datasets: [{
+            label: "Cantidad de calificaciones",
+            data: [0,0,0,0,0],
+            borderColor: "blue",
+            borderWidth: 2,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    function actualizarGrafica() {
+      let conteo = [0,0,0,0,0];
+      calificaciones.forEach(c => conteo[c-1]++);
+      chart.data.datasets[0].data = conteo;
+      chart.update();
+    }
+
+    crearGrafica();
+
 
   </script>
 
