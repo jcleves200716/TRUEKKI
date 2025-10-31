@@ -83,34 +83,37 @@
       ULTIMA ACTUALIZACION <span id="last-update-date">22/08/25</span>
     </p>
 
-    <!-- Estadísticas -->
-    <div class="contenedor">
-      <!-- Calificación -->
-      <div class="bloque" style="width:180px;">
-        <div id="estrellas">
-          <span class="estrellas" data-valor="1">&#9733;</span>
-          <span class="estrellas" data-valor="2">&#9733;</span>
-          <span class="estrellas" data-valor="3">&#9733;</span>
-          <span class="estrellas" data-valor="4">&#9733;</span>
-          <span class="estrellas" data-valor="5">&#9733;</span>
-        </div>
-        <p>CALIFICACION</p>
-      </div>
-
-      <!-- Gráfica -->
-      <div class="bloque" style="width:300px;">
-        <canvas id="grafica"></canvas>
-      </div>
-
-      <!-- Intercambios -->
-      <div class="bloque" style="width:200px;">
-        <p>TOTAL INTERCAMBIOS</p>
-        <p class="intercambios">35/100</p>
-        <p>ETIQUETAS DE RECONOCIMIENTO</p>
-        <p>🏆 ⚙ 💻</p>
-      </div>
+<!-- ESTE ES EL HTML CORRECTO - COPIAR Y PEGAR COMPLETO -->
+<div class="contenedor">
+  <!-- Calificación -->
+  <div class="bloque" style="width:180px;">
+    <div id="estrellas-calificacion">
+      <span class="estrella" data-valor="1">★</span>
+      <span class="estrella" data-valor="2">★</span>
+      <span class="estrella" data-valor="3">★</span>
+      <span class="estrella" data-valor="4">★</span>
+      <span class="estrella" data-valor="5">★</span>
     </div>
+    <div id="puntuacion-promedio">
+      <span id="promedio-texto">0.0</span>/5.0
+    </div>
+    <p id="texto-calificacion">CALIFICAR PRODUCTO</p>
+    <p id="total-calificaciones">(0 calificaciones)</p>
+  </div>
 
+  <!-- Gráfica -->
+  <div class="bloque" style="width:300px;">
+    <canvas id="grafica-calificaciones"></canvas>
+  </div>
+
+  <!-- Intercambios -->
+  <div class="bloque" style="width:200px;">
+    <p>TOTAL INTERCAMBIOS</p>
+    <p class="intercambios">35/100</p>
+    <p>ETIQUETAS DE RECONOCIMIENTO</p>
+    <p>🏆 ⚙ 💻</p>
+  </div>
+</div>
     <!-- Comentarios -->
     <div class="comentarios-container">
       <h2>Comentarios</h2> 
@@ -143,45 +146,72 @@
     </div>
   </div>
 
-  <script src="../js/auth.js"></script>
-  <script>
-    // Variables globales
-    let currentProduct = null;
-    let currentSeller = null;
-    let currentUser = null;
-    let esFavorito = false;
-    let favoritoId = null;
-    let calificaciones = [];
-    let chart;
 
 
+<script src="../js/auth.js"></script>
+<script>
+  // Variables globales
+  let currentProduct = null;
+  let currentSeller = null;
+  let currentUser = null;
+  let esFavorito = false;
+  let favoritoId = null;
+  let calificaciones = [];
+  let chart;
 
-    // Cargar datos al iniciar
-    document.addEventListener('DOMContentLoaded', async function() {
-      // Verificar autenticación
-      if (!checkAuth()) {
-        return;
-      }
-      
-      // Obtener usuario del localStorage
-      currentUser = getCurrentUser();
-      
-      // Obtener ID del producto de la URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const productId = urlParams.get('id');
-      
-      if (!productId) {
-        showError('No se ha especificado un producto');
-        return;
-      }
-      
-      // Cargar información del producto
-      await loadProductData(productId);
+  // ✅ NUEVAS VARIABLES PARA CALIFICACIONES
+  let calificacionesData = {
+      promedios: { promedio: 0, total: 0 },
+      distribucion: [0, 0, 0, 0, 0],
+      usuarioCalifico: false,
+      calificacionUsuario: 0
+  };
+  let chartCalificaciones = null;
 
-      if (currentProduct) {
-        await verificarFavorito();
-      }
-      function updateUserInfo() {
+  // ✅ FUNCIÓN showError (AGREGAR)
+  function showError(mensaje) {
+      const container = document.getElementById('product-container');
+      container.innerHTML = `
+          <div class="error-state">
+              <i class="fas fa-exclamation-triangle"></i>
+              <p>${mensaje}</p>
+              <button class="btn-retry" onclick="window.location.reload()">Reintentar</button>
+          </div>
+      `;
+  }
+
+  // Cargar datos al iniciar
+  document.addEventListener('DOMContentLoaded', async function() {
+    // Verificar autenticación
+    if (!checkAuth()) {
+      return;
+    }
+    
+    // Obtener usuario del localStorage
+    currentUser = getCurrentUser();
+    
+    // Obtener ID del producto de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    
+    if (!productId) {
+      showNotification('No se ha especificado un producto', 'error');
+      return;
+    }
+    
+    // Cargar información del producto
+    await loadProductData(productId);
+
+    if (currentProduct) {
+      await verificarFavorito();
+
+
+      // ✅ CARGAR CALIFICACIONES
+      await cargarCalificacionesProducto();
+      inicializarEstrellas();
+    }
+
+    function updateUserInfo() {
       document.getElementById('sidebar-avatar').textContent = getInitials(currentUser.nombre);
       document.getElementById('sidebar-name').textContent = currentUser.nombre;
     }
@@ -190,593 +220,870 @@
     function getInitials(name) {
       return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
     }
-    });
+  });
 
-    // Menú lateral
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-
-    function openMenu() {
-      sidebar.style.width = "280px";
-      overlay.style.display = "block";
+  // ✅ ========== FUNCIONES DE CALIFICACIONES ==========
+  // Función para cargar las calificaciones del producto
+async function cargarCalificacionesProducto() {
+    try {
+        const usuario = getCurrentUser();
+        const url = usuario && usuario.id ? 
+            `http://localhost:5000/calificaciones/producto/${currentProduct.id_producto}?idUsuario=${usuario.id}` :
+            `http://localhost:5000/calificaciones/producto/${currentProduct.id_producto}`;
+            
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        if (result.success) {
+            calificacionesData = result.data;
+            actualizarUIcalificaciones();
+            crearGraficaCalificaciones();
+        }
+    } catch (error) {
+        console.error('Error cargando calificaciones:', error);
     }
+}
 
-    function closeMenu() {
-      sidebar.style.width = "0";
-      overlay.style.display = "none";
-    }
-    // ========== FUNCIONALIDAD DE MENSAJES AL VENDEDOR ==========
-
-    // Enviar mensaje al vendedor
-    async function sendMessageToSeller() {
+  // Función para calificar el producto
+  async function calificarProducto(calificacion) {
       try {
-        const messageInput = document.getElementById('message-to-seller');
-        const message = messageInput.value.trim();
-        const sendBtn = document.getElementById('send-message-btn');
-        
-        if (!message) {
-          showNotification('Por favor escribe un mensaje', 'error');
-          return;
-        }
+          const usuario = getCurrentUser();
+          if (!usuario || !usuario.id) {
+              showNotification('Debes iniciar sesión para calificar productos', 'error');
+              return;
+          }
 
-        if (!currentUser || !currentUser.id) {
-          showNotification('Debes iniciar sesión para enviar mensajes', 'error');
-          window.location.href = 'login.html';
-          return;
-        }
+          const response = await fetch('http://localhost:5000/calificaciones/calificar', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  id_producto: currentProduct.id_producto,
+                  id_usuario: usuario.id,
+                  calificacion: calificacion
+              })
+          });
 
-        // Deshabilitar botón mientras se envía
-        sendBtn.disabled = true;
-        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
-
-        console.log('📍 Iniciando conversación con vendedor:', currentSeller.id);
-        
-        // 1. Crear o obtener conversación
-        const conversationResponse = await fetch('http://localhost:5000/chat/conversacion', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            id_usuario1: currentUser.id,
-            id_usuario2: currentSeller.id
-          })
-        });
-
-        if (!conversationResponse.ok) {
-          throw new Error(`Error HTTP: ${conversationResponse.status}`);
-        }
-
-        const conversationResult = await conversationResponse.json();
-        
-        if (!conversationResult.success) {
-          throw new Error(conversationResult.message);
-        }
-
-        const conversation = conversationResult.conversacion;
-        console.log('✅ Conversación:', conversation);
-
-        // 2. Enviar mensaje
-        const messageResponse = await fetch('http://localhost:5000/chat/mensaje', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            id_conversacion: conversation.id_conversacion,
-            id_remitente: currentUser.id,
-            mensaje: message
-          })
-        });
-
-        if (!messageResponse.ok) {
-          throw new Error(`Error HTTP: ${messageResponse.status}`);
-        }
-
-        const messageResult = await messageResponse.json();
-        
-        if (!messageResult.success) {
-          throw new Error(messageResult.message);
-        }
-
-        console.log('✅ Mensaje enviado correctamente');
-        
-        // Mostrar modal de éxito
-        showMessageModal();
-        
+          const result = await response.json();
+          
+          if (result.success) {
+              showNotification('¡Calificación enviada!');
+              await cargarCalificacionesProducto();
+          } else {
+              showNotification(result.message, 'error');
+          }
       } catch (error) {
-        console.error('❌ Error enviando mensaje:', error);
-        showNotification('Error al enviar mensaje: ' + error.message, 'error');
-        
-        // Rehabilitar botón
-        const sendBtn = document.getElementById('send-message-btn');
-        sendBtn.disabled = false;
-        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR MENSAJE';
+          console.error('Error calificando producto:', error);
+          showNotification('Error al enviar calificación', 'error');
       }
-    }
+  }
 
-    // Mostrar modal de mensaje enviado
-    function showMessageModal() {
-      const modal = document.getElementById('messageModal');
-      modal.style.display = 'flex';
+
+// Función para actualizar la UI de calificaciones - VERSIÓN CORREGIDA
+// Función para actualizar la UI de calificaciones - VERSIÓN CORREGIDA
+function actualizarUIcalificaciones() {
+    console.log('🎨 Actualizando UI de calificaciones...');
+    
+    // Actualizar textos
+    const promedioTexto = document.getElementById('promedio-texto');
+    const totalCalificaciones = document.getElementById('total-calificaciones');
+    const textoCalificacion = document.getElementById('texto-calificacion');
+    
+    if (promedioTexto) {
+        promedioTexto.textContent = calificacionesData.promedios.promedio.toFixed(1);
+    }
+    
+    if (totalCalificaciones) {
+        totalCalificaciones.textContent = `(${calificacionesData.promedios.total} calificaciones)`;
+    }
+    
+    if (textoCalificacion) {
+        textoCalificacion.textContent = calificacionesData.usuarioCalifico ? 
+            '¡Gracias por calificar!' : 'CALIFICAR PRODUCTO';
+    }
+    
+    // Actualizar estrellas del usuario
+    const estrellas = document.querySelectorAll('#estrellas-calificacion .estrella');
+    console.log('Estrellas encontradas para actualizar:', estrellas.length);
+    
+    estrellas.forEach(estrella => {
+        const valor = parseInt(estrella.getAttribute('data-valor'));
+        const estaSeleccionada = valor <= calificacionesData.calificacionUsuario;
+        
+        console.log(`Estrella ${valor}: seleccionada = ${estaSeleccionada}`);
+        
+        if (estaSeleccionada) {
+            estrella.classList.add('seleccionada');
+            estrella.style.color = '#ffc107';
+        } else {
+            estrella.classList.remove('seleccionada');
+            estrella.style.color = '#ddd';
+        }
+    });
+    
+    // ✅ SOLO LLAMAR A LA FUNCIÓN, NO DUPLICAR EL CÓDIGO
+    crearGraficaCalificaciones();
+}
+
+  // Función para crear/actualizar la gráfica de calificaciones
+      const ctx = document.getElementById('grafica-calificaciones').getContext('2d');
+      
+      if (chartCalificaciones) {
+          chartCalificaciones.destroy();
+      }
+
+      chartCalificaciones = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: ['1★', '2★', '3★', '4★', '5★'],
+              datasets: [{
+                  label: 'Calificaciones',
+                  data: calificacionesData.distribucion,
+                  backgroundColor: [
+                      '#ff6b6b',
+                      '#ffa726',
+                      '#ffee58',
+                      '#9ccc65',
+                      '#66bb6a'
+                  ],
+                  borderColor: [
+                      '#ff5252',
+                      '#ff9800',
+                      '#fdd835',
+                      '#8bc34a',
+                      '#4caf50'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                  legend: {
+                      display: false
+                  },
+                  tooltip: {
+                      callbacks: {
+                          label: function(context) {
+                              return `${context.parsed.y} calificaciones`;
+                          }
+                      }
+                  }
+              },
+              scales: {
+                  y: {
+                      beginAtZero: true,
+                      ticks: {
+                          stepSize: 1,
+                          precision: 0
+                      },
+                      title: {
+                          display: true,
+                          text: 'Cantidad'
+                      }
+                  },
+                  x: {
+                      title: {
+                          display: true,
+                          text: 'Estrellas'
+                      }
+                  }
+              }
+          }
+      });
+
+  // Inicializar eventos de las estrellas
+ // Inicializar eventos de las estrellas
+function inicializarEstrellas() {
+    console.log('🔄 Inicializando estrellas...');
+    
+    const estrellas = document.querySelectorAll('#estrellas-calificacion .estrella');
+    console.log('Estrellas encontradas:', estrellas.length);
+    
+    if (estrellas.length === 0) {
+        console.error('❌ No se encontraron estrellas para inicializar');
+        return;
+    }
+    
+    estrellas.forEach(estrella => {
+        // Limpiar eventos anteriores
+        const nuevaEstrella = estrella.cloneNode(true);
+        estrella.parentNode.replaceChild(nuevaEstrella, estrella);
+    });
+    
+    // Volver a obtener las estrellas después del clone
+    const nuevasEstrellas = document.querySelectorAll('#estrellas-calificacion .estrella');
+    
+    nuevasEstrellas.forEach(estrella => {
+        // Hover
+        estrella.addEventListener('mouseenter', function() {
+            if (!calificacionesData.usuarioCalifico) {
+                const valor = parseInt(this.getAttribute('data-valor'));
+                resaltarEstrellas(valor);
+            }
+        });
+
+        // Mouse out
+        estrella.addEventListener('mouseleave', function() {
+            if (!calificacionesData.usuarioCalifico) {
+                resetearEstrellasHover();
+            }
+        });
+
+        // Click
+        estrella.addEventListener('click', function() {
+            console.log('⭐ Estrella clickeada:', this.getAttribute('data-valor'));
+            if (!calificacionesData.usuarioCalifico) {
+                const valor = parseInt(this.getAttribute('data-valor'));
+                calificarProducto(valor);
+            } else {
+                showNotification('Ya has calificado este producto', 'info');
+            }
+        });
+    });
+    
+    console.log('✅ Estrellas inicializadas correctamente');
+}
+
+// Funciones auxiliares para las estrellas
+function resaltarEstrellas(hastaValor) {
+    const estrellas = document.querySelectorAll('#estrellas-calificacion .estrella');
+    estrellas.forEach(estrella => {
+        const valor = parseInt(estrella.getAttribute('data-valor'));
+        if (valor <= hastaValor) {
+            estrella.style.color = '#ffc107';
+        } else {
+            estrella.style.color = '#ddd';
+        }
+    });
+}
+
+function resetearEstrellasHover() {
+    const estrellas = document.querySelectorAll('#estrellas-calificacion .estrella');
+    estrellas.forEach(estrella => {
+        const valor = parseInt(estrella.getAttribute('data-valor'));
+        const estaSeleccionada = valor <= calificacionesData.calificacionUsuario;
+        
+        if (!estaSeleccionada) {
+            estrella.style.color = '#ddd';
+        }
+    });
+}
+  // Función para crear/actualizar la gráfica de calificaciones
+function crearGraficaCalificaciones() {
+    console.log('📊 Creando gráfica de calificaciones...');
+    
+    const ctx = document.getElementById('grafica-calificaciones');
+    if (!ctx) {
+        console.error('❌ No se encontró el elemento canvas para la gráfica');
+        return;
+    }
+    
+    // Destruir gráfica anterior si existe
+    if (chartCalificaciones) {
+        chartCalificaciones.destroy();
+    }
+    
+    try {
+        chartCalificaciones = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['1★', '2★', '3★', '4★', '5★'],
+                datasets: [{
+                    label: 'Calificaciones',
+                    data: calificacionesData.distribucion,
+                    backgroundColor: [
+                        '#ff6b6b',
+                        '#ffa726', 
+                        '#ffee58',
+                        '#9ccc65',
+                        '#66bb6a'
+                    ],
+                    borderColor: [
+                        '#ff5252',
+                        '#ff9800',
+                        '#fdd835', 
+                        '#8bc34a',
+                        '#4caf50'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.parsed.y} calificaciones`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        },
+                        title: {
+                            display: true,
+                            text: 'Cantidad'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Estrellas'
+                        }
+                    }
+                }
+            }
+        });
+        
+        console.log('✅ Gráfica creada exitosamente');
+    } catch (error) {
+        console.error('❌ Error creando gráfica:', error);
+    }
+}
+  // Funciones auxiliares para las estrellas
+  function resaltarEstrellas(hastaValor) {
+      const estrellas = document.querySelectorAll('#estrellas-calificacion .estrella');
+      estrellas.forEach(estrella => {
+          const valor = parseInt(estrella.getAttribute('data-valor'));
+          estrella.classList.toggle('hover', valor <= hastaValor);
+      });
+  }
+
+  function resetearEstrellasHover() {
+      const estrellas = document.querySelectorAll('#estrellas-calificacion .estrella');
+      estrellas.forEach(estrella => {
+          estrella.classList.remove('hover');
+      });
+  }
+
+  // ✅ ========== FIN FUNCIONES CALIFICACIONES ==========
+
+  // Menú lateral
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  function openMenu() {
+    sidebar.style.width = "280px";
+    overlay.style.display = "block";
+  }
+
+  function closeMenu() {
+    sidebar.style.width = "0";
+    overlay.style.display = "none";
+  }
+
+  // ========== FUNCIONALIDAD DE MENSAJES AL VENDEDOR ==========
+
+  // Enviar mensaje al vendedor
+  async function sendMessageToSeller() {
+    try {
+      const messageInput = document.getElementById('message-to-seller');
+      const message = messageInput.value.trim();
+      const sendBtn = document.getElementById('send-message-btn');
+      
+      if (!message) {
+        showNotification('Por favor escribe un mensaje', 'error');
+        return;
+      }
+
+      if (!currentUser || !currentUser.id) {
+        showNotification('Debes iniciar sesión para enviar mensajes', 'error');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Deshabilitar botón mientras se envía
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
+
+      console.log('📍 Iniciando conversación con vendedor:', currentSeller.id);
+      
+      // 1. Crear o obtener conversación
+      const conversationResponse = await fetch('http://localhost:5000/chat/conversacion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_usuario1: currentUser.id,
+          id_usuario2: currentSeller.id
+        })
+      });
+
+      if (!conversationResponse.ok) {
+        throw new Error(`Error HTTP: ${conversationResponse.status}`);
+      }
+
+      const conversationResult = await conversationResponse.json();
+      
+      if (!conversationResult.success) {
+        throw new Error(conversationResult.message);
+      }
+
+      const conversation = conversationResult.conversacion;
+      console.log('✅ Conversación:', conversation);
+
+      // 2. Enviar mensaje
+      const messageResponse = await fetch('http://localhost:5000/chat/mensaje', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_conversacion: conversation.id_conversacion,
+          id_remitente: currentUser.id,
+          mensaje: message
+        })
+      });
+
+      if (!messageResponse.ok) {
+        throw new Error(`Error HTTP: ${messageResponse.status}`);
+      }
+
+      const messageResult = await messageResponse.json();
+      
+      if (!messageResult.success) {
+        throw new Error(messageResult.message);
+      }
+
+      console.log('✅ Mensaje enviado correctamente');
+      
+      // Mostrar modal de éxito
+      showMessageModal();
+      
+    } catch (error) {
+      console.error('❌ Error enviando mensaje:', error);
+      showNotification('Error al enviar mensaje: ' + error.message, 'error');
       
       // Rehabilitar botón
       const sendBtn = document.getElementById('send-message-btn');
       sendBtn.disabled = false;
       sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR MENSAJE';
     }
+  }
 
-    // Cerrar modal
-    function closeMessageModal() {
-      const modal = document.getElementById('messageModal');
-      modal.style.display = 'none';
-    }
-
-    // Ir al chat después de enviar mensaje
-    function goToChat() {
-      closeMessageModal();
-      window.location.href = 'chat.html';
-    }
-
-    // Seguir explorando productos
-    function continueBrowsing() {
-      closeMessageModal();
-      // Puedes redirigir a la página principal o dejar en la misma página
-      // window.location.href = 'barra.html';
-    }
-
-// ========== FUNCIONALIDAD DEL PERFIL DEL VENDEDOR ==========
-
-// Función para ver el perfil del vendedor
-function verPerfilVendedor() {
-    if (!currentSeller || !currentSeller.id) {
-        console.error('No hay información del vendedor disponible');
-        showNotification('Error: No se pudo cargar el perfil del vendedor', 'error');
-        return;
-    }
+  // Mostrar modal de mensaje enviado
+  function showMessageModal() {
+    const modal = document.getElementById('messageModal');
+    modal.style.display = 'flex';
     
-    // Obtener el ID del producto actual de la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
-    
-    if (productId) {
-        // Redirigir a la página del perfil del vendedor con el ID del producto origen
-        window.location.href = `perfil-vendedor.html?id_producto_origen=${productId}`;
-    } else {
-        // Si no hay ID de producto, usar el ID directo del vendedor
-        window.location.href = `perfil-vendedor.html?id_vendedor=${currentSeller.id}`;
-    }
-}
+    // Rehabilitar botón
+    const sendBtn = document.getElementById('send-message-btn');
+    sendBtn.disabled = false;
+    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR MENSAJE';
+  }
 
-// Función para cargar y mostrar información del vendedor
-async function cargarInformacionVendedor(vendedor) {
-    try {
-        const infoVendedor = document.getElementById('info-vendedor');
-        
-        if (!vendedor) {
-            infoVendedor.innerHTML = '<div class="error">No se pudo cargar la información del vendedor</div>';
-            return;
-        }
+  // Cerrar modal
+  function closeMessageModal() {
+    const modal = document.getElementById('messageModal');
+    modal.style.display = 'none';
+  }
 
-        // Obtener información completa del vendedor
-        const response = await fetch(`http://localhost:5000/usuario/${vendedor.id}`);
-        const result = await response.json();
-        
-        let vendedorCompleto = vendedor;
-        if (result.success) {
-            vendedorCompleto = { ...vendedor, ...result.usuario };
-        }
+  // Ir al chat después de enviar mensaje
+  function goToChat() {
+    closeMessageModal();
+    window.location.href = 'chat.html';
+  }
 
-        // Mostrar información del vendedor
-        infoVendedor.innerHTML = `
-            <div class="vendedor-details">
-                <div class="vendedor-detail-item">
-                    <i>👤</i> 
-                    <strong>Nombre:</strong> ${vendedorCompleto.nombre}
-                    ${vendedorCompleto.verificado ? '<span class="verificado-badge">✓ Verificado</span>' : ''}
-                </div>
-                <div class="vendedor-detail-item">
-                    <i>📧</i> 
-                    <strong>Email:</strong> ${vendedorCompleto.email || 'No disponible'}
-                </div>
-                <div class="vendedor-detail-item">
-                    <i>📱</i> 
-                    <strong>Teléfono:</strong> ${vendedorCompleto.numero_telefono || 'No disponible'}
-                </div>
-                ${vendedorCompleto.fecha_registro ? `
-                <div class="vendedor-detail-item">
-                    <i>📅</i> 
-                    <strong>Miembro desde:</strong> ${formatearFecha(vendedorCompleto.fecha_registro)}
-                </div>
-                ` : ''}
-            </div>
-        `;
+  // Seguir explorando productos
+  function continueBrowsing() {
+    closeMessageModal();
+  }
 
-    } catch (error) {
-        console.error('Error cargando información del vendedor:', error);
-        document.getElementById('info-vendedor').innerHTML = `
-            <div class="vendedor-details">
-                <div class="vendedor-detail-item">
-                    <i>👤</i> <strong>Nombre:</strong> ${vendedor.nombre}
-                </div>
-                <div class="vendedor-detail-item">
-                    <i>📧</i> <strong>Email:</strong> ${vendedor.email || 'No disponible'}
-                </div>
-            </div>
-        `;
-    }
-}
+  // ========== FUNCIONALIDAD DEL PERFIL DEL VENDEDOR ==========
 
-// Función auxiliar para formatear fechas
-function formatearFecha(fechaString) {
-    try {
-        const fecha = new Date(fechaString);
-        return fecha.toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    } catch (error) {
-        return 'Fecha no disponible';
-    }
-}
-
-    // ========== FUNCIONALIDAD EXISTENTE DEL PRODUCTO ==========
-
-    // Cargar datos del producto desde la API
-    async function loadProductData(productId) {
-      try {
-        console.log('Cargando producto ID:', productId);
-        
-        const response = await fetch(`http://localhost:5000/producto/${productId}`);
-        
-        if (!response.ok) {
-          throw new Error(`Error HTTP: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        console.log('Respuesta del servidor:', result);
-        
-        if (result.success) {
-          currentProduct = result.producto;
-          currentSeller = result.vendedor;
-          renderProduct(currentProduct, currentSeller);
-          updateSellerInfo(currentSeller);
-        } else {
-          showError('Error: ' + result.message);
-        }
-      } catch (error) {
-        console.error('Error cargando producto:', error);
-        showError('Error de conexión. Verifica que el servidor esté ejecutándose.');
-      }
-    }
-
-    // Actualizar información del vendedor en la UI
-    function updateSellerInfo(seller) {
-      document.getElementById('seller-name').textContent = seller.nombre + '.';
-      // Aquí podrías cargar más información del vendedor si está disponible
-    }
-
-    // Renderizar producto
-    function renderProduct(product, seller) {
-      const container = document.getElementById('product-container');
-      
-      container.innerHTML = `
-        <!-- Galería lateral -->
-        <div class="gallery">
-          ${product.foto ? 
-            `<img src="http://localhost:5000/imagen-producto/${product.id_producto}" 
-                 alt="${product.titulo}" 
-                 onerror="handleImageError(this)">` : 
-            '<div class="no-image">Imagen no disponible</div>'
-          }
-        </div>
-
-        <!-- Imagen principal -->
-        <div class="main-image">
-          ${product.foto ? 
-            `<img src="http://localhost:5000/imagen-producto/${product.id_producto}" 
-                 alt="${product.titulo}"
-                 onerror="handleImageError(this)">` : 
-            '<div class="no-image">Imagen no disponible</div>'
-          }
-        </div>
-
-        <!-- Detalles -->
-        <div class="details">
-          <h2>${product.titulo}</h2>
-          <p>${product.descripcion}</p>
-
-          <div class="price">
-            <b>Precio:</b> ${product.precio ? `$${parseInt(product.precio).toLocaleString()}` : 'Negociable'}
-          </div>
-          
-          <p><b>Ubicación:</b> ${product.ciudad}, ${product.barrio}</p>
-          
-          <p><b>Vendedor:</b> ${seller.nombre}</p>
-
-          <div class="tags">
-            <span class="tag">${product.categoria}</span>
-            <span class="tag">${product.estado}</span>
-            <span class="tag">${product.contacto === 'whatsapp' ? 'WhatsApp' : 'Mensaje'}</span>
-          </div>
-          
-          <div class="tags">
-            <span class="tag2">venta</span>
-            <span class="tag2">trueque</span>
-            <span class="tag2">venta/trueque</span>
-          </div>
-
-          <div class="btns">
-            <button onclick="addToWishlist(${product.id_producto})">
-              <i class="fas fa-heart"></i> Lista deseos
-            </button>
-            <button onclick="shareProduct()">
-              <i class="fas fa-share"></i> Compartir
-            </button>
-          </div>
-
-          <!-- SECCIÓN DE FAVORITOS -->
-          <div class="favorite-section">
-            <button id="btn-favorito" class="btn-favorito" onclick="toggleFavorito()">
-              <i class="far fa-heart"></i> Agregar a Favoritos
-            </button>
-          </div>
-        </div>
-      `;
-
-      // Verificar estado de favorito después de renderizar
-      setTimeout(verificarFavorito, 100);
-        // Cargar información del vendedor en la sección correspondiente
-      cargarInformacionVendedor(seller);
-      }
-
-
-    // ========== FUNCIONES AUXILIARES ==========
-
-    // Manejar error de imagen
-    function handleImageError(img) {
-      img.style.display = 'none';
-      img.parentElement.innerHTML = '<div class="no-image">Imagen no disponible</div>';
-    }
-
-    // Mostrar notificación
-    function showNotification(mensaje, tipo = 'success') {
-      const notificacion = document.createElement('div');
-      notificacion.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        background: ${tipo === 'success' ? '#28a745' : '#dc3545'};
-        color: white;
-        border-radius: 5px;
-        z-index: 1000;
-        font-family: Arial, sans-serif;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      `;
-      notificacion.textContent = mensaje;
-      
-      document.body.appendChild(notificacion);
-      
-      setTimeout(() => {
-        if (document.body.contains(notificacion)) {
-          document.body.removeChild(notificacion);
-        }
-      }, 3000);
-    }
-
-    // Función para verificar si el producto está en favoritos
-    async function verificarFavorito() {
-      try {
-        const usuario = getCurrentUser();
-        if (!usuario || !usuario.id) return;
-
-        const response = await fetch(`http://localhost:5000/favoritos/verificar/${usuario.id}/${currentProduct.id_producto}`);
-        const result = await response.json();
-        
-        if (result.success) {
-          esFavorito = result.esFavorito;
-          actualizarBotonFavorito();
-        }
-      } catch (error) {
-        console.error('Error verificando favorito:', error);
-      }
-    }
-
-    // Función para alternar favorito
-    async function toggleFavorito() {
-      try {
-        const usuario = getCurrentUser();
-        if (!usuario || !usuario.id) {
-          showNotification('Debes iniciar sesión para agregar favoritos', 'error');
-          window.location.href = '../vistas/login.html';
+  // Función para ver el perfil del vendedor
+  function verPerfilVendedor() {
+      if (!currentSeller || !currentSeller.id) {
+          console.error('No hay información del vendedor disponible');
+          showNotification('Error: No se pudo cargar el perfil del vendedor', 'error');
           return;
-        }
+      }
+      
+      // Obtener el ID del producto actual de la URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+      
+      if (productId) {
+          window.location.href = `perfil-vendedor.html?id_producto_origen=${productId}`;
+      } else {
+          window.location.href = `perfil-vendedor.html?id_vendedor=${currentSeller.id}`;
+      }
+  }
 
-        if (esFavorito) {
-          await eliminarFavorito();
-        } else {
-          await agregarFavorito();
-        }
+  // Función para cargar y mostrar información del vendedor
+  async function cargarInformacionVendedor(vendedor) {
+      try {
+          const infoVendedor = document.getElementById('info-vendedor');
+          
+          if (!vendedor) {
+              infoVendedor.innerHTML = '<div class="error">No se pudo cargar la información del vendedor</div>';
+              return;
+          }
+
+          // Obtener información completa del vendedor
+          const response = await fetch(`http://localhost:5000/usuario/${vendedor.id}`);
+          const result = await response.json();
+          
+          let vendedorCompleto = vendedor;
+          if (result.success) {
+              vendedorCompleto = { ...vendedor, ...result.usuario };
+          }
+
+          infoVendedor.innerHTML = `
+              <div class="vendedor-details">
+                  <div class="vendedor-detail-item">
+                      <i>👤</i> 
+                      <strong>Nombre:</strong> ${vendedorCompleto.nombre}
+                      ${vendedorCompleto.verificado ? '<span class="verificado-badge">✓ Verificado</span>' : ''}
+                  </div>
+                  <div class="vendedor-detail-item">
+                      <i>📧</i> 
+                      <strong>Email:</strong> ${vendedorCompleto.email || 'No disponible'}
+                  </div>
+                  <div class="vendedor-detail-item">
+                      <i>📱</i> 
+                      <strong>Teléfono:</strong> ${vendedorCompleto.numero_telefono || 'No disponible'}
+                  </div>
+                  ${vendedorCompleto.fecha_registro ? `
+                  <div class="vendedor-detail-item">
+                      <i>📅</i> 
+                      <strong>Miembro desde:</strong> ${formatearFecha(vendedorCompleto.fecha_registro)}
+                  </div>
+                  ` : ''}
+              </div>
+          `;
+
       } catch (error) {
-        console.error('Error al manejar favorito:', error);
-        showNotification('Error al procesar la acción', 'error');
+          console.error('Error cargando información del vendedor:', error);
+          document.getElementById('info-vendedor').innerHTML = `
+              <div class="vendedor-details">
+                  <div class="vendedor-detail-item">
+                      <i>👤</i> <strong>Nombre:</strong> ${vendedor.nombre}
+                  </div>
+                  <div class="vendedor-detail-item">
+                      <i>📧</i> <strong>Email:</strong> ${vendedor.email || 'No disponible'}
+                  </div>
+              </div>
+          `;
       }
-    }
+  }
 
-    // Función para agregar a favoritos
-    async function agregarFavorito() {
-      const usuario = getCurrentUser();
+  // Función auxiliar para formatear fechas
+  function formatearFecha(fechaString) {
+      try {
+          const fecha = new Date(fechaString);
+          return fecha.toLocaleDateString('es-ES', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+          });
+      } catch (error) {
+          return 'Fecha no disponible';
+      }
+  }
+
+  // ========== FUNCIONALIDAD EXISTENTE DEL PRODUCTO ==========
+
+  // Cargar datos del producto desde la API
+  async function loadProductData(productId) {
+    try {
+      console.log('Cargando producto ID:', productId);
       
-      const response = await fetch('http://localhost:5000/favoritos/agregar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id_usuario: usuario.id,
-          id_producto: currentProduct.id_producto
-        })
-      });
+      const response = await fetch(`http://localhost:5000/producto/${productId}`);
+      
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log('Respuesta del servidor:', result);
+      
+      if (result.success) {
+        currentProduct = result.producto;
+        currentSeller = result.vendedor;
+        renderProduct(currentProduct, currentSeller);
+        // ✅ COMENTAR ESTA LÍNEA TEMPORALMENTE
+        // updateSellerInfo(currentSeller);
+      } else {
+        // ✅ USAR showNotification EN VEZ DE showError
+        showNotification('Error: ' + result.message, 'error');
+      }
+    } catch (error) {
+      console.error('Error cargando producto:', error);
+      // ✅ USAR showNotification EN VEZ DE showError
+      showNotification('Error de conexión. Verifica que el servidor esté ejecutándose.', 'error');
+    }
+  }
 
+  // Actualizar información del vendedor en la UI
+  function updateSellerInfo(seller) {
+    // ✅ COMENTAR O ELIMINAR ESTA LÍNEA
+    // document.getElementById('seller-name').textContent = seller.nombre + '.';
+    console.log('Vendedor:', seller.nombre);
+  }
+
+  // Renderizar producto
+  function renderProduct(product, seller) {
+    const container = document.getElementById('product-container');
+    
+    container.innerHTML = `
+      <!-- Galería lateral -->
+      <div class="gallery">
+        ${product.foto ? 
+          `<img src="http://localhost:5000/imagen-producto/${product.id_producto}" 
+               alt="${product.titulo}" 
+               onerror="handleImageError(this)">` : 
+          '<div class="no-image">Imagen no disponible</div>'
+        }
+      </div>
+
+      <!-- Imagen principal -->
+      <div class="main-image">
+        ${product.foto ? 
+          `<img src="http://localhost:5000/imagen-producto/${product.id_producto}" 
+               alt="${product.titulo}"
+               onerror="handleImageError(this)">` : 
+          '<div class="no-image">Imagen no disponible</div>'
+        }
+      </div>
+
+      <!-- Detalles -->
+      <div class="details">
+        <h2>${product.titulo}</h2>
+        <p>${product.descripcion}</p>
+
+        <div class="price">
+          <b>Precio:</b> ${product.precio ? `$${parseInt(product.precio).toLocaleString()}` : 'Negociable'}
+        </div>
+        
+        <p><b>Ubicación:</b> ${product.ciudad}, ${product.barrio}</p>
+        
+        <p><b>Vendedor:</b> ${seller.nombre}</p>
+
+        <div class="tags">
+          <span class="tag">${product.categoria}</span>
+          <span class="tag">${product.estado}</span>
+          <span class="tag">${product.contacto === 'whatsapp' ? 'WhatsApp' : 'Mensaje'}</span>
+        </div>
+        
+        <div class="tags">
+          <span class="tag2">venta</span>
+          <span class="tag2">trueque</span>
+          <span class="tag2">venta/trueque</span>
+        </div>
+
+        <div class="btns">
+          <button onclick="addToWishlist(${product.id_producto})">
+            <i class="fas fa-heart"></i> Lista deseos
+          </button>
+          <button onclick="shareProduct()">
+            <i class="fas fa-share"></i> Compartir
+          </button>
+        </div>
+
+        <!-- SECCIÓN DE FAVORITOS -->
+        <div class="favorite-section">
+          <button id="btn-favorito" class="btn-favorito" onclick="toggleFavorito()">
+            <i class="far fa-heart"></i> Agregar a Favoritos
+          </button>
+        </div>
+      </div>
+    `;
+
+    setTimeout(verificarFavorito, 100);
+    cargarInformacionVendedor(seller);
+  }
+
+  // ========== FUNCIONES AUXILIARES ==========
+
+  // Manejar error de imagen
+  function handleImageError(img) {
+    img.style.display = 'none';
+    img.parentElement.innerHTML = '<div class="no-image">Imagen no disponible</div>';
+  }
+
+  // Mostrar notificación
+  function showNotification(mensaje, tipo = 'success') {
+    const notificacion = document.createElement('div');
+    notificacion.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      background: ${tipo === 'success' ? '#28a745' : '#dc3545'};
+      color: white;
+      border-radius: 5px;
+      z-index: 1000;
+      font-family: Arial, sans-serif;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    notificacion.textContent = mensaje;
+    
+    document.body.appendChild(notificacion);
+    
+    setTimeout(() => {
+      if (document.body.contains(notificacion)) {
+        document.body.removeChild(notificacion);
+      }
+    }, 3000);
+  }
+
+  // Función para verificar si el producto está en favoritos
+  async function verificarFavorito() {
+    try {
+      const usuario = getCurrentUser();
+      if (!usuario || !usuario.id) return;
+
+      const response = await fetch(`http://localhost:5000/favoritos/verificar/${usuario.id}/${currentProduct.id_producto}`);
       const result = await response.json();
       
       if (result.success) {
-        esFavorito = true;
-        favoritoId = result.id_favorito;
+        esFavorito = result.esFavorito;
         actualizarBotonFavorito();
-        showNotification('Producto agregado a favoritos');
-      } else {
-        showNotification(result.message, 'error');
       }
+    } catch (error) {
+      console.error('Error verificando favorito:', error);
     }
+  }
 
-    // Función para eliminar de favoritos
-    async function eliminarFavorito() {
+  // Función para alternar favorito
+  async function toggleFavorito() {
+    try {
       const usuario = getCurrentUser();
-      
-      const response = await fetch('http://localhost:5000/favoritos/eliminar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id_usuario: usuario.id,
-          id_producto: currentProduct.id_producto
-        })
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        esFavorito = false;
-        favoritoId = null;
-        actualizarBotonFavorito();
-        showNotification('Producto eliminado de favoritos');
-      } else {
-        showNotification(result.message, 'error');
+      if (!usuario || !usuario.id) {
+        showNotification('Debes iniciar sesión para agregar favoritos', 'error');
+        window.location.href = '../vistas/login.html';
+        return;
       }
-    }
-
-    // Función para actualizar la apariencia del botón
-    function actualizarBotonFavorito() {
-      const boton = document.getElementById('btn-favorito');
-      if (!boton) return;
 
       if (esFavorito) {
-        boton.innerHTML = '<i class="fas fa-heart"></i> Eliminar de Favoritos';
-        boton.classList.add('favorito-activo');
+        await eliminarFavorito();
       } else {
-        boton.innerHTML = '<i class="far fa-heart"></i> Agregar a Favoritos';
-        boton.classList.remove('favorito-activo');
+        await agregarFavorito();
       }
+    } catch (error) {
+      console.error('Error al manejar favorito:', error);
+      showNotification('Error al procesar la acción', 'error');
     }
+  }
+
+  // Función para agregar a favoritos
+  async function agregarFavorito() {
+    const usuario = getCurrentUser();
+    
+    const response = await fetch('http://localhost:5000/favoritos/agregar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id_usuario: usuario.id,
+        id_producto: currentProduct.id_producto
+      })
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      esFavorito = true;
+      favoritoId = result.id_favorito;
+      actualizarBotonFavorito();
+      showNotification('Producto agregado a favoritos');
+    } else {
+      showNotification(result.message, 'error');
+    }
+  }
+
+  // Función para eliminar de favoritos
+  async function eliminarFavorito() {
+    const usuario = getCurrentUser();
+    
+    const response = await fetch('http://localhost:5000/favoritos/eliminar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id_usuario: usuario.id,
+        id_producto: currentProduct.id_producto
+      })
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      esFavorito = false;
+      favoritoId = null;
+      actualizarBotonFavorito();
+      showNotification('Producto eliminado de favoritos');
+    } else {
+      showNotification(result.message, 'error');
+    }
+  }
+
+  // Función para actualizar la apariencia del botón
+  function actualizarBotonFavorito() {
+    const boton = document.getElementById('btn-favorito');
+    if (!boton) return;
+
+    if (esFavorito) {
+      boton.innerHTML = '<i class="fas fa-heart"></i> Eliminar de Favoritos';
+      boton.classList.add('favorito-activo');
+    } else {
+      boton.innerHTML = '<i class="far fa-heart"></i> Agregar a Favoritos';
+      boton.classList.remove('favorito-activo');
+    }
+  }
+
   function agregarComentario() {
-     const input = document.getElementById("comentario-input");
+    const input = document.getElementById("comentario-input");
     const texto = input.value.trim();
     if (texto === "") return;
     const lista = document.getElementById("comentarios-lista");
   
-   // Crear contenedor del comentario
-  const comentario = document.createElement("div");
-  comentario.classList.add("comentario");
-  // Imagen de perfil
-  const img = document.createElement("img");
-  img.src = "https://i.pinimg.com/736x/d2/50/af/d250af5bf078a388b23d9916b575dc48.jpg";  
-
-  // Contenedor texto
-  const comentarioTexto = document.createElement("div");
-  comentarioTexto.classList.add("comentario-texto");
-  const nombre = document.createElement("h4");
-  nombre.textContent = "Usuario";
-   const contenido = document.createElement("p");
-  contenido.textContent = texto;
-
-  // Botones de acción
-  const acciones = document.createElement("div");
-  acciones.classList.add("comentario-acciones");
-
-  const btnEditar = document.createElement("button");
-  btnEditar.textContent = "Editar";
-  btnEditar.classList.add("btn-editar");
-  btnEditar.onclick = () => {
-    const nuevoTexto = prompt("Edita tu comentario:", contenido.textContent);
-    if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
-      contenido.textContent = nuevoTexto.trim();
-     } 
-  };
-  
-   const btnEliminar = document.createElement("button");
-  btnEliminar.textContent = "Eliminar";
-  btnEliminar.classList.add("btn-eliminar");
-  btnEliminar.onclick = () => {
-    lista.removeChild(comentario);
-  };
-
-  acciones.appendChild(btnEditar);
-  acciones.appendChild(btnEliminar);
-
-  // Insertar todo en el contenedor
-  comentarioTexto.appendChild(nombre);
-  comentarioTexto.appendChild(contenido);
-  comentarioTexto.appendChild(acciones);
-
-  comentario.appendChild(img);
-  comentario.appendChild(comentarioTexto);
-
-  lista.appendChild(comentario);
-
-  // Limpiar textarea
-  input.value = "";
-}
-    // Crear contenedor del comentario
     const comentario = document.createElement("div");
     comentario.classList.add("comentario");
-
-    // Imagen de perfil (fija por ahora)
+    
     const img = document.createElement("img");
-    img.src = "https://via.placeholder.com/50"; 
+    img.src = "https://i.pinimg.com/736x/d2/50/af/d250af5bf078a388b23d9916b575dc48.jpg";  
 
-    // Contenedor texto
     const comentarioTexto = document.createElement("div");
     comentarioTexto.classList.add("comentario-texto");
-
     const nombre = document.createElement("h4");
-    nombre.textContent = "Usuario"; // puedes reemplazar por nombre dinámico
-
+    nombre.textContent = "Usuario";
     const contenido = document.createElement("p");
     contenido.textContent = texto;
 
-    // Botones de acción
     const acciones = document.createElement("div");
-    acciones.style.marginTop = "8px";
+    acciones.classList.add("comentario-acciones");
 
     const btnEditar = document.createElement("button");
     btnEditar.textContent = "Editar";
-    btnEditar.style.marginRight = "10px";
-    btnEditar.style.background = "#ffc107";
-    btnEditar.style.border = "none";
-    btnEditar.style.padding = "5px 10px";
-    btnEditar.style.borderRadius = "6px";
-    btnEditar.style.cursor = "pointer";
-
+    btnEditar.classList.add("btn-editar");
     btnEditar.onclick = () => {
       const nuevoTexto = prompt("Edita tu comentario:", contenido.textContent);
       if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
         contenido.textContent = nuevoTexto.trim();
-      }
+      } 
     };
-
+    
     const btnEliminar = document.createElement("button");
     btnEliminar.textContent = "Eliminar";
-    btnEliminar.style.background = "#dc3545";
-    btnEliminar.style.border = "none";
-    btnEliminar.style.padding = "5px 10px";
-    btnEliminar.style.borderRadius = "6px";
-    btnEliminar.style.cursor = "pointer";
-    btnEliminar.style.color = "#fff";
-
+    btnEliminar.classList.add("btn-eliminar");
     btnEliminar.onclick = () => {
       lista.removeChild(comentario);
     };
@@ -784,7 +1091,6 @@ function formatearFecha(fechaString) {
     acciones.appendChild(btnEditar);
     acciones.appendChild(btnEliminar);
 
-    // Insertar todo en el contenedor
     comentarioTexto.appendChild(nombre);
     comentarioTexto.appendChild(contenido);
     comentarioTexto.appendChild(acciones);
@@ -794,62 +1100,40 @@ function formatearFecha(fechaString) {
 
     lista.appendChild(comentario);
 
-    // Limpiar textarea
     input.value = "";
+  }
 
- // Estrellas de calificación
-    const estrellas = document.querySelectorAll('.estrellas');
 
-    estrellas.forEach(estrella => {
-      estrella.addEventListener('click', () => {
-        let valor = estrella.getAttribute('data-valor');
-        calificaciones.push(parseInt(valor));
-        actualizarEstrellas(valor);
-        actualizarGrafica();
-      });
-    });
-
-    function actualizarEstrellas(valor) {
-      estrellas.forEach(e => {
-        e.classList.toggle('estrella-activa', e.getAttribute('data-valor') <= valor);
-      });
+  // Función de debug temporal
+function debugCompleto() {
+    console.log('=== DEBUG COMPLETO ===');
+    
+    // 1. Verificar elementos HTML
+    console.log('1. Elementos HTML:');
+    console.log('- Estrellas contenedor:', document.getElementById('estrellas-calificacion'));
+    console.log('- Estrellas individuales:', document.querySelectorAll('#estrellas-calificacion .estrella').length);
+    console.log('- Promedio texto:', document.getElementById('promedio-texto'));
+    console.log('- Total calificaciones:', document.getElementById('total-calificaciones'));
+    console.log('- Texto calificación:', document.getElementById('texto-calificacion'));
+    console.log('- Canvas gráfica:', document.getElementById('grafica-calificaciones'));
+    
+    // 2. Verificar datos
+    console.log('2. Datos calificaciones:', calificacionesData);
+    
+    // 3. Verificar CSS
+    console.log('3. Estilos aplicados:');
+    const primeraEstrella = document.querySelector('#estrellas-calificacion .estrella');
+    if (primeraEstrella) {
+        const estilos = window.getComputedStyle(primeraEstrella);
+        console.log('- Color estrella:', estilos.color);
+        console.log('- Tamaño fuente:', estilos.fontSize);
     }
+    
+    console.log('=== FIN DEBUG ===');
+}
 
-    // Gráfica con Chart.js
-    function crearGrafica() {
-      const ctx = document.getElementById('grafica').getContext('2d');
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ["1★", "2★", "3★", "4★", "5★"],
-          datasets: [{
-            label: "Cantidad de calificaciones",
-            data: [0,0,0,0,0],
-            borderColor: "blue",
-            borderWidth: 2,
-            fill: false
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false }
-          }
-        }
-      });
-    }
-
-    function actualizarGrafica() {
-      let conteo = [0,0,0,0,0];
-      calificaciones.forEach(c => conteo[c-1]++);
-      chart.data.datasets[0].data = conteo;
-      chart.update();
-    }
-
-    crearGrafica();
-
-
-  </script>
-
+// Llama esta función después de cargar todo
+setTimeout(debugCompleto, 2000);
+</script>
 </body>
 </html>

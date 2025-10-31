@@ -848,9 +848,113 @@ app.get('/chat/usuarios', (req, res) => {
         });
     });
 });
+
+
+/// ✅ ENDPOINT MEJORADO PARA OBTENER CALIFICACIONES DE UN PRODUCTO
+app.get('/calificaciones/producto/:idProducto', (req, res) => {
+    const { idProducto } = req.params;
+    const idUsuario = req.query.idUsuario; // Opcional: ID del usuario actual
+    
+    console.log('📊 Obteniendo calificaciones para producto:', idProducto, 'Usuario:', idUsuario);
+    
+    // 1. Calcular promedio y total de calificaciones
+    const promedioQuery = `
+        SELECT 
+            AVG(calificacion) as promedio, 
+            COUNT(*) as total 
+        FROM calificaciones_producto 
+        WHERE id_producto = ?
+    `;
+    
+    conexion.query(promedioQuery, [idProducto], (error, promedioResult) => {
+        if (error) {
+            console.error('❌ Error en consulta de promedio:', error);
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Error al obtener calificaciones' 
+            });
+        }
+        
+        // 2. Obtener distribución por estrellas
+        const distribucionQuery = `
+            SELECT 
+                calificacion, 
+                COUNT(*) as cantidad 
+            FROM calificaciones_producto 
+            WHERE id_producto = ? 
+            GROUP BY calificacion 
+            ORDER BY calificacion
+        `;
+        
+        conexion.query(distribucionQuery, [idProducto], (error, distribucionResult) => {
+            if (error) {
+                console.error('❌ Error en consulta de distribución:', error);
+                return res.status(500).json({ 
+                    success: false, 
+                    message: 'Error al obtener distribución' 
+                });
+            }
+            
+            // 3. Formatear distribución (llenar con 0s las estrellas sin calificaciones)
+            const distribucion = [0, 0, 0, 0, 0];
+            distribucionResult.forEach(item => {
+                distribucion[item.calificacion - 1] = item.cantidad;
+            });
+            
+            // 4. Verificar si el usuario actual ya calificó
+            let usuarioCalifico = false;
+            let calificacionUsuario = 0;
+            
+            if (idUsuario) {
+                const usuarioQuery = 'SELECT calificacion FROM calificaciones_producto WHERE id_producto = ? AND id_usuario = ?';
+                conexion.query(usuarioQuery, [idProducto, idUsuario], (error, usuarioResult) => {
+                    if (!error && usuarioResult.length > 0) {
+                        usuarioCalifico = true;
+                        calificacionUsuario = usuarioResult[0].calificacion;
+                    }
+                    
+                    const responseData = {
+                        promedios: {
+                            promedio: parseFloat(promedioResult[0]?.promedio) || 0,
+                            total: promedioResult[0]?.total || 0
+                        },
+                        distribucion: distribucion,
+                        usuarioCalifico: usuarioCalifico,
+                        calificacionUsuario: calificacionUsuario
+                    };
+                    
+                    console.log('📈 Datos de calificaciones enviados:', responseData);
+                    
+                    res.json({
+                        success: true,
+                        data: responseData
+                    });
+                });
+            } else {
+                const responseData = {
+                    promedios: {
+                        promedio: parseFloat(promedioResult[0]?.promedio) || 0,
+                        total: promedioResult[0]?.total || 0
+                    },
+                    distribucion: distribucion,
+                    usuarioCalifico: false,
+                    calificacionUsuario: 0
+                };
+                
+                console.log('📈 Datos de calificaciones enviados:', responseData);
+                
+                res.json({
+                    success: true,
+                    data: responseData
+                });
+            }
+        });
+    });
+});
 // Iniciar servidor
 app.listen(port, () => {
     console.log(`Servidor ejecutándose en http://localhost:${port}`);
     console.log(`Registro: http://localhost:${port}/vistas/registro.html`);
     console.log(`Login: http://localhost:${port}/vistas/login.html`);
 });
+
