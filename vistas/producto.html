@@ -11,14 +11,13 @@
 <body>
  <header>
     <div class="header-content">
+      
     <div class="logo" onclick="window.location.href='barra.html'">TRUEKKI</div>
       <div class="search-bar">
         <input type="text" placeholder="Buscar productos..." id="search-input">
         <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
       </div>
       <div class="icons">
-        <span class="icon" onclick="showSection('favorites')"><i class="fas fa-heart"></i></span>
-        <span class="icon" onclick="showSection('messages')"><i class="fas fa-comment"></i></span>
         <span class="icon menu-btn" onclick="openMenu()"><i class="fas fa-bars"></i></span>
       </div> 
     </div>
@@ -240,7 +239,7 @@ async function cargarCalificacionesProducto() {
             crearGraficaCalificaciones();
         }
     } catch (error) {
-        console.error('Error cargando calificaciones:', error);
+        console.error('Error cargando calificaciones:', error); 
     }
 }
 

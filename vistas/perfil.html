@@ -9,10 +9,20 @@
 </head>
 <body>
     <header>
+        <!-- Botón para volver a la vista anterior -->
+<div class="boton-volver">
+  <button class="button-3d" onclick="window.history.back()">
+    <div class="button-top">
+      <span class="material-icons">❮</span>
+    </div>
+    <div class="button-bottom"></div>
+    <div class="button-base"></div>
+  </button>
+</div>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <div class="container header-content">
             <div class="logo" onclick="window.location.href='barra.html'">TRUEKKI</div>
             <div class="search-bar">    
-                <input type="text" placeholder="Buscar productos...">
             </div>
             <div class="user-actions">
                 <a href="#" onclick="showSection('profile')">Mi cuenta</a>
@@ -26,9 +36,6 @@
             <ul class="nav-links">
                 <li><a onclick="window.location.href='barra.html'">Inicio</a></li>
                 <li><a onclick="window.location.href='barra.html'">Productos</a></li>
-                <li><a href="#">Categorías</a></li>
-                <li><a href="#">Ofertas</a></li>
-                <li><a href="#">Contacto</a></li>
             </ul>
         </div>
     </nav>
@@ -44,7 +51,7 @@
             <ul class="sidebar-menu">
                 <li><a onclick="showSection('profile')" class="active">Mi perfil</a></li>
                 <li><a onclick="showSection('my-products')">Mis productos</a></li>
-                <li><a onclick="showSection('favorites')">Favoritos</a></li>
+                <li><a onclick="showSection=window.location.href='favoritos.html'">Favoritos</a></li>
                 <li><a onclick="showSection('history')">Historial</a></li>
                 <li><a onclick="showSection('messages')">Mensajes</a></li>
                 <li><a href="#">Configuración</a></li>

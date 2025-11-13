@@ -951,6 +951,83 @@ app.get('/calificaciones/producto/:idProducto', (req, res) => {
         });
     });
 });
+
+// ✅ ENDPOINT PARA GUARDAR CALIFICACIÓN - AGREGAR ESTO A TU conexion.js
+app.post('/calificaciones/calificar', (req, res) => {
+    const { id_producto, id_usuario, calificacion } = req.body;
+    
+    console.log('⭐ Guardando calificación:', { id_producto, id_usuario, calificacion });
+    
+    // Validaciones
+    if (!id_producto || !id_usuario || !calificacion) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'Faltan campos requeridos' 
+        });
+    }
+    
+    if (calificacion < 1 || calificacion > 5) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'La calificación debe estar entre 1 y 5' 
+        });
+    }
+    
+    // Verificar si ya existe una calificación
+    const checkQuery = 'SELECT * FROM calificaciones_producto WHERE id_producto = ? AND id_usuario = ?';
+    conexion.query(checkQuery, [id_producto, id_usuario], (error, existingRating) => {
+        if (error) {
+            console.error('❌ Error verificando calificación existente:', error);
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Error al verificar calificación' 
+            });
+        }
+        
+        if (existingRating.length > 0) {
+            // Actualizar calificación existente
+            const updateQuery = 'UPDATE calificaciones_producto SET calificacion = ? WHERE id_producto = ? AND id_usuario = ?';
+            conexion.query(updateQuery, [calificacion, id_producto, id_usuario], (error, result) => {
+                if (error) {
+                    console.error('❌ Error actualizando calificación:', error);
+                    return res.status(500).json({ 
+                        success: false, 
+                        message: 'Error al actualizar calificación' 
+                    });
+                }
+                
+                console.log('✅ Calificación actualizada');
+                res.json({ 
+                    success: true, 
+                    message: 'Calificación actualizada correctamente'
+                });
+            });
+        } else {
+            // Insertar nueva calificación
+            const insertQuery = `
+                INSERT INTO calificaciones_producto (id_producto, id_usuario, calificacion) 
+                VALUES (?, ?, ?)
+            `;
+            
+            conexion.query(insertQuery, [id_producto, id_usuario, calificacion], (error, result) => {
+                if (error) {
+                    console.error('❌ Error insertando calificación:', error);
+                    return res.status(500).json({ 
+                        success: false, 
+                        message: 'Error al guardar calificación' 
+                    });
+                }
+                
+                console.log('✅ Calificación guardada ID:', result.insertId);
+                res.json({ 
+                    success: true, 
+                    message: 'Calificación guardada correctamente',
+                    id_calificacion: result.insertId
+                });
+            });
+        }
+    });
+});
 // Iniciar servidor
 app.listen(port, () => {
     console.log(`Servidor ejecutándose en http://localhost:${port}`);
